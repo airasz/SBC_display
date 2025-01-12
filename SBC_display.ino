@@ -1,4 +1,6 @@
-// display for all display
+// purpose: display for all display
+// board m5stickc
+// methode: usb serial / soft serial
 void setup()
 {
   // put your setup code here, to run once:
