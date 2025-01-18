@@ -255,7 +255,7 @@ void loop()
     c = Serial.read();
     data += c;
   }
-  if (data.length() > 0)
+  if (data.length() > 10)
   {
     if (data.startsWith("blink"))
     {
