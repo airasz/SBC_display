@@ -56,6 +56,7 @@ void setup()
   // NEO.setPixelColor(0, 0);
   NEO.setPixelColor(0, NEO.Color(170, 0, 0));
 
+  NEO.show();
   page = 0;
 
   myNex.begin(115200); // Begin the object with a baud rate of 9600
@@ -134,10 +135,15 @@ void loop()
       {
         countblink++;
         analogWrite(16, 255);
+        NEO.setPixelColor(0, NEO.Color(170, 0, 0));
+        NEO.show();
+        Serial.printf("blink  : %d \n", countblink);
         if (countblink > nblinking)
         {
           blinking = false;
           analogWrite(16, 0);
+          NEO.setPixelColor(0, 0);
+          NEO.show();
           countblink = 0;
         }
       }
@@ -145,7 +151,11 @@ void loop()
     if (angka > 9)
     {
       if (blinking)
+      {
         analogWrite(16, 0);
+        NEO.setPixelColor(0, 0);
+        NEO.show();
+      }
       angka = 0;
     }
     prevmill2 = millis();
