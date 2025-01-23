@@ -98,16 +98,16 @@ void setup()
 {
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
-  serial.begin(9600);
+  Serial.begin(115200);
+  serial.begin(115200);
   M5.begin();
   Serial.println("starting piradio reader");
   M5.IMU.Init();
   pinMode(BUTTON_HOME, INPUT | PULLUP);
   pinMode(BUTTON_PIN, INPUT | PULLUP);
   pinMode(10, OUTPUT);
-  // attachInterrupt(digitalPinToInterrupt(BUTTON_HOME), resett, RISING);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), mode, RISING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_HOME), resett, RISING);
 
   // M5.Lcd.SMOOTH_FONT();
   M5.Axp.ScreenBreath(50); // 0-100
@@ -117,20 +117,19 @@ void setup()
   M5.Lcd.fillScreen(BLACK);
   cekIMU();
   M5.Lcd.setCursor(0, 5);
-  M5.Lcd.setTextSize(1);
+  M5.Lcd.setTextSize(2);
   // M5.Lcd.setTextColor(0x00aadd00, 0);
   M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.println("rss reader");
-  pinMode(BUTTON_HOME, INPUT | PULLUP);
-  pinMode(BUTTON_PIN, INPUT | PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_HOME), resett, RISING);
+  M5.Lcd.println("0 livescore\n1 typing mode\n2 statis mode");
+
+  M5.Lcd.setTextSize(1);
 }
 
 void resett()
 {
   ESP.restart();
 }
-int dmode = 0;
+int dmode = 1;
 void mode()
 {
   dmode++;
@@ -138,6 +137,11 @@ void mode()
   {
     dmode = 0;
   }
+  // M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.fillScreen(BLACK);
+  M5.Lcd.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+  // M5.Lcd.setTextSize(1);
 }
 String sdata;
 void loop()
@@ -255,7 +259,7 @@ void loop()
     c = Serial.read();
     data += c;
   }
-  if (data.length() > 10)
+  if (data.length() > 4)
   {
     if (data.startsWith("blink"))
     {
@@ -265,18 +269,37 @@ void loop()
       // Serial.println("startblinking");
       Serial.printf("start blinking  : %d times\n", nblinking);
     }
+    else if (data.startsWith("dmode"))
+    {
+      int dmod = data.substring(5).toInt();
+      if (dmod < 3)
+        dmode = dmod;
+      // Serial.println("startblinking");
+      M5.Lcd.setCursor(0, 0);
+      // M5.Lcd.setTextSize(2);
+      Serial.printf("change display mode to : %d \n", dmode);
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+      // M5.Lcd.setTextSize(1);
+      data = "";
+    }
     Serial.println(data);
     String homescore = data.substring(data.indexOf(">") + 2);
     // displayinfo(homescore);
-    if (dmode == 0)
-    {
-      displayscore(homescore);
-    }
-    else if (dmode == 1)
-    {
-      data = data + "%";
-      tb_display_print_String(data.c_str(), 20);
-    }
+    if (data.length() > 4)
+      if (dmode == 0)
+      {
+        displayscore(homescore);
+      }
+      else if (dmode == 1)
+      {
+        data = data + "%";
+        tb_display_print_String(data.c_str(), 20);
+      }
+      else if (dmode == 2)
+      {
+        displayinfo(data);
+      }
 
     data = "";
   }
@@ -290,7 +313,7 @@ void displayinfo(String Header, String body)
   M5.Lcd.fillScreen(BLACK);
   // M5.Lcd.setFont();
   M5.Lcd.setTextColor(0xAA00FF00);
-  M5.Lcd.setTextSize(1);
+  // M5.Lcd.setTextSize(1);
   M5.Lcd.setCursor(0, 0);
 
   M5.Lcd.print(Header);
@@ -309,7 +332,7 @@ void displayinfo(String msg)
   M5.Lcd.fillScreen(BLACK);
   // M5.Lcd.setFont();
   M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.setTextSize(1);
+  // M5.Lcd.setTextSize(1);
   M5.Lcd.setCursor(0, 0);
 
   M5.Lcd.print(msg);
