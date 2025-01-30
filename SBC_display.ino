@@ -125,6 +125,7 @@ bool foundRadio = false;
 String data;
 char c;
 int toScreenSleep = 0;
+int maxWait = 20;
 
 void loop()
 {
@@ -146,6 +147,11 @@ void loop()
     //    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
+    // if (data.length() > 10)
+    //   maxWait = data.length() / 10
+    // else
+    maxWait = (data.length() > 10) ? data.length() / 10 : 20;
+
     if (data.startsWith("rotation"))
     {
       int sr = data.substring(9).toInt();
