@@ -141,7 +141,7 @@ void loop()
     c = Serial.read();
     data += c;
   }
-  if (data.length() > 0)
+  if (data.length() > 3)
   {
     //    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
@@ -150,7 +150,8 @@ void loop()
     {
       int sr = data.substring(9).toInt();
       tft.setRotation(sr);
-      testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
+      // testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
+      printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
     }
     else if (data.startsWith("set volume"))
     {
@@ -169,7 +170,8 @@ void loop()
     }
     else
     {
-      testdrawtext(data, COLOR_MEDIUM[random(10)]);
+      // testdrawtext(data, COLOR_MEDIUM[random(10)]);
+      printWordWrap(data, COLOR_MEDIUM[random(12)]);
     }
     data = "";
   }
@@ -185,7 +187,8 @@ void loop()
     {
       toScreenSleep = 20;
 
-      testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
+      // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
+      printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
     }
     prevmill = millis();
   }
@@ -248,6 +251,41 @@ void testdrawtext(String text, uint16_t color)
 
   // tft.unloadFont();
 }
+void printWordWrap(String text, uint16_t color)
+{
+
+  tft.setCursor(cx, cy);
+  tft.setTextWrap(true, false);
+  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
+  // tft.print(oldsdata);
+  tft.fillScreen(TFT_BLACK);
+  int tl = text.length();
+  int cymr = map(tl, 10, 100, 80, 15);
+  tft.setCursor(cx, random(1, cymr));
+  tft.setTextColor(color, TFT_BLACK);
+
+  // tft.print(tl);
+  printSplitString(text, color);
+}
+void printSplitString(String text, uint16_t color)
+{
+  int wordStart = 0;
+  int wordEnd = 0;
+  while ((text.indexOf(' ', wordStart) >= 0) && (wordStart <= text.length()))
+  {
+    wordEnd = text.indexOf(' ', wordStart + 1);
+    uint16_t len = tft.textWidth(text.substring(wordStart, wordEnd));
+    if (tft.getCursorX() + len >= tft.width())
+    {
+      tft.println();
+      if (wordStart > 0)
+        wordStart++;
+    }
+    tft.print(text.substring(wordStart, wordEnd));
+    wordStart = wordEnd;
+  }
+}
+
 void printtextbig(
     String text, uint16_t color)
 {
