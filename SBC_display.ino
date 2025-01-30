@@ -189,10 +189,9 @@ void loop()
     //   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
     // }
     // else
-    if (toScreenSleep > 20)
+    if (toScreenSleep > maxWait)
     {
-      toScreenSleep = 20;
-
+      toScreenSleep = maxWait;
       // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
       printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
     }
