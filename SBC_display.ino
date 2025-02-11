@@ -203,7 +203,9 @@ void loop()
     if (data.length() > 4)
       if (dmode == 0)
       {
-        displayscore(homescore);
+        // displayscore(homescore);
+        // drawSegment(10, 20, 0, homescore);
+        ssgmnt(homescore);
       }
       else if (dmode == 1)
       {
