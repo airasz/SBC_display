@@ -94,28 +94,62 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
         drawSegment(x, y, i, state, size, col);
     }
 }
+String old_score;
 void ssgmnt(String score)
 {
-    String scores = data.substring(data.indexOf(">"));
-    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-    String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+    if (score != old_score)
+    {
+        String scores = data.substring(data.indexOf(">"));
+        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+        String awayscore = scores.substring(scores.indexOf("-") + 1);
+        String hometeam = data.substring(0, data.indexOf("vs"));
+        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
 
-    tft.fillScreen(TFT_BLACK);
-    cx = 0, cy = 0;
-    drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-    // tft.setCursor(0, 82);
-    // tft.print(awayteam);
-    cx = 0, cy = 112;
-    drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-    int number = homescore.toInt();
-    int ascr = awayscore.toInt();
-    int sz = 10; // segment size
-    int x = 10, y = 30;
-    draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);           // Position at (20,20) with size 10
-    draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]);    // Position at (20,20) with size 10
-    draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        tft.fillScreen(TFT_BLACK);
+        cx = 0, cy = 0;
+        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        // tft.setCursor(0, 82);
+        // tft.print(awayteam);
+        cx = 0, cy = 112;
+        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        int number = homescore.toInt();
+        int ascr = awayscore.toInt();
+        int sz = 10; // segment size
+        int x = 10, y = 30;
+        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);           // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]);    // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        old_score = score;
+    }
+    else
+    {
+        String scores = data.substring(data.indexOf(">"));
+        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+        String awayscore = scores.substring(scores.indexOf("-") + 1);
+        String hometeam = data.substring(0, data.indexOf("vs"));
+        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+
+        // tft.fillScreen(TFT_BLACK);
+        cx = 0, cy = 0;
+        drawtext(hometeam, TFT_BLACK);
+        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        // tft.setCursor(0, 82);
+        // tft.print(awayteam);
+        cx = 0, cy = 112;
+        drawtext(awayteam, TFT_BLACK);
+        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        int number = homescore.toInt();
+        int ascr = awayscore.toInt();
+        int sz = 10; // segment size
+        int x = 10, y = 30;
+        draw7Segment(x, y, number, sz, SS_DISABLE);           // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 5), y, 10, sz, SS_DISABLE);    // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 10), y, ascr, sz, SS_DISABLE); // Position at (20,20) with size 10
+
+        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);           // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]);    // Position at (20,20) with size 10
+        draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    }
 }
 // void setup()
 // {
