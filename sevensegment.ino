@@ -1,4 +1,15 @@
 
+int sevensegment[7] = {0, 1, 2, 3, 4, 5, 6};
+void shuffleArray(int *array, int size)
+{
+    for (int i = size - 1; i > 0; i--)
+    {
+        int j = random(0, i + 1);
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
 
 // Segment activation patterns for numbers 0-9 (A-G segments)
 const byte digitPatterns[11] = {
@@ -88,10 +99,18 @@ void drawSegment(int x, int y, int segment, bool state, int size, uint32_t col)
 void draw7Segment(int x, int y, int number, int size, uint32_t col)
 {
     byte pattern = digitPatterns[number];
+    // for (int i = 0; i < 7; i++)
+    // {
+    //     // bool state = bitRead(pattern, 6 - i); // Bits are A to G (MSB to LSB)
+    //     bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
+    //     drawSegment(x, y, sevensegment[i], true, size, SS_DISABLE);
+    //     delay(50);
+    // }
     for (int i = 0; i < 7; i++)
     {
-        bool state = bitRead(pattern, 6 - i); // Bits are A to G (MSB to LSB)
-        drawSegment(x, y, i, state, size, col);
+        bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
+        drawSegment(x, y, sevensegment[i], state, size, col);
+        delay(75);
     }
 }
 String old_score;
@@ -117,8 +136,12 @@ void ssgmnt(String score)
         int ascr = awayscore.toInt();
         int sz = 10; // segment size
         int x = 10, y = 30;
-        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);           // Position at (20,20) with size 10
-        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]);    // Position at (20,20) with size 10
+        int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
         draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
         old_score = score;
     }
@@ -143,12 +166,18 @@ void ssgmnt(String score)
         int ascr = awayscore.toInt();
         int sz = 10; // segment size
         int x = 10, y = 30;
-        draw7Segment(x, y, number, sz, SS_DISABLE);           // Position at (20,20) with size 10
-        draw7Segment(x + (sz * 5), y, 10, sz, SS_DISABLE);    // Position at (20,20) with size 10
-        draw7Segment(x + (sz * 10), y, ascr, sz, SS_DISABLE); // Position at (20,20) with size 10
 
-        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);           // Position at (20,20) with size 10
-        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]);    // Position at (20,20) with size 10
+        int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
+        draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 5), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 10), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        shuffleArray(sevensegment, sssize);
         draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     }
 }

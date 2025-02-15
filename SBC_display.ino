@@ -211,17 +211,17 @@ void loop()
         // displayscore(homescore);
         // drawSegment(10, 20, 0, homescore);
 
+        if (data != olddata)
+        {
+          olddata = data;
+          tft.fillScreen(TFT_BLACK);
+        }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
         ssgmnt(homescore);
       }
       else if (dmode == 1)
       {
         // data = data + "%";
-        if (data != olddata)
-        {
-          olddata = data;
-          tft.fillScreen(TFT_BLACK);
-        }
         tb_display_print_String(data.c_str(), 20);
       }
       else if (dmode == 2)
