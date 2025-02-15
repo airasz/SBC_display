@@ -136,7 +136,7 @@ String data;
 char c;
 int toScreenSleep = 0;
 int maxWait = 20;
-
+String olddata = "";
 void loop()
 {
 
@@ -173,6 +173,11 @@ void loop()
     {
       printtextbig(data, COLOR_MEDIUM[random(12)]);
     }
+    else if (data.startsWith("resetscreen"))
+    {
+      tft.fillScreen(TFT_BLACK);
+      return;
+    }
     else if (data.startsWith("blink"))
     {
       nblinking = data.substring(5).toInt();
@@ -205,11 +210,18 @@ void loop()
       {
         // displayscore(homescore);
         // drawSegment(10, 20, 0, homescore);
+
+        maxWait = (data.length() > 10) ? data.length() / 2 : 80;
         ssgmnt(homescore);
       }
       else if (dmode == 1)
       {
         // data = data + "%";
+        if (data != olddata)
+        {
+          olddata = data;
+          tft.fillScreen(TFT_BLACK);
+        }
         tb_display_print_String(data.c_str(), 20);
       }
       else if (dmode == 2)
@@ -233,6 +245,7 @@ void loop()
     //   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
     // }
     // else
+    Serial.printf("maxwait = %d", maxWait);
     if (toScreenSleep > maxWait)
     {
       toScreenSleep = 0;

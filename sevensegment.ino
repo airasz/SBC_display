@@ -104,6 +104,7 @@ void ssgmnt(String score)
         String awayscore = scores.substring(scores.indexOf("-") + 1);
         String hometeam = data.substring(0, data.indexOf("vs"));
         String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+        String matchtime = awayteam.substring(data.indexOf("\n"));
 
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
