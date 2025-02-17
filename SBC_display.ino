@@ -217,7 +217,9 @@ void loop()
           tft.fillScreen(TFT_BLACK);
         }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
-        ssgmnt(homescore);
+        // ssgmnt(homescore);
+
+        drawDigitLivescore(homescore);
       }
       else if (dmode == 1)
       {
