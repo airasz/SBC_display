@@ -152,91 +152,9 @@ void loop()
     c = Serial.read();
     data += c;
   }
-  if (data.length() > 4)
+  if (data.length() > 0)
   {
-    //    Serial.println(data);
-    // tb_display_print_String(data.c_str(), 20);
-    toScreenSleep = 0;
-    // if (data.length() > 10)
-    //   maxWait = data.length() / 10
-    // else
-    maxWait = (data.length() > 10) ? data.length() / 6 : 40;
-    // tft.printf("maxwait = %d\n", maxWait);
-    if (data.startsWith("rotation"))
-    {
-      int sr = data.substring(9).toInt();
-      tft.setRotation(sr);
-      // testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
-      printWordWrap("rotated", COLOR_MEDIUM[random(12)]);
-    }
-    else if (data.startsWith("set volume"))
-    {
-      printtextbig(data, COLOR_MEDIUM[random(12)]);
-    }
-    else if (data.startsWith("resetscreen"))
-    {
-      tft.fillScreen(TFT_BLACK);
-      return;
-    }
-    else if (data.startsWith("blink"))
-    {
-      nblinking = data.substring(5).toInt();
-      blinking = true;
-      angka = 7;
-      Serial.println("startblinking");
-    }
-    else if (data.startsWith("dmode"))
-    {
-      int dmod = data.substring(5).toInt();
-      if (dmod < 3)
-        dmode = dmod;
-      // Serial.println("startblinking");
-      tft.setCursor(0, 0);
-      // tft.setTextSize(2);
-      Serial.printf("change display mode to : %d \n", dmode);
-      tft.fillScreen(TFT_BLACK);
-      tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
-      // tft.setTextSize(1);
-      data = "";
-    }
-    else if (data.startsWith("play pos"))
-    {
-      printtextbig(data, COLOR_MEDIUM[random(12)]);
-    }
-    String homescore = data.substring(data.indexOf(">") + 2);
-    Serial.printf("dmode=%d\n", dmode);
-    if (data.length() > 4)
-      if (dmode == 0)
-      {
-        // displayscore(homescore);
-        // drawSegment(10, 20, 0, homescore);
-
-        if (data != olddata)
-        {
-          olddata = data;
-          tft.fillScreen(TFT_BLACK);
-        }
-        maxWait = (data.length() > 10) ? data.length() / 2 : 80;
-        // ssgmnt(homescore);
-
-        drawDigitLivescore(homescore);
-      }
-      else if (dmode == 1)
-      {
-        // data = data + "%";
-        tb_display_print_String(data.c_str(), 20);
-      }
-      else if (dmode == 2)
-      {
-        // displayinfo(data);
-        printWordWrap(data, COLOR_MEDIUM[random(12)]);
-      }
-      else
-      {
-        // testdrawtext(data, COLOR_MEDIUM[random(10)]);
-        printWordWrap(data, COLOR_MEDIUM[random(12)]);
-      }
-
+    proccesData(data);
     data = "";
   }
   if (millis() > prevmill + 1000)
@@ -280,6 +198,111 @@ void loop()
       angka = 0;
     }
     prevmill2 = millis();
+  }
+} // end loop
+
+void proccesData(String data)
+{
+
+  if (data.length() > 4)
+  {
+    //    Serial.println(data);
+    // tb_display_print_String(data.c_str(), 20);
+    toScreenSleep = 0;
+    // if (data.length() > 10)
+    //   maxWait = data.length() / 10
+    // else
+    maxWait = (data.length() > 18) ? data.length() / 6 : 40;
+    // tft.printf("maxwait = %d\n", maxWait);
+    if (data.startsWith("rotation"))
+    {
+      int sr = data.substring(9).toInt();
+      tft.setRotation(sr);
+      // testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
+      printWordWrap("rotated", COLOR_MEDIUM[random(12)]);
+    }
+    else if (data.startsWith("set volume"))
+    {
+      printtextbig(data, COLOR_MEDIUM[random(12)]);
+    }
+    else if (data.startsWith("resetscreen"))
+    {
+      tft.fillScreen(TFT_BLACK);
+      data = "";
+      return;
+    }
+    else if (data.startsWith("blink"))
+    {
+      nblinking = data.substring(5).toInt();
+      blinking = true;
+      angka = 7;
+      Serial.println("startblinking");
+      data = "";
+      return;
+    }
+    else if (data.startsWith("dmode"))
+    {
+      if (data == "dmode")
+      {
+        tft.fillScreen(TFT_BLACK);
+        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+        return;
+      }
+      else
+      {
+        int dmod = data.substring(5).toInt();
+        if (dmod < 3)
+          dmode = dmod;
+        // Serial.println("startblinking");
+        tft.setCursor(0, 0);
+        // tft.setTextSize(2);
+        Serial.printf("change display mode to : %d \n", dmode);
+        tft.fillScreen(TFT_BLACK);
+        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+        // tft.setTextSize(1);
+        data = "";
+        return;
+      }
+    }
+    else if (data.startsWith("play pos"))
+    {
+      printtextbig(data, COLOR_MEDIUM[random(12)]);
+    }
+    String homescore = data.substring(data.indexOf(">") + 2);
+    Serial.printf("dmode=%d\n", dmode);
+    if (data.length() > 4)
+      if (dmode == 0)
+      {
+        // displayscore(homescore);
+        // drawSegment(10, 20, 0, homescore);
+
+        if (data != olddata)
+        {
+          olddata = data;
+          tft.fillScreen(TFT_BLACK);
+        }
+        maxWait = (data.length() > 10) ? data.length() / 2 : 80;
+        // ssgmnt(homescore);
+
+        drawDigitLivescore(homescore);
+      }
+      else if (dmode == 1)
+      {
+        // data = data + "%";
+        tb_display_print_String(data.c_str(), 20);
+      }
+      else if (dmode == 2)
+      {
+        // displayinfo(data);
+        printWordWrap(data, COLOR_MEDIUM[random(12)]);
+      }
+      else
+      {
+        // testdrawtext(data, COLOR_MEDIUM[random(10)]);
+        printWordWrap(data, COLOR_MEDIUM[random(12)]);
+      }
+
+    data = "";
   }
 }
 
