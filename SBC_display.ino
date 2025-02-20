@@ -289,7 +289,7 @@ void proccesData(String data)
         if (data != olddata)
         {
           olddata = data;
-          displaylivescore = random(3);
+          displaylivescore = random(4);
           tft.fillScreen(TFT_BLACK);
         }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
@@ -299,6 +299,8 @@ void proccesData(String data)
           displayscore(homescore);
         else if (displaylivescore == 2)
           tsgmnt(homescore);
+        else if (displaylivescore == 3)
+          drawDigitLivescore(homescore);
 
         // ssgmnt(homescore);
 
