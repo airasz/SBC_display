@@ -165,7 +165,7 @@ void loop()
     //   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
     // }
     // else
-    Serial.printf("maxwait = %d", maxWait);
+    // Serial.printf("maxwait = %d", maxWait);
     if (toScreenSleep > maxWait)
     {
       toScreenSleep = 0;
