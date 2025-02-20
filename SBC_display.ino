@@ -170,7 +170,7 @@ void loop()
     {
       toScreenSleep = 0;
       // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
-      printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
+      // printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
     }
     prevmill = millis();
   }
@@ -231,6 +231,16 @@ void proccesData(String data)
       data = "";
       return;
     }
+    else if (data.startsWith("testnum"))
+    {
+
+      int sr = data.substring(7).toInt();
+      tft.fillScreen(TFT_BLACK);
+      testDTSegment(sr);
+      data = "";
+      return;
+    }
+
     else if (data.startsWith("blink"))
     {
       nblinking = data.substring(5).toInt();
@@ -284,7 +294,8 @@ void proccesData(String data)
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
         // ssgmnt(homescore);
 
-        drawDigitLivescore(homescore);
+        // drawDigitLivescore(homescore);
+        tsgmnt(homescore);
       }
       else if (dmode == 1)
       {
