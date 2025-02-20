@@ -198,7 +198,7 @@ void tsgmnt(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
-        cx = 0, cy = 112;
+        cx = 0, cy = 98;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         drawT7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]);                   // Position at (20,20) with size 10
@@ -212,7 +212,7 @@ void tsgmnt(String score)
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        cx = 0, cy = 112;
+        cx = 0, cy = 98;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
