@@ -180,7 +180,7 @@ void ssgmnt(String score)
         shuffleArray(sevensegment, sssize);
         draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
 
-        drawDigit(60, 10, 10, number, COLOR_MEDIUM[random(12)]);
+        // drawDigit(60, 10, 10, number, COLOR_MEDIUM[random(12)]);
     }
 }
 int sizee = 10;    // size of each box
@@ -480,7 +480,7 @@ void drawDigitLivescore(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
-        cx = 0, cy = 112;
+        cx = 0, cy = 98;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int number = homescore.toInt();
         int ascr = awayscore.toInt();
