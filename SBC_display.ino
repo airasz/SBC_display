@@ -200,7 +200,7 @@ void loop()
     prevmill2 = millis();
   }
 } // end loop
-
+int displaylivescore = 0;
 void proccesData(String data)
 {
 
@@ -289,13 +289,21 @@ void proccesData(String data)
         if (data != olddata)
         {
           olddata = data;
+          displaylivescore = random(3);
           tft.fillScreen(TFT_BLACK);
         }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
+        if (displaylivescore == 0)
+          ssgmnt(homescore);
+        else if (displaylivescore == 1)
+          displayscore(homescore);
+        else if (displaylivescore == 2)
+          tsgmnt(homescore);
+
         // ssgmnt(homescore);
 
         // drawDigitLivescore(homescore);
-        tsgmnt(homescore);
+        // tsgmnt(homescore);
       }
       else if (dmode == 1)
       {
@@ -492,7 +500,7 @@ void displayscore(String score)
   drawtext(hometeam, COLOR_MEDIUM[random(10)]);
   // tft.setCursor(0, 82);
   // tft.print(awayteam);
-  cx = 0, cy = 82;
+  cx = 0, cy = 98;
   drawtext(awayteam, COLOR_MEDIUM[random(10)]);
   // printWordWrap(hometeam, COLOR_MEDIUM[random(12)]);
   score.replace("-", "");
@@ -518,7 +526,7 @@ void displayscore(String score)
   }
   // int testgigit=DIGITS[0][0][4];
   // Serial.printf("testgigit %d\n",testgigit);
-  int y_start = 26;
+  int y_start = 36;
   for (int pos = 1; pos < 4; pos++)
   {
     uint8_t curr_digit = 0;
