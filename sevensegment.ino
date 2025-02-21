@@ -116,15 +116,19 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
 String old_score;
 void ssgmnt(String score)
 {
+    String scores = data.substring(data.indexOf(">"));
+    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+    String awayscore = scores.substring(scores.indexOf("-") + 1);
+    String hometeam = data.substring(0, data.indexOf("vs"));
+    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+    String matchtime = awayteam.substring(data.indexOf("\n"));
+
+    int number = homescore.toInt();
+    int ascr = awayscore.toInt();
+    int sz = 10; // segment size
+    int x = 10, y = 30;
     if (score != old_score)
     {
-        String scores = data.substring(data.indexOf(">"));
-        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-        String awayscore = scores.substring(scores.indexOf("-") + 1);
-        String hometeam = data.substring(0, data.indexOf("vs"));
-        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-        String matchtime = awayteam.substring(data.indexOf("\n"));
-
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
@@ -132,27 +136,11 @@ void ssgmnt(String score)
         // tft.print(awayteam);
         cx = 0, cy = 112;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        int number = homescore.toInt();
-        int ascr = awayscore.toInt();
-        int sz = 10; // segment size
-        int x = 10, y = 30;
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
         old_score = score;
     }
     else
     {
-        String scores = data.substring(data.indexOf(">"));
-        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-        String awayscore = scores.substring(scores.indexOf("-") + 1);
-        String hometeam = data.substring(0, data.indexOf("vs"));
-        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-
         // tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
@@ -162,10 +150,6 @@ void ssgmnt(String score)
         cx = 0, cy = 112;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        int number = homescore.toInt();
-        int ascr = awayscore.toInt();
-        int sz = 10; // segment size
-        int x = 10, y = 30;
 
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
@@ -173,16 +157,18 @@ void ssgmnt(String score)
         draw7Segment(x + (sz * 5), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
         shuffleArray(sevensegment, sssize);
         draw7Segment(x + (sz * 10), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
 
         // drawDigit(60, 10, 10, number, COLOR_MEDIUM[random(12)]);
     }
+    shuffleArray(sevensegment, sssize);
+    draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    shuffleArray(sevensegment, sssize);
+    draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    shuffleArray(sevensegment, sssize);
+    draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
 }
+
+//=================5x3 digit font=======================
 int sizee = 10;    // size of each box
 byte space = 2;    // space between boxes
 int fromTop = 14;  // positon x
@@ -193,85 +179,6 @@ short number = 0;
 int digits = 0;
 
 short colors[2] = {TFT_BLACK, TFT_GREEN}; // first colour is color of background , second is color of digit
-byte arr[11][5][3] =
-    {
-        {{1, 1, 1}, // 0
-         {1, 0, 1},
-         {1, 0, 1},
-         {1, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{0, 1, 0}, // 1
-         {0, 1, 0},
-         {0, 1, 0},
-         {0, 1, 0},
-         {0, 1, 0}
-
-        },
-        {{1, 1, 1}, // 2
-         {0, 0, 1},
-         {1, 1, 1},
-         {1, 0, 0},
-         {1, 1, 1}
-
-        },
-        {{1, 1, 1}, // 3
-         {0, 0, 1},
-         {1, 1, 1},
-         {0, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{1, 0, 1}, // 4
-         {1, 0, 1},
-         {1, 1, 1},
-         {0, 0, 1},
-         {0, 0, 1}
-
-        },
-        {{1, 1, 1}, // 5
-         {1, 0, 0},
-         {1, 1, 1},
-         {0, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{1, 1, 1}, // 6
-         {1, 0, 0},
-         {1, 1, 1},
-         {1, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{1, 1, 1}, // 7
-         {0, 0, 1},
-         {0, 0, 1},
-         {0, 0, 1},
-         {0, 0, 1}
-
-        },
-        {{1, 1, 1}, // 8
-         {1, 0, 1},
-         {1, 1, 1},
-         {1, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{1, 1, 1}, // 9
-         {1, 0, 1},
-         {1, 1, 1},
-         {0, 0, 1},
-         {1, 1, 1}
-
-        },
-        {{0, 0, 0}, // 10 for -
-         {0, 0, 0},
-         {0, 1, 0},
-         {0, 0, 0},
-         {0, 0, 0}
-
-        }};
 
 int oldarr[5][3] =
     {
@@ -466,15 +373,20 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
 }
 void drawDigitLivescore(String score)
 {
+    String scores = data.substring(data.indexOf(">"));
+    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+    String awayscore = scores.substring(scores.indexOf("-") + 1);
+    String hometeam = data.substring(0, data.indexOf("vs"));
+    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+    String matchtime = awayteam.substring(data.indexOf("\n"));
+
+    int number = homescore.toInt();
+    int ascr = awayscore.toInt();
+    int sz = 10; // segment size
+    int x = 10, y = 30;
+    int digit = (number * 100) + ascr;
     if (score != old_score)
     {
-        String scores = data.substring(data.indexOf(">"));
-        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-        String awayscore = scores.substring(scores.indexOf("-") + 1);
-        String hometeam = data.substring(0, data.indexOf("vs"));
-        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-        String matchtime = awayteam.substring(data.indexOf("\n"));
-
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
@@ -482,19 +394,6 @@ void drawDigitLivescore(String score)
         // tft.print(awayteam);
         cx = 0, cy = 98;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        int number = homescore.toInt();
-        int ascr = awayscore.toInt();
-        int sz = 10; // segment size
-        int x = 10, y = 30;
-        // int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
-        // shuffleArray(sevensegment, sssize);
-        // draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        // shuffleArray(sevensegment, sssize);
-        // draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-        // shuffleArray(sevensegment, sssize);
-        // draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-
-        int digit = (number * 100) + ascr;
         drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascr, COLOR_MEDIUM[random(12)]);
@@ -502,12 +401,6 @@ void drawDigitLivescore(String score)
     }
     else
     {
-        String scores = data.substring(data.indexOf(">"));
-        String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-        String awayscore = scores.substring(scores.indexOf("-") + 1);
-        String hometeam = data.substring(0, data.indexOf("vs"));
-        String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-
         // tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
@@ -517,19 +410,199 @@ void drawDigitLivescore(String score)
         cx = 0, cy = 112;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        int number = homescore.toInt();
-        int ascr = awayscore.toInt();
-        int sz = 10; // segment size
-        int x = 10, y = 30;
-        int digit = (number * 100) + ascr;
-
-        // drawAnimatedDigit(20, 20, 10, number, TFT_BLACK);
-        // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, TFT_BLACK);
-        // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascr, TFT_BLACK);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(20, 20, 10, number, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 10, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascr, COLOR_MEDIUM[random(12)]);
+    }
+}
+
+void displayscore(String score)
+{
+
+    tft.fillScreen(TFT_BLACK);
+    String scores = data.substring(data.indexOf(">"));
+    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+    String awayscore = scores.substring(scores.indexOf("-") + 1);
+    String hometeam = data.substring(0, data.indexOf("vs"));
+    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+
+    // tft.setTextColor(TFT_GREENYELLOW);
+    tft.setCursor(0, 0);
+    cx = 0, cy = 0;
+    drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+    cx = 0, cy = 98;
+    drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+    // printWordWrap(hometeam, COLOR_MEDIUM[random(12)]);
+    score.replace("-", "");
+    score.replace(" ", "");
+    int clock_style = random(2);
+    int count = 0;
+    count = (homescore.toInt() * 100) + awayscore.toInt();
+    // count = score.toInt();
+    Serial.printf("count  : %d \n", count);
+    int x_start = 25;
+    int x_delta = 6;
+    int r = 5;
+    int rd = random(2);
+    for (int n = 0; n < 10; n++)
+    {
+        // canvas.fillCircle(x_start + x_delta * n, 4, r, COLORS_LIGHT[n]);
+    }
+
+    int y2 = 11;
+    for (int n = 0; n < 10; n++)
+    {
+        // canvas.fillCircle(x_start + x_delta * n, y2, r, COLORS_DARK[n]);
+    }
+    // int testgigit=DIGITS[0][0][4];
+    // Serial.printf("testgigit %d\n",testgigit);
+    int y_start = 36;
+    // for (int pos = 1; pos < 4; pos++)
+    // {
+    //     uint8_t curr_digit = 0;
+    //     if (pos == 0)
+    //     {
+    //         curr_digit = count / 1000;
+    //         if (curr_digit == 0)
+    //             curr_digit = 11; // make it blank. see on res.h
+    //     }
+    //     else if (pos == 1)
+    //     {
+    //         curr_digit = count / 100 % 10;
+    //     }
+    //     else if (pos == 2)
+    //     {
+    //         // curr_digit = count / 10 % 10;
+    //         curr_digit = 10; // make it (-). see on res.h
+    //     }
+    //     else if (pos == 3)
+    //     {
+    //         curr_digit = count % 10;
+    //     }
+    //     int rnd = random(10);
+    //     for (int row = 0; row < 7; row++)
+    //     {
+    //         for (int col = 0; col < 5; col++)
+    //         {
+    //             uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+    //             uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+    //             if (DIGITS[curr_digit][row][col] == 1)
+    //             {
+    //                 if (clock_style == 0)
+    //                 {
+    //                     tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, colorrnd);
+    //                     // tft.fillCircle(x_start + col * 7 -1+random(4), y_start + row * 7-1+random(4), 3, BLACK);
+    //                     // tft.fillCircle(x_start + col * 7 -1+random(4), y_start + row * 7-1+random(4), r, colorrnd);
+    //                 }
+    //                 else if (clock_style == 1)
+    //                 {
+    //                     tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 if (clock_style == 1)
+    //                 {
+    //                     tft.drawRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+    //                 }
+    //                 else if (clock_style == 0)
+    //                 {
+    //                     // tft.drawCircle(x_start + col * 7, y_start + row * 7, r, colorrnd);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     x_start += 39;
+    // }
+    if (clock_style == 0)
+        for (int pos = 1; pos < 4; pos++)
+        {
+            uint8_t curr_digit = 0;
+            if (pos == 0)
+            {
+                curr_digit = count / 1000;
+                if (curr_digit == 0)
+                    curr_digit = 11; // make it blank. see on res.h
+            }
+            else if (pos == 1)
+            {
+                curr_digit = count / 100 % 10;
+            }
+            else if (pos == 2)
+            {
+                // curr_digit = count / 10 % 10;
+                curr_digit = 10; // make it (-). see on res.h
+            }
+            else if (pos == 3)
+            {
+                curr_digit = count % 10;
+            }
+            int rnd = random(10);
+            int startrow = 0;
+            for (int ani = 0; ani < 20; ani++)
+            {
+                if (ani % 2 == 0)
+                    startrow++;
+                if (startrow > 6)
+                    startrow = 6;
+            }
+            for (int row = startrow; row < 7; row++)
+            {
+                for (int col = 0; col < 5; col++)
+                {
+                    uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                    uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                    // if (DIGITS[curr_digit][row][col] == 1)
+                    bool state = DIGITS[curr_digit][row][col];
+                    tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, (state) ? colorrnd : TFT_BLACK);
+                }
+                delay(20);
+            }
+            x_start += 39;
+        }
+    else if (clock_style == 1)
+    {
+        for (int pos = 1; pos < 4; pos++)
+        {
+            uint8_t curr_digit = 0;
+            if (pos == 0)
+            {
+                curr_digit = count / 1000;
+                if (curr_digit == 0)
+                    curr_digit = 11; // make it blank. see on res.h
+            }
+            else if (pos == 1)
+            {
+                curr_digit = count / 100 % 10;
+            }
+            else if (pos == 2)
+            {
+                // curr_digit = count / 10 % 10;
+                curr_digit = 10; // make it (-). see on res.h
+            }
+            else if (pos == 3)
+            {
+                curr_digit = count % 10;
+            }
+            int rnd = random(10);
+            for (int ani = 0; ani < 20; ani++)
+            {
+            }
+
+            for (int row = 0; row < 7; row++)
+            {
+                for (int col = 0; col < 5; col++)
+                {
+                    uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                    uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                    if (DIGITS[curr_digit][row][col] == 1)
+                        if (clock_style == 1)
+                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                }
+            }
+            x_start += 39;
+        }
     }
 }
