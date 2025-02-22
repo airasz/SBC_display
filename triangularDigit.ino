@@ -137,8 +137,8 @@ void fillingTriangular_old(int x, int y, int size, int gap)
 }
 void fillingTriangular(int x, int y, int size, int gap)
 {
-    float btp = sqrt((size * size) + ((size / 2) * (size / 2))); // a to d
-    float btpg = sqrt((gap * gap) + ((gap / 2) * (gap / 2)));    // gap to gap
+    float btp = sqrt((size * size) - ((size / 2) * (size / 2))); // a to d
+    float btpg = sqrt((gap * gap) - ((gap / 2) * (gap / 2)));    // gap to gap
     for (int i = 0; i < 10; i++)
         if (i < 5)
         {
@@ -270,8 +270,14 @@ void tsgmnt(String score)
     int number = homescore.toInt();
     int ascr = awayscore.toInt();
     int sz = 16; // segment size
+
+    int gap = int(sqrt(sz));
+    float btp = sqrt((sz * sz) - ((sz / 2) * (sz / 2)));      // a to d
+    float btpg = sqrt((gap * gap) - ((gap / 2) * (gap / 2))); // gap to gap
+
     int x = 1, y = 20;
-    int nextpos = (sz * 2) - (sz / 2);
+    // int nextpos = (sz * 2) - (sz / 2);
+    int nextpos = x + (int(btpg) * 2) + (int(btp) * 2) + gap + gap;
 
     if (score != old_score)
     {

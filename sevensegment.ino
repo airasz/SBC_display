@@ -483,7 +483,7 @@ void displayDigitHW(int count)
 {
 
     int clock_style = random(2);
-    // clock_style = 1; // force to test
+    clock_style = 1; // force to test
     int x_start = 25;
     int x_delta = 6;
     int r = 5;
@@ -541,14 +541,14 @@ void displayDigitHW(int count)
     //                 }
     //                 else if (clock_style == 1)
     //                 {
-    //                     tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+    //                     tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r *1, r*1, 0, colorrnd);
     //                 }
     //             }
     //             else
     //             {
     //                 if (clock_style == 1)
     //                 {
-    //                     tft.drawRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+    //                     tft.drawRoundRect(x_start - r + col * 7, y_start - r + row * 7, r *1, r*1, 0, colorrnd);
     //                 }
     //                 else if (clock_style == 0)
     //                 {
@@ -670,6 +670,7 @@ void displayDigitHW(int count)
         }
     else if (clock_style == 1)
     {
+        int isize = 5;
         for (int pos = 1; pos < 4; pos++)
         {
             uint8_t curr_digit = 0;
@@ -730,7 +731,7 @@ void displayDigitHW(int count)
                             // if (state)
                             //     tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, colorrnd);
                             // tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, state ? colorrnd : TFT_BLACK);
-                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, state ? colorrnd : TFT_BLACK);
+                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, state ? colorrnd : TFT_BLACK);
                         }
                     }
                     else
@@ -742,7 +743,7 @@ void displayDigitHW(int count)
                             uint32_t colorrnd = state ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
 
                             if (state)
-                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, state ? colorrnd : TFT_BLACK);
                         }
                     }
 
@@ -754,7 +755,7 @@ void displayDigitHW(int count)
                             // if (DIGITS[curr_digit][row][col] == 1)
                             bool state = DIGITS[curr_digit][row][col];
                             if (state)
-                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, colorrnd);
                         }
                 }
                 delay(40);
@@ -775,9 +776,9 @@ void displayDigitHW(int count)
                     // if (DIGITS[curr_digit][row][col] == 1)
                     bool state = DIGITS[curr_digit][row][col];
                     if (state)
-                        tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                        tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, colorrnd);
                 }
-                delay(20);
+                delay(200);
             }
 
             // for (int row = 0; row < 7; row++)
@@ -788,7 +789,7 @@ void displayDigitHW(int count)
             //         uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
             //         if (DIGITS[curr_digit][row][col] == 1)
             //             if (clock_style == 1)
-            //                 tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+            //                 tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r *1, r*1, 0, colorrnd);
             //     }
             // }
             x_start += 39;
