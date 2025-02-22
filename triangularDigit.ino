@@ -37,7 +37,7 @@ uint32_t triangularpos[10][3][2] = {
 //c --d--- b
 //
 */
-void fillingTriangular(int x, int y, int size, int gap)
+void fillingTriangular_old(int x, int y, int size, int gap)
 {
     float btp = sqrt((size * size) + ((size / 2) * (size / 2))); // a to d
     float btpg = sqrt((gap * gap) + ((gap / 2) * (gap / 2)));    // gap to gap
@@ -135,6 +135,88 @@ void fillingTriangular(int x, int y, int size, int gap)
         }
     }
 }
+void fillingTriangular(int x, int y, int size, int gap)
+{
+    float btp = sqrt((size * size) + ((size / 2) * (size / 2))); // a to d
+    float btpg = sqrt((gap * gap) + ((gap / 2) * (gap / 2)));    // gap to gap
+    for (int i = 0; i < 10; i++)
+        if (i < 5)
+        {
+            if (i < 2)
+            {
+                triangularpos[i][0][0] = x;            // x0
+                triangularpos[i][2][0] = x;            // x2
+                triangularpos[i][1][0] = x + int(btp); // x1
+                if (i == 0)
+                {
+
+                    triangularpos[i][0][1] = y;                  // y0
+                    triangularpos[i + 8][0][1] = y;              // y0
+                    triangularpos[i][1][1] = y + (size / 2);     // y1
+                    triangularpos[i + 8][1][1] = y + (size / 2); // y1
+                    triangularpos[i][2][1] = y + size;           // y2
+                    triangularpos[i + 8][2][1] = y + size;       // y2
+                }
+                else if (i == 1)
+                {
+                    triangularpos[i][0][1] = y + size + gap;                  // y0
+                    triangularpos[i + 8][0][1] = y + size + gap;              // y0
+                    triangularpos[i][1][1] = y + (size / 2) + size + gap;     // y1
+                    triangularpos[i + 8][1][1] = y + (size / 2) + size + gap; // y1
+                    triangularpos[i][2][1] = y + size + size + gap;           // y2
+                    triangularpos[i + 8][2][1] = y + size + size + gap;       // y2
+                }
+            }
+            else
+            {
+                triangularpos[i][0][0] = x + int(btp) + int(btpg) + gap;       // x0
+                triangularpos[i][2][0] = x + int(btp) + int(btpg) + gap;       // x2
+                triangularpos[i][1][0] = x + (int(btp) * 2) + int(btpg) + gap; // x1
+                if (i == 2)
+                {
+                    triangularpos[i][0][1] = y - (size / 2) - (gap / 2);     // y0
+                    triangularpos[i + 3][0][1] = y - (size / 2) - (gap / 2); // y0
+                    triangularpos[i][1][1] = y - (gap / 2);                  // y1
+                    triangularpos[i + 3][1][1] = y - (gap / 2);              // y1
+                    triangularpos[i][2][1] = y + (size / 2) - (gap / 2);     // y2
+                    triangularpos[i + 3][2][1] = y + (size / 2) - (gap / 2); // y2
+                }
+                else if (i == 3)
+                {
+                    triangularpos[i][0][1] = y + (size / 2) + (gap / 2);              // y0
+                    triangularpos[i + 3][0][1] = y + (size / 2) + (gap / 2);          // y0
+                    triangularpos[i][1][1] = y + size + (gap / 2);                    // y1
+                    triangularpos[i + 3][1][1] = y + size + (gap / 2);                // y1
+                    triangularpos[i][2][1] = y + ((size / 2) + (gap / 2)) + size;     // y2
+                    triangularpos[i + 3][2][1] = y + ((size / 2) + (gap / 2)) + size; // y2
+                }
+                else if (i == 4)
+                {
+                    triangularpos[i][0][1] = y + size + gap + (size / 2) + (gap / 2);           // y0
+                    triangularpos[i + 3][0][1] = y + size + gap + (size / 2) + (gap / 2);       // y0
+                    triangularpos[i][1][1] = y + (size * 2) + gap + (gap / 2);                  // y1
+                    triangularpos[i + 3][1][1] = y + (size * 2) + gap + (gap / 2);              //
+                    triangularpos[i][2][1] = y + (size * 2) + gap + (gap / 2 + (size / 2));     // y2
+                    triangularpos[i + 3][2][1] = y + (size * 2) + gap + (gap / 2 + (size / 2)); // y2
+                }
+            }
+        }
+        else
+        {
+            if (i < 8)
+            {
+                triangularpos[i][0][0] = x + int(btpg) + int(btp); // x0
+                triangularpos[i][2][0] = x + int(btpg) + int(btp); // x1
+                triangularpos[i][1][0] = x + int(btpg);            // x2
+            }
+            else
+            {
+                triangularpos[i][0][0] = x + (int(btpg) * 2) + (int(btp) * 2) + gap; // x0
+                triangularpos[i][2][0] = x + (int(btpg) * 2) + (int(btp) * 2) + gap; // x1
+                triangularpos[i][1][0] = x + int(btp) + (int(btpg * 2)) + gap;       // x2
+            }
+        }
+}
 #define SS_DISABLE 0x18c3
 void drawTSegment(int x, int y, int segment, bool state, int size, uint32_t col)
 {
@@ -225,5 +307,7 @@ void testDTSegment(int number)
 {
 
     // drawT7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-    drawT7Segment(10, 10, number, 16, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    // drawT7Segment(10, 10, number, 16, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    number = 1000 + (number * 100) + number;
+    displayDigitHW(number);
 }
