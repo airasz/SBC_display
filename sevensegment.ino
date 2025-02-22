@@ -483,7 +483,7 @@ void displayDigitHW(int count)
 {
 
     int clock_style = random(2);
-    clock_style = 0; // force to test
+    // clock_style = 1; // force to test
     int x_start = 25;
     int x_delta = 6;
     int r = 5;
@@ -693,21 +693,104 @@ void displayDigitHW(int count)
                 curr_digit = count % 10;
             }
             int rnd = random(10);
-            for (int ani = 0; ani < 20; ani++)
+
+            int startrow = 0;
+            //==========determite pre x,y position of each digit================
+            for (int row = startrow; row < 7; row++)
             {
+                for (int col = 0; col < 5; col++)
+                {
+                    uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                    uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                    // if (DIGITS[curr_digit][row][col] == 1)
+                    bool state = DIGITS[curr_digit][row][col];
+                    tmpDigit[row][col][0] = x_start - r + col * 7;
+                    tmpDigit[row][col][1] = y_start - r + row * 7;
+                    // tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, colorrnd);
+                }
             }
 
+            for (int ani = 0; ani < 22; ani++)
+            {
+                if (ani % 3 == 0)
+                    startrow++;
+                // if (startrow > 6)
+                //     startrow = 6;
+                for (int row = 0; row < 7; row++)
+                {
+
+                    if (row <= (startrow - 1))
+                    {
+                        for (int col = 0; col < 5; col++)
+                        {
+                            uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                            uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                            // if (DIGITS[curr_digit][row][col] == 1)
+                            bool state = DIGITS[curr_digit][row][col];
+                            // if (state)
+                            //     tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, colorrnd);
+                            // tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, state ? colorrnd : TFT_BLACK);
+                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, state ? colorrnd : TFT_BLACK);
+                        }
+                    }
+                    else
+                    {
+                        for (int col = 0; col < 5; col++)
+                        {
+                            bool state = random(2);
+                            uint32_t color = state ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                            uint32_t colorrnd = state ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+
+                            if (state)
+                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                        }
+                    }
+
+                    if (row == 1 && startrow == 6)
+                        for (int col = 0; col < 5; col++)
+                        {
+                            uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                            uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                            // if (DIGITS[curr_digit][row][col] == 1)
+                            bool state = DIGITS[curr_digit][row][col];
+                            if (state)
+                                tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                        }
+                }
+                delay(40);
+                // for (int row = startrow; row < 7; row++)
+                // {
+                //     for (int col = 0; col < 5; col++)
+                //     {
+                //         tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, TFT_BLACK);
+                //     }
+                // }
+            }
             for (int row = 0; row < 7; row++)
             {
                 for (int col = 0; col < 5; col++)
                 {
                     uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
                     uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
-                    if (DIGITS[curr_digit][row][col] == 1)
-                        if (clock_style == 1)
-                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+                    // if (DIGITS[curr_digit][row][col] == 1)
+                    bool state = DIGITS[curr_digit][row][col];
+                    if (state)
+                        tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
                 }
+                delay(20);
             }
+
+            // for (int row = 0; row < 7; row++)
+            // {
+            //     for (int col = 0; col < 5; col++)
+            //     {
+            //         uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+            //         uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+            //         if (DIGITS[curr_digit][row][col] == 1)
+            //             if (clock_style == 1)
+            //                 tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 2, r * 2, 0, colorrnd);
+            //     }
+            // }
             x_start += 39;
         }
     }
