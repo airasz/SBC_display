@@ -733,7 +733,7 @@ void displayDigitHW(int count)
     {
         int xpath[20];
         int ypath[20];
-
+        int x_start = 5;  // x position of number
         int y_start = 10; // y position of number
         for (int i = 0; i < 20; i++)
             xpath[i] = 0, ypath[i] = 0;
@@ -762,25 +762,27 @@ void displayDigitHW(int count)
             int rnd = random(10);
             int startrow = 0;
             //==========determite pre x,y position of each digit================
-            for (int row = startrow; row < 7; row++)
+            for (int row = 0; row < 7; row++)
             {
                 for (int col = 0; col < 5; col++)
                 {
+
+                    Serial.printf("--digit[%d] :  \n", DIGITS[curr_digit][row][col]);
                     uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
                     uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
                     // if (DIGITS[curr_digit][row][col] == 1)
                     bool state = DIGITS[curr_digit][row][col];
                     tmpDigit[row][col][0] = x_start + col * 7 - 1 + random(4);
                     tmpDigit[row][col][1] = y_start + row * 7 - 1 + random(4);
-                    if (state)
+                    if (DIGITS[curr_digit][row][col] > 0)
                     {
-                        int xc = x_start + col * 7 - 1 + (random(5));
-                        int yc = y_start + row * 7 - 1 + (random(5));
+                        int xc = x_start + col * 4 - 1 + (random(3));
+                        int yc = y_start + row * 4 - 1 + (random(3));
                         xpath[DIGITS[curr_digit][row][col] - 1] = xc; // put  squence path X point to array
                         ypath[DIGITS[curr_digit][row][col] - 1] = yc; // put  squence path Y point to array
-                        // Serial.printf("xpath : %d \n", xpath[DIGITS[curr_digit][row][col] - 1]);
-
-                        // Serial.printf("ypath : %d \n", ypath[DIGITS[curr_digit][row][col] - 1]);
+                        Serial.printf("---xpath[%d] : %d \n", DIGITS[curr_digit][row][col] - 1, xc);
+                        // Serial.printf("--xpath [%d]: %d \n", DIGITS[curr_digit][row][col] - 1, xpath[DIGITS[curr_digit][row][col] - 1]);
+                        // Serial.printf("--ypath [%d]: %d \n", DIGITS[curr_digit][row][col] - 1, ypath[DIGITS[curr_digit][row][col] - 1]);
                     }
                     // tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, colorrnd);
                 }
@@ -793,10 +795,17 @@ void displayDigitHW(int count)
             {
                 Serial.printf(" xpath[%d] : %d \n", i, xpath[i]);
                 // Serial.print("\n");
+
+                // Serial.printf("curdigit[%d] xpath[%d] : %d \n", curr_digit, i);
+                tft.drawLine(130, 62, 132, 64, colll);
                 if (xpath[i + 1] != 0)
                 {
+
+                    Serial.printf("curdigit[%d] xpath[%d] : %d \n", curr_digit, i);
                     if (curr_digit == 0)
                     {
+
+                        Serial.printf("curdigit[%d] xpath[%d] : %d \n", i, curr_digit, xpath[i]);
                         //   tft.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 4, colll);
                         tft.drawWideLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 10, colll, bcoll);
                         if (i > 0)
@@ -812,6 +821,7 @@ void displayDigitHW(int count)
                     }
                     else if (curr_digit == 1)
                     {
+                        Serial.printf("curdigit[%d] xpath[%d] : %d \n", i, curr_digit, xpath[i]);
                         if (i == 6)
                         {
                             //   tft.drawBoldLine(xpath[i], ypath[i], xpath[9], ypath[9], 4, colll);
@@ -856,6 +866,7 @@ void displayDigitHW(int count)
                     }
                     else if (curr_digit == 8)
                     {
+                        Serial.printf("curdigit[%d] xpath[%d] : %d \n", i, curr_digit, xpath[i]);
                         // tft.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
                         tft.drawWideLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 10, colll, bcoll);
                         if (i > 0)
@@ -884,6 +895,8 @@ void displayDigitHW(int count)
                     }
                     else
                     {
+
+                        Serial.printf("curdigit[%d] xpath[%d] : %d \n", i, curr_digit, xpath[i]);
                         // tft.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
                         tft.drawWideLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 10, colll, bcoll);
                         if (i > 0)
