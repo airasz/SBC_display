@@ -1,6 +1,5 @@
 int tenSegment[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 // Segment activation patterns for numbers 0-9 (A-G segments)
-
 uint32_t TenSegmenPaterns[11][10] = {
     {1, 1, 1, 0, 1, 1, 0, 1, 1, 1}, // 0
     {0, 0, 1, 1, 1, 0, 0, 0, 1, 1}, // 1
@@ -272,12 +271,15 @@ void tsgmnt(String score)
     int sz = 16; // segment size
 
     int gap = int(sqrt(sz));
-    float btp = sqrt((sz * sz) - ((sz / 2) * (sz / 2)));      // a to d
+    float btp = sqrt((sz * sz) - ((sz / 2) * (sz / 2))); // a to d
+    Serial.printf("btp : %f \n", btp);
     float btpg = sqrt((gap * gap) - ((gap / 2) * (gap / 2))); // gap to gap
+    Serial.printf("btpg : %f \n", btpg);
 
     int x = 1, y = 20;
     // int nextpos = (sz * 2) - (sz / 2);
-    int nextpos = x + (int(btpg) * 2) + (int(btp) * 2) + gap + gap;
+    // int nextpos = (int(btpg) * 2) + (int(btp) * 2) + gap + gap;
+    int nextpos = (int(btpg) * 2) + (int(btp) * 1) + gap + gap;
 
     if (score != old_score)
     {
