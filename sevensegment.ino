@@ -4,6 +4,10 @@ int tmpRow[7] = {0, 1, 2, 3, 4, 5, 6};
 int tmpRowSize = sizeof(tmpRow) / sizeof(tmpRow[0]);
 int tmpCol[5] = {0, 1, 2, 3, 4};
 int tmpColSize = sizeof(tmpCol) / sizeof(tmpCol[0]);
+int patternSequences[20] = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20};
+int patternSequencesSize = sizeof(patternSequences) / sizeof(patternSequences[0]);
 void shuffleArray(int *array, int size)
 {
     for (int i = size - 1; i > 0; i--)
@@ -487,7 +491,7 @@ void displayDigitHW(int count)
 {
 
     int clock_style = random(3);
-    // clock_style = 2; // force to test
+    // clock_style = 1; // force to test
     int x_start = 25;
     int x_delta = 6;
     int r = 5;
@@ -657,24 +661,53 @@ void displayDigitHW(int count)
             //     //     }
             //     // }
             // }
+
             // suffling row order
-            shuffleArray(tmpRow, tmpRowSize);
-            for (int row = 0; row < 7; row++)
+            // shuffleArray(tmpRow, tmpRowSize);
+            // for (int row = 0; row < 7; row++)
+            // {
+            //     // suffling collum order
+            //     shuffleArray(tmpCol, tmpColSize);
+            //     for (int col = 0; col < 5; col++)
+            //     {
+            //         uint32_t color = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+            //         uint32_t colorrnd = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+            //         // if (DIGITS[curr_digit][row][col] == 1)
+            //         bool state = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]];
+            //         if (state)
+            //             tft.fillCircle(tmpDigit[tmpRow[row]][tmpCol[col]][0], tmpDigit[tmpRow[row]][tmpCol[col]][1], r, colorrnd);
+            //         delay(40);
+            //     }
+            //     delay(40);
+            // }
+            shuffleArray(patternSequences, patternSequencesSize);
+            // int rnd = random(10);
+            for (int i = 0; i < 20; i++)
             {
-                // suffling collum order
-                shuffleArray(tmpCol, tmpColSize);
-                for (int col = 0; col < 5; col++)
+                bool match = false;
+                for (int row = 0; row < 7; row++)
                 {
-                    uint32_t color = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
-                    uint32_t colorrnd = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
-                    // if (DIGITS[curr_digit][row][col] == 1)
-                    bool state = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]];
-                    if (state)
-                        tft.fillCircle(tmpDigit[tmpRow[row]][tmpCol[col]][0], tmpDigit[tmpRow[row]][tmpCol[col]][1], r, colorrnd);
-                    delay(40);
+                    for (int col = 0; col < 5; col++)
+                    {
+                        uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                        uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                        // if (DIGITS[curr_digit][row][col] == 1)
+                        int state = LineTrack[curr_digit][row][col];
+                        if (state == patternSequences[i])
+                        {
+                            tft.fillCircle(tmpDigit[row][col][0], tmpDigit[row][col][1], r, colorrnd);
+                            match = true;
+                        }
+                        // delay(40);
+                    }
+                    // delay(40);
                 }
+                // if (!match)
+                //     break;
+
                 delay(40);
             }
+
             x_start += 39;
         }
     else if (clock_style == 1)
@@ -707,22 +740,49 @@ void displayDigitHW(int count)
             int startrow = 0;
 
             // suffling row order
-            shuffleArray(tmpRow, tmpRowSize);
-            for (int row = 0; row < 7; row++)
-            {
-                // suffling collum order
-                shuffleArray(tmpCol, tmpColSize);
-                for (int col = 0; col < 5; col++)
-                {
-                    uint32_t color = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
-                    uint32_t colorrnd = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
-                    // if (DIGITS[curr_digit][row][col] == 1)
-                    bool state = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]];
-                    if (state)
-                        tft.fillRoundRect(x_start - r + tmpCol[col] * 7, y_start - r + tmpRow[row] * 7, r * 1, r * 1, 0, colorrnd);
+            // shuffleArray(tmpRow, tmpRowSize);
+            // for (int row = 0; row < 7; row++)
+            // {
+            //     // suffling collum order
+            //     shuffleArray(tmpCol, tmpColSize);
+            //     for (int col = 0; col < 5; col++)
+            //     {
+            //         uint32_t color = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+            //         uint32_t colorrnd = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+            //         // if (DIGITS[curr_digit][row][col] == 1)
+            //         bool state = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]];
+            //         if (state)
+            //             tft.fillRoundRect(x_start - r + tmpCol[col] * 7, y_start - r + tmpRow[row] * 7, r * 1, r * 1, 0, colorrnd);
 
-                    delay(40);
+            //         delay(40);
+            //     }
+            //     delay(40);
+            // }
+
+            shuffleArray(patternSequences, patternSequencesSize);
+            for (int i = 0; i < 20; i++)
+            {
+                bool match = false;
+                for (int row = 0; row < 7; row++)
+                {
+                    for (int col = 0; col < 5; col++)
+                    {
+                        uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
+                        uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                        // if (DIGITS[curr_digit][row][col] == 1)
+                        int state = LineTrack[curr_digit][row][col];
+                        if (state == patternSequences[i])
+                        {
+                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, colorrnd);
+                            match = true;
+                        }
+                        // delay(40);
+                    }
+                    // delay(40);
                 }
+                // if (!match)
+                //     break;
+
                 delay(40);
             }
 
@@ -887,7 +947,7 @@ void displayDigitHW(int count)
                             tft.drawBoldLine(xpath[0], ypath[0], xpath[9], ypath[9], 4, colll);
                         }
                         // tft.drawLine(xpath[i], ypath[i], xpath[16], ypath[16], colll);
-                                        }
+                    }
                     else
                     {
                         // tft.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
