@@ -6,7 +6,8 @@
 #include <FS.h>
 #include "tb_display.h"
 #include <SoftwareSerial.h>
-
+// #include <Tone32.h>
+#include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 
 // For the breakout, you can use any 2 or 3 pins
@@ -37,6 +38,9 @@ float p = 3.1415926;
 
 String rssmsg[300];
 String siteonread;
+
+#define BUZZER_PIN 27
+#define BUZZER_CHANNEL 0
 
 int httpGetChar();
 const uint32_t COLOR_MEDIUM[] = {TFT_WHITE, TFT_BLUE, TFT_GREEN, TFT_YELLOW, TFT_GREENYELLOW, TFT_PINK, TFT_ORANGE, TFT_RED, TFT_CYAN, TFT_MAGENTA, TFT_PINK, TFT_SKYBLUE};
@@ -72,11 +76,11 @@ SoftwareSerial serial(21, 19);
 
 long prevmill2 = 0;
 int angka = 0;
-bool blinking = true;
+bool blinking = false;
 int nblinking = 6;
 bool blinkstate = false;
 int blinkval = 255;
-int countblink = 16;
+int countblink = 22;
 #define usbbaud 115200
 int dmode = 0;
 void setup(void)
@@ -127,6 +131,10 @@ void setup(void)
   digitalWrite(25, LOW);
   tft.fillScreen(TFT_BLACK);
   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
+
+  ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
+  ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+  // noTone(BUZZER_PIN);
 }
 long prevmill = 0;
 String oldsdata;
@@ -183,18 +191,29 @@ void loop()
       {
         countblink++;
         analogWrite(16, 255);
+        // tone(BUZZER_PIN, NOTE_B4, 500, BUZZER_CHANNEL);
+        // tone(BUZZER_PIN, NOTE_A7, BUZZER_CHANNEL);
+        ledcWriteTone(BUZZER_CHANNEL, NOTE_B5);
         if (countblink > nblinking)
         {
           blinking = false;
           analogWrite(16, 0);
           countblink = 0;
+          ledcWrite(BUZZER_CHANNEL, 0);
         }
       }
     }
     if (angka > 9)
     {
       if (blinking)
+      {
         analogWrite(16, 0);
+        // noTone(BUZZER_PIN, BUZZER_CHANNEL);
+        // noTone(BUZZER_PIN);
+        ledcWrite(BUZZER_CHANNEL, 0);
+        // blinking = false;
+      }
+
       angka = 0;
     }
     prevmill2 = millis();
@@ -245,9 +264,11 @@ void proccesData(String data)
     {
       nblinking = data.substring(5).toInt();
       blinking = true;
+      countblink = 0;
       angka = 7;
       Serial.println("startblinking");
       data = "";
+      prevmill2 = millis();
       return;
     }
     else if (data.startsWith("dmode"))
