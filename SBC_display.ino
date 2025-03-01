@@ -81,6 +81,10 @@ int nblinking = 6;
 bool blinkstate = false;
 int blinkval = 255;
 int countblink = 22;
+int blinkduration = 9; // by point (1=9)
+int endmatch = 0;
+int startblink = 0;
+int endblink = 0;
 #define usbbaud 115200
 int dmode = 0;
 void setup(void)
@@ -185,7 +189,7 @@ void loop()
   if (millis() > prevmill2 + 100)
   {
     angka++;
-    if (angka == 9)
+    if (angka == startblink)
     {
       if (blinking)
       {
@@ -203,7 +207,7 @@ void loop()
         }
       }
     }
-    if (angka > 9)
+    if (angka == endblink)
     {
       if (blinking)
       {
@@ -211,6 +215,20 @@ void loop()
         // noTone(BUZZER_PIN, BUZZER_CHANNEL);
         // noTone(BUZZER_PIN);
         ledcWrite(BUZZER_CHANNEL, 0);
+        if (endmatch == 2)
+        {
+          Serial.println("endmatch == 2");
+          endmatch = 0;
+          endblink = 9;
+        }
+        else if (endmatch == 1)
+        {
+          endblink = 19;
+          startblink = 9;
+          // angka = 8;
+          endmatch = 2;
+        }
+
         // blinking = false;
       }
 
@@ -264,9 +282,41 @@ void proccesData(String data)
     {
       nblinking = data.substring(5).toInt();
       blinking = true;
+      blinkduration = 9;
+      startblink = 9;
+      endblink = 10;
       countblink = 0;
       angka = 7;
       Serial.println("startblinking");
+      data = "";
+      prevmill2 = millis();
+      return;
+    }
+    else if (data.startsWith("longbeep"))
+    {
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 2;
+      endblink = 8;
+      angka = 0;
+      countblink = 0;
+      Serial.println("start beeping");
+      data = "";
+      prevmill2 = millis();
+      return;
+    }
+    else if (data.startsWith("endmatch"))
+    {
+      nblinking = 2;
+      blinking = true;
+      blinkduration = 19;
+      endmatch = 1;
+      startblink = 9;
+      endblink = 10;
+      angka = 7;
+      countblink = 0;
+      Serial.println("start beeping");
       data = "";
       prevmill2 = millis();
       return;
