@@ -16,7 +16,7 @@
 #define TFT_RST 14 // you can also connect this to the Arduino reset
 // in which case, set this #define pin to -1!
 #define TFT_DC 26
-
+int tmpNOTE = 1123;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
 // an output. This is much faster - also required if you want
@@ -166,7 +166,10 @@ void loop()
   }
   if (data.length() > 0)
   {
-    proccesData(data);
+    if (!data.startsWith("#"))
+      proccesData(data);
+    else
+      proccesCMD(data.substring(1));
     data = "";
   }
   if (millis() > prevmill + 1000)
@@ -197,7 +200,7 @@ void loop()
         analogWrite(16, 255);
         // tone(BUZZER_PIN, NOTE_B4, 500, BUZZER_CHANNEL);
         // tone(BUZZER_PIN, NOTE_A7, BUZZER_CHANNEL);
-        ledcWriteTone(BUZZER_CHANNEL, NOTE_B5);
+        ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
         if (countblink > nblinking)
         {
           blinking = false;
@@ -238,9 +241,8 @@ void loop()
   }
 } // end loop
 int displaylivescore = 0;
-void proccesData(String data)
+void proccesCMD(String data)
 {
-
   if (data.length() > 4)
   {
     //    Serial.println(data);
@@ -257,10 +259,8 @@ void proccesData(String data)
       tft.setRotation(sr);
       // testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
       printWordWrap("rotated", COLOR_MEDIUM[random(12)]);
-    }
-    else if (data.startsWith("set volume"))
-    {
-      printtextbig(data, COLOR_MEDIUM[random(12)]);
+      data = "";
+      return;
     }
     else if (data.startsWith("resetscreen"))
     {
@@ -268,19 +268,44 @@ void proccesData(String data)
       data = "";
       return;
     }
-    else if (data.startsWith("testnum"))
+    else if (data.startsWith("setnote"))
     {
-
-      int sr = data.substring(7).toInt();
       tft.fillScreen(TFT_BLACK);
-      testDTSegment(sr);
-      data = "";
-      return;
+      data = data.substring(8);
+      // data.replace("\n", "");
+      // data.replace("\r", "");
+      // data.replace("\0", "");
+      for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
+      {
+        Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
+
+        if (data.startsWith(notes[i].name))
+        {
+          // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);
+          // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
+
+          tmpNOTE = notes[i].frequency;
+          nblinking = 1;
+          blinking = true;
+          blinkduration = 9;
+          startblink = 2;
+          endblink = 8;
+          angka = 0;
+          countblink = 0;
+          Serial.println("start beeping " + notes[i].name);
+          data = "";
+          prevmill2 = millis();
+          printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+          break;
+        }
+      }
+
+      printWordWrap(data.substring(7), COLOR_MEDIUM[random(12)]);
     }
 
     else if (data.startsWith("blink"))
     {
-      nblinking = data.substring(5).toInt();
+      nblinking = data.substring(6).toInt();
       blinking = true;
       blinkduration = 9;
       startblink = 9;
@@ -331,7 +356,7 @@ void proccesData(String data)
       }
       else
       {
-        int dmod = data.substring(5).toInt();
+        int dmod = data.substring(6).toInt();
         if (dmod < 3)
           dmode = dmod;
         // Serial.println("startblinking");
@@ -345,9 +370,38 @@ void proccesData(String data)
         return;
       }
     }
+
+    data = "";
+  }
+}
+
+void proccesData(String data)
+{
+
+  if (data.length() > 4)
+  {
+    //    Serial.println(data);
+    // tb_display_print_String(data.c_str(), 20);
+    toScreenSleep = 0;
+    // if (data.length() > 10)
+    //   maxWait = data.length() / 10
+    // else
+    maxWait = (data.length() > 18) ? data.length() / 6 : 40;
+    // tft.printf("maxwait = %d\n", maxWait);
+    if (data.startsWith("testnum"))
+    {
+
+      int sr = data.substring(7).toInt();
+      tft.fillScreen(TFT_BLACK);
+      testDTSegment(sr);
+      data = "";
+      return;
+    }
     else if (data.startsWith("play pos"))
     {
       printtextbig(data, COLOR_MEDIUM[random(12)]);
+      data = "";
+      return;
     }
     String homescore = data.substring(data.indexOf(">") + 2);
     Serial.printf("dmode=%d\n", dmode);
