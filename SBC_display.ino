@@ -75,6 +75,7 @@ String sdata;
 SoftwareSerial serial(21, 19);
 
 long prevmill2 = 0;
+long prevmill3 = 0;
 int angka = 0;
 bool blinking = false;
 int nblinking = 6;
@@ -189,56 +190,7 @@ void loop()
     }
     prevmill = millis();
   }
-  if (millis() > prevmill2 + 100)
-  {
-    angka++;
-    if (angka == startblink)
-    {
-      if (blinking)
-      {
-        countblink++;
-        analogWrite(16, 255);
-        // tone(BUZZER_PIN, NOTE_B4, 500, BUZZER_CHANNEL);
-        // tone(BUZZER_PIN, NOTE_A7, BUZZER_CHANNEL);
-        ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
-        if (countblink > nblinking)
-        {
-          blinking = false;
-          analogWrite(16, 0);
-          countblink = 0;
-          ledcWrite(BUZZER_CHANNEL, 0);
-        }
-      }
-    }
-    if (angka == endblink)
-    {
-      if (blinking)
-      {
-        analogWrite(16, 0);
-        // noTone(BUZZER_PIN, BUZZER_CHANNEL);
-        // noTone(BUZZER_PIN);
-        ledcWrite(BUZZER_CHANNEL, 0);
-        if (endmatch == 2)
-        {
-          Serial.println("endmatch == 2");
-          endmatch = 0;
-          endblink = 9;
-        }
-        else if (endmatch == 1)
-        {
-          endblink = 19;
-          startblink = 9;
-          // angka = 8;
-          endmatch = 2;
-        }
-
-        // blinking = false;
-      }
-
-      angka = 0;
-    }
-    prevmill2 = millis();
-  }
+  beepnblink(); // beepnblink.ino
 } // end loop
 int displaylivescore = 0;
 void proccesCMD(String data)
