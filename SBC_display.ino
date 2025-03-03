@@ -277,7 +277,7 @@ void proccesCMD(String data)
       // data.replace("\0", "");
       for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
       {
-        Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
+        // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
 
         if (data.startsWith(notes[i].name))
         {
