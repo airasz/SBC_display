@@ -87,7 +87,7 @@ int endmatch = 0;
 int startblink = 0;
 int endblink = 0;
 #define usbbaud 115200
-int dmode = 0;
+int dmode = 3;
 void setup(void)
 {
   Serial.begin(115200);
@@ -393,6 +393,11 @@ void proccesData(String data)
       {
         // displayinfo(data);
         printWordWrap(data, COLOR_MEDIUM[random(12)]);
+      }
+      else if (dmode == 3)
+      {
+        // displayinfo(data);
+        tb_display_print_String(data.c_str(), 2);
       }
       else
       {
