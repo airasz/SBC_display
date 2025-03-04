@@ -131,8 +131,8 @@ void ssgmnt(String score)
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
     String matchtime = awayteam.substring(data.indexOf("\n"));
 
-    int number = homescore.toInt();
-    int ascr = awayscore.toInt();
+    int hscore = homescore.toInt();
+    int ascore = awayscore.toInt();
     int sz = 10; // segment size
     int x = 10, y = 16;
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
@@ -167,14 +167,14 @@ void ssgmnt(String score)
         shuffleArray(sevensegment, sssize);
         draw7Segment(x + (sz * 10), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
 
-        // drawDigit(60, 10, 10, number, COLOR_MEDIUM[random(12)]);
+        // drawDigit(60, 10, 10, hscore, COLOR_MEDIUM[random(12)]);
     }
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x, y, number, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    draw7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
     draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x + (sz * 10), y, ascr, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    draw7Segment(x + (sz * 10), y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
 }
 
 //=================5x3 digit font=======================
@@ -389,11 +389,11 @@ void drawDigitLivescore(String score)
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
     String matchtime = awayteam.substring(data.indexOf("\n"));
 
-    int number = homescore.toInt();
-    int ascr = awayscore.toInt();
+    int hscore = homescore.toInt();
+    int ascore = awayscore.toInt();
     int sz = 10; // segment size
     int x = 10, y = 30;
-    int digit = (number * 100) + ascr;
+    int digit = (hscore * 100) + ascore;
     if (score != old_score)
     {
         tft.fillScreen(TFT_BLACK);
@@ -405,7 +405,7 @@ void drawDigitLivescore(String score)
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
-        // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascr, COLOR_MEDIUM[random(12)]);
+        // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
     }
     else
@@ -421,9 +421,9 @@ void drawDigitLivescore(String score)
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, 20, 10, number, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, 20, 10, hscore, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 10, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascr, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
     }
 }
 uint32_t tmpDigit[7][5][2] = {
@@ -679,7 +679,7 @@ void displayDigitHW(int count)
     else if (clock_style == 2)
     {
         // count = 1234;
-        int x_start = 20; // x position of number
+        int x_start = 20; // x position of hscore
         int y_start = 30; // y position of number
         for (int pos = 1; pos < 4; pos++)
         {
@@ -853,7 +853,7 @@ void displayDigitHW(int count)
                 }
                 else
                 {
-                    break;
+                    break; // if not line any more to draw, then exit for loop
                 }
             } // endfor
             // suffling row order
