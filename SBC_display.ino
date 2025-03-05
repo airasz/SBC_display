@@ -475,7 +475,7 @@ void proccesCMD(String data)
 {
   if (data.length() > 4)
   {
-    //    Serial.println(data);
+    Serial.printf("data = %s\n", data.c_str());
     // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
     // if (data.length() > 10)
