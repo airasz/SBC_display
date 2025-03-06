@@ -96,7 +96,7 @@ SoftwareSerial serial(36, 26);
 String data;
 char c;
 
-#define BUZZER_PIN 27
+#define BUZZER_PIN 26
 #define BUZZER_CHANNEL 0
 
 // long prevmill2 = 0;
@@ -144,6 +144,9 @@ void setup()
   M5.Lcd.println("0 livescore\n1 typing mode\n2 statis mode");
 
   M5.Lcd.setTextSize(1);
+
+  ledcSetup(BUZZER_CHANNEL, 1000, 10);       // Configure PWM
+  ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
 }
 
 void resett()

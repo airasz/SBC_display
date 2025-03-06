@@ -134,7 +134,7 @@ void ssgmnt(String score)
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
     int sz = 8; // segment size
-    int x = 10, y = 12;
+    int x = 25, y = 12;
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
     if (score != old_score)
     {
@@ -392,7 +392,7 @@ void drawDigitLivescore(String score)
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
     int sz = 10; // segment size
-    int x = 10, y = 10;
+    int x = 30, y = 10;
     int digit = (hscore * 100) + ascore;
     if (score != old_score)
     {
@@ -403,7 +403,7 @@ void drawDigitLivescore(String score)
         // M5.Lcd.print(awayteam);
         cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        drawAnimatedDigit(20, y, 8, digit, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(x, y, 8, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -421,9 +421,9 @@ void drawDigitLivescore(String score)
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, y, 8, hscore, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3), y, 8, 10, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), y, 8, ascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(x, y, 8, hscore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(x + (10 * 3) + (2 * 3), y, 8, 10, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(x + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), y, 8, ascore, COLOR_MEDIUM[random(12)]);
     }
 }
 uint32_t tmpDigit[7][5][2] = {
@@ -1071,7 +1071,7 @@ void displayDigitHW(int count)
     else if (clock_style == 2)
     {
         // count = 1234;
-        int x_start = 20; // x position of hscore
+        int x_start = 25; // x position of hscore
         int y_start = 12; // y position of number
         for (int pos = 1; pos < 4; pos++)
         {

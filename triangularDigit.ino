@@ -276,7 +276,7 @@ void tsgmnt(String score)
     float btpg = sqrt((gap * gap) - ((gap / 2) * (gap / 2))); // gap to gap
     Serial.printf("btpg : %f \n", btpg);
 
-    int x = 16, y = 12;
+    int x = 14, y = 12;
     // int nextpos = (sz * 2) - (sz / 2);
     // int nextpos = (int(btpg) * 2) + (int(btp) * 2) + gap + gap;
     int nextpos = (int(btpg) * 2) + (int(btp) * 1) + gap + gap;
