@@ -143,7 +143,7 @@ void ssgmnt(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // M5.Lcd.setCursor(0, 82);
         // M5.Lcd.print(awayteam);
-        cx = 0, cy = 96;
+        cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         old_score = score;
@@ -156,7 +156,7 @@ void ssgmnt(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // M5.Lcd.setCursor(0, 82);
         // M5.Lcd.print(awayteam);
-        cx = 0, cy = 96;
+        cx = 0, cy = 72;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
@@ -392,7 +392,7 @@ void drawDigitLivescore(String score)
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
     int sz = 10; // segment size
-    int x = 10, y = 30;
+    int x = 10, y = 10;
     int digit = (hscore * 100) + ascore;
     if (score != old_score)
     {
@@ -401,9 +401,9 @@ void drawDigitLivescore(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // M5.Lcd.setCursor(0, 82);
         // M5.Lcd.print(awayteam);
-        cx = 0, cy = 96;
+        cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        drawAnimatedDigit(20, 20, 8, digit, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, y, 8, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -416,14 +416,14 @@ void drawDigitLivescore(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // M5.Lcd.setCursor(0, 82);
         // M5.Lcd.print(awayteam);
-        cx = 0, cy = 96;
+        cx = 0, cy = 72;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, 20, 8, hscore, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 8, 10, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 8, ascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, y, 8, hscore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3), y, 8, 10, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), y, 8, ascore, COLOR_MEDIUM[random(12)]);
     }
 }
 uint32_t tmpDigit[7][5][2] = {
@@ -476,7 +476,7 @@ void displayscore(String score)
     M5.Lcd.setCursor(0, 0);
     cx = 0, cy = 0;
     drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-    cx = 0, cy = 96;
+    cx = 0, cy = 72;
     drawtext(awayteam, COLOR_MEDIUM[random(10)]);
     // printWordWrap(hometeam, COLOR_MEDIUM[random(12)]);
     score.replace("-", "");
@@ -901,7 +901,7 @@ void displayDigitHW(int count)
     }
     // int testgigit=DIGITS[0][0][4];
     // Serial.printf("testgigit %d\n",testgigit);
-    int y_start = 36;
+    int y_start = 14;
     if (clock_style == 0)
         for (int pos = 1; pos < 4; pos++)
         {
@@ -1072,7 +1072,7 @@ void displayDigitHW(int count)
     {
         // count = 1234;
         int x_start = 20; // x position of hscore
-        int y_start = 30; // y position of number
+        int y_start = 12; // y position of number
         for (int pos = 1; pos < 4; pos++)
         {
             int xpath[20];

@@ -276,7 +276,7 @@ void tsgmnt(String score)
     float btpg = sqrt((gap * gap) - ((gap / 2) * (gap / 2))); // gap to gap
     Serial.printf("btpg : %f \n", btpg);
 
-    int x = 1, y = 12;
+    int x = 16, y = 12;
     // int nextpos = (sz * 2) - (sz / 2);
     // int nextpos = (int(btpg) * 2) + (int(btp) * 2) + gap + gap;
     int nextpos = (int(btpg) * 2) + (int(btp) * 1) + gap + gap;
@@ -288,7 +288,7 @@ void tsgmnt(String score)
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
         // M5.Lcd.setCursor(0, 82);
         // M5.Lcd.print(awayteam);
-        cx = 0, cy = 98;
+        cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         drawT7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
@@ -302,7 +302,7 @@ void tsgmnt(String score)
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
         drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        cx = 0, cy = 98;
+        cx = 0, cy = 72;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);

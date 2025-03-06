@@ -594,6 +594,7 @@ void proccesCMD(String data)
         // M5.Lcd.setTextSize(2);
         Serial.printf("change display mode to : %d \n", dmode);
         M5.Lcd.fillScreen(TFT_BLACK);
+        M5.Lcd.setCursor(0, 0);
         M5.Lcd.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
         // M5.Lcd.setTextSize(1);
         data = "";
