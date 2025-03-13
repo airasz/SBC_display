@@ -8,6 +8,19 @@ int patternSequences[20] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     15, 16, 17, 18, 19, 20};
 int patternSequencesSize = sizeof(patternSequences) / sizeof(patternSequences[0]);
+int anima = 0;
+int animb = 0;
+bool eanim = false;
+long aprevmill = 0;
+int animspeed = 100;
+int animindex = 0;
+int digitsize = 0;
+int digitx = 0;
+int digity = 0;
+int digitnumber = 0;
+byte digitpattern = 0;
+uint32_t animcolor = 0;
+bool animstate = false;
 void shuffleArray(int *array, int size)
 {
     for (int i = size - 1; i > 0; i--)
@@ -107,6 +120,7 @@ void drawSegment(int x, int y, int segment, bool state, int size, uint32_t col)
 void draw7Segment(int x, int y, int number, int size, uint32_t col)
 {
     byte pattern = digitPatterns[number];
+    digitpattern = digitPatterns[number];
     // for (int i = 0; i < 7; i++)
     // {
     //     // bool state = bitRead(pattern, 6 - i); // Bits are A to G (MSB to LSB)
@@ -114,22 +128,54 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
     //     drawSegment(x, y, sevensegment[i], true, size, SS_DISABLE);
     //     delay(50);
     // }
+    eanim = true;
+    anima = 0;
+    animspeed = 75;
+    digitsize = size;
+    animcolor = col;
+    digitx = x;
+    digity = y;
+    // for (int i = 0; i < 7; i++)
+    // {
+    //     bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
+    //     drawSegment(x, y, sevensegment[i], state, size, col);
+    //     delay(75);
+    // }
+}
+void drawfast7Segment(int x, int y, int number, int size, uint32_t col)
+{
+    byte pattern = digitPatterns[number];
+    // digitpattern = digitPatterns[number];
+    // for (int i = 0; i < 7; i++)
+    // {
+    //     // bool state = bitRead(pattern, 6 - i); // Bits are A to G (MSB to LSB)
+    //     bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
+    //     drawSegment(x, y, sevensegment[i], true, size, SS_DISABLE);
+    //     delay(50);
+    // }
+    // eanim = true;
+    // anima = 0;
+    // animspeed = 75;
+    // digitsize = size;
+    // animcolor = col;
+    // digitx = x;
+    // digity = y;
     for (int i = 0; i < 7; i++)
     {
         bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
         drawSegment(x, y, sevensegment[i], state, size, col);
-        delay(75);
+        // delay(75);
     }
 }
 String old_score;
-void ssgmnt(String score)
+void ssgmnt(String score, int dindex)
 {
-    String scores = data.substring(data.indexOf(">"));
+    String scores = gdata.substring(gdata.indexOf(">"));
     String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
     String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
+    String hometeam = gdata.substring(0, gdata.indexOf("vs"));
+    String awayteam = gdata.substring(gdata.indexOf("vs") + 2, gdata.indexOf(">"));
+    String matchtime = awayteam.substring(gdata.indexOf("\n"));
 
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
@@ -151,30 +197,44 @@ void ssgmnt(String score)
     else
     {
         // tft.fillScreen(TFT_BLACK);
-        cx = 0, cy = 0;
-        drawtext(hometeam, TFT_BLACK);
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        // tft.setCursor(0, 82);
-        // tft.print(awayteam);
-        cx = 0, cy = 96;
-        drawtext(awayteam, TFT_BLACK);
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        if (dindex == 0)
+        {
+            cx = 0, cy = 0;
+            drawtext(hometeam, TFT_BLACK);
+            drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+            // tft.setCursor(0, 82);
+            // tft.print(awayteam);
+            cx = 0, cy = 96;
+            drawtext(awayteam, TFT_BLACK);
+            drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
-        int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
-        draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 5), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
-        shuffleArray(sevensegment, sssize);
-        draw7Segment(x + (sz * 10), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+            int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
 
+            drawfast7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+
+            shuffleArray(sevensegment, sssize);
+            drawfast7Segment(x + (sz * 5), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+
+            shuffleArray(sevensegment, sssize);
+            drawfast7Segment(x + (sz * 10), y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
+        }
         // drawDigit(60, 10, 10, hscore, COLOR_MEDIUM[random(12)]);
     }
-    shuffleArray(sevensegment, sssize);
-    draw7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-    shuffleArray(sevensegment, sssize);
-    draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
-    shuffleArray(sevensegment, sssize);
-    draw7Segment(x + (sz * 10), y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    if (dindex == 0)
+    {
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    }
+    else if (dindex == 1)
+    {
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    }
+    else if (dindex == 2)
+    {
+        shuffleArray(sevensegment, sssize);
+        draw7Segment(x + (sz * 10), y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    }
 }
 
 //=================5x3 digit font=======================
@@ -875,6 +935,32 @@ void displayDigitHW(int count)
             //       delay(40);
             //   }
             x_start += 39;
+        }
+    }
+}
+
+void animations()
+{
+    if (eanim)
+    {
+        if (millis() > aprevmill + animspeed)
+        {
+            aprevmill = millis();
+            if (animindex == 0)
+            {
+                bool state = bitRead(digitpattern, 6 - sevensegment[anima]); // Bits are A to G (MSB to LSB)
+                drawSegment(digitx, digity, sevensegment[anima], state, digitsize, animcolor);
+                anima++;
+                if (anima > 6)
+                {
+                    anima = 0;
+                    eanim = false;
+                    aindex++;
+                    ssgmnt(gscore, aindex);
+                    if (aindex > 2)
+                        aindex = 0;
+                }
+            }
         }
     }
 }

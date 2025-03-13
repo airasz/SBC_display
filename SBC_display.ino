@@ -86,8 +86,10 @@ int blinkduration = 9; // by point (1=9)
 int endmatch = 0;
 int startblink = 0;
 int endblink = 0;
+String gscore = "", gdata = "";
 #define usbbaud 115200
 int dmode = 3;
+int aindex = 0;
 void setup(void)
 {
   Serial.begin(115200);
@@ -191,6 +193,7 @@ void loop()
     prevmill = millis();
   }
   beepnblink(); // beepnblink.ino
+  animations(); // sevensegment.ino
 } // end loop
 int displaylivescore = 0;
 void proccesCMD(String data)
@@ -356,6 +359,7 @@ void proccesData(String data)
       return;
     }
     String homescore = data.substring(data.indexOf(">") + 2);
+    gscore = homescore, gdata = data;
     Serial.printf("dmode=%d\n", dmode);
     if (data.length() > 4)
       if (dmode == 0)
@@ -370,8 +374,9 @@ void proccesData(String data)
           tft.fillScreen(TFT_BLACK);
         }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
+        displaylivescore = 0;
         if (displaylivescore == 0)
-          ssgmnt(homescore);
+          ssgmnt(homescore, 0);
         else if (displaylivescore == 1)
           displayscore(homescore);
         else if (displaylivescore == 2)
