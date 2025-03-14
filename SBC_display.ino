@@ -23,6 +23,7 @@ const char *ssid = "RMN20";
 const char *password = "air46664";
 String rssmsg[300];
 String siteonread;
+bool noanim = false;
 
 const byte numChars = 60;
 char receivedChars[numChars];
@@ -614,6 +615,12 @@ void proccesData(String data)
 
   if (data.length() > 4)
   {
+
+    if (data.startsWith("noanim"))
+    {
+      noanim = true;
+      data = data.substring(6);
+    }
     //    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
