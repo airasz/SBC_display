@@ -198,11 +198,6 @@ void proccesCMD(String data)
 {
   if (data.length() > 4)
   {
-    if (data.startsWith("noanim"))
-    {
-      noanim = true;
-      data = data.substring(6);
-    }
 
     //    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
@@ -339,6 +334,11 @@ void proccesData(String data)
 
   if (data.length() > 4)
   {
+    if (data.startsWith("noanim"))
+    {
+      noanim = true;
+      data = data.substring(6);
+    }
     //    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
