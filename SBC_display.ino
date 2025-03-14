@@ -668,7 +668,8 @@ void proccesData(String data)
           tsgmnt(homescore);
         else if (displaylivescore == 3)
           drawDigitLivescore(homescore);
-
+        if (noanim)
+          noanim = false;
         // ssgmnt(homescore);
 
         // drawDigitLivescore(homescore);
