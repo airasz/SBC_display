@@ -60,6 +60,16 @@ String sfpt_r18 = "SFProText-Regular-18";
 String sfpd_r20 = "SFProDisplay-Regular-20";
 String sfpd_r24 = "SFProDisplay-Regular-24";
 String sfpd_r28 = "SFProDisplay-Regular-28";
+
+String scores = "";
+String homescore = "";
+String awayscore = "";
+String hometeam = "";
+String awayteam = "";
+String matchtime = "";
+int ihscore = 0; // home score in integer
+int iascore = 0; // away score in integer
+
 const struct site_t
 {
   char *title;
@@ -362,7 +372,6 @@ void proccesData(String data)
       data = "";
       return;
     }
-    String homescore = data.substring(data.indexOf(">") + 2);
     Serial.printf("dmode=%d\n", dmode);
     if (data.length() > 4)
       if (dmode == 0)
@@ -377,6 +386,16 @@ void proccesData(String data)
           tft.fillScreen(TFT_BLACK);
         }
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
+
+        scores = data.substring(data.indexOf(">"));
+        homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+        awayscore = scores.substring(scores.indexOf("-") + 1);
+        hometeam = data.substring(0, data.indexOf("vs"));
+        awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+        matchtime = awayteam.substring(data.indexOf("\n"));
+        ihscore = homescore.toInt();
+        iascore = awayscore.toInt();
+
         if (displaylivescore == 0)
           ssgmnt(homescore);
         else if (displaylivescore == 1)
@@ -385,7 +404,8 @@ void proccesData(String data)
           tsgmnt(homescore);
         else if (displaylivescore == 3)
           drawDigitLivescore(homescore);
-
+        if (noanim)
+          noanim = false;
         // ssgmnt(homescore);
 
         // drawDigitLivescore(homescore);
