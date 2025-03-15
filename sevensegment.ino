@@ -37,7 +37,7 @@ const byte digitPatterns[11] = {
 // Segment positions (relative to x,y)
 const int segments[7][4] = {
     {1, 0, 3, 0}, // A (top)
-    {4, 1, 4, 3}, // B (upper right)
+    {4, 1, 4, 3}, // B (upper right)c
     {4, 4, 4, 6}, // C (lower right)
     {1, 7, 3, 7}, // D (bottom)
     {0, 4, 0, 6}, // E (lower left)
@@ -130,7 +130,7 @@ void ssgmnt(String score)
     String awayscore = scores.substring(scores.indexOf("-") + 1);
     String hometeam = data.substring(0, data.indexOf("vs"));
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
+    String matchtime = awayteam.substring(awayteam.indexOf("[") + 1, awayteam.indexOf("]"));
 
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
@@ -146,6 +146,8 @@ void ssgmnt(String score)
         // M5.Lcd.print(awayteam);
         cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        cx = 70, cy = 60;
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         old_score = score;
     }
@@ -161,6 +163,9 @@ void ssgmnt(String score)
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
+        cx = 70, cy = 60;
+        drawtext(matchtime, TFT_BLACK);
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
         shuffleArray(sevensegment, sssize);
@@ -390,7 +395,7 @@ void drawDigitLivescore(String score)
     String awayscore = scores.substring(scores.indexOf("-") + 1);
     String hometeam = data.substring(0, data.indexOf("vs"));
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
+    String matchtime = awayteam.substring(awayteam.indexOf("[") + 1, awayteam.indexOf("]"));
 
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
@@ -406,6 +411,9 @@ void drawDigitLivescore(String score)
         // M5.Lcd.print(awayteam);
         cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        cx = 70, cy = 60;
+        drawtext(matchtime, TFT_BLACK);
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         drawAnimatedDigit(x, y, 8, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
@@ -423,6 +431,9 @@ void drawDigitLivescore(String score)
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
 
+        cx = 70, cy = 60;
+        drawtext(matchtime, TFT_BLACK);
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(x, y, 8, hscore, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(x + (10 * 3) + (2 * 3), y, 8, 10, COLOR_MEDIUM[random(12)]);
@@ -474,6 +485,7 @@ void displayscore(String score)
     String awayscore = scores.substring(scores.indexOf("-") + 1);
     String hometeam = data.substring(0, data.indexOf("vs"));
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+    String matchtime = awayteam.substring(awayteam.indexOf("[") + 1, awayteam.indexOf("]"));
 
     // M5.Lcd.setTextColor(TFT_GREENYELLOW);
     M5.Lcd.setCursor(0, 0);
@@ -482,6 +494,10 @@ void displayscore(String score)
     cx = 0, cy = 72;
     drawtext(awayteam, COLOR_MEDIUM[random(10)]);
     // printWordWrap(hometeam, COLOR_MEDIUM[random(12)]);
+
+    cx = 70, cy = 60;
+    drawtext(matchtime, TFT_BLACK);
+    drawtext(matchtime, COLOR_MEDIUM[random(10)]);
     score.replace("-", "");
     score.replace(" ", "");
     int count = 0;

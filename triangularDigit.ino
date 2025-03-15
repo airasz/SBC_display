@@ -267,7 +267,7 @@ void tsgmnt(String score)
     String awayscore = scores.substring(scores.indexOf("-") + 1);
     String hometeam = data.substring(0, data.indexOf("vs"));
     String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
+    String matchtime = awayteam.substring(awayteam.indexOf("[") + 1, awayteam.indexOf("]"));
 
     int hscore = homescore.toInt(); // home score
     int ascore = awayscore.toInt(); // away score
@@ -293,6 +293,9 @@ void tsgmnt(String score)
         // M5.Lcd.print(awayteam);
         cx = 0, cy = 72;
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        cx = 70, cy = 60;
+        drawtext(matchtime, TFT_BLACK);
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         drawT7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
         drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]);               // Position at (20,20) with size 10
@@ -308,6 +311,9 @@ void tsgmnt(String score)
         cx = 0, cy = 72;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        cx = 70, cy = 60;
+        drawtext(matchtime, TFT_BLACK);
+        drawtext(matchtime, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         drawT7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
         drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]);               // Position at (20,20) with size 10
