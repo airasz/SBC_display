@@ -256,31 +256,31 @@ void loop()
     cekIMU();
     previousMillis = millis();
   }
-  if (millis() > prevmill2 + 100)
-  {
-    angka++;
-    if (angka == 9)
-    {
-      if (blinking)
-      {
-        countblink++;
-        digitalWrite(10, LOW);
-        if (countblink > nblinking)
-        {
-          blinking = false;
-          digitalWrite(10, HIGH);
-          countblink = 0;
-        }
-      }
-    }
-    if (angka > 9)
-    {
-      if (blinking)
-        digitalWrite(10, HIGH);
-      angka = 0;
-    }
-    prevmill2 = millis();
-  }
+  // if (millis() > prevmill2 + 100)
+  // {
+  //   angka++;
+  //   if (angka == 9)
+  //   {
+  //     if (blinking)
+  //     {
+  //       countblink++;
+  //       digitalWrite(10, LOW);
+  //       if (countblink > nblinking)
+  //       {
+  //         blinking = false;
+  //         digitalWrite(10, HIGH);
+  //         countblink = 0;
+  //       }
+  //     }
+  //   }
+  //   if (angka > 9)
+  //   {
+  //     if (blinking)
+  //       digitalWrite(10, HIGH);
+  //     angka = 0;
+  //   }
+  //   prevmill2 = millis();
+  // }
 
   while (serial.available() > 0)
   {
