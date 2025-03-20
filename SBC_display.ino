@@ -39,6 +39,7 @@ float p = 3.1415926;
 String rssmsg[300];
 String siteonread;
 bool noanim = false;
+bool animation = true;
 
 #define BUZZER_PIN 27
 #define BUZZER_CHANNEL 0
@@ -308,6 +309,12 @@ void proccesCMD(String data)
       Serial.println("start beeping");
       data = "";
       prevmill2 = millis();
+      return;
+    }
+    else if (data.startsWith("anim"))
+    {
+      animation = !animation;
+      data = "";
       return;
     }
     else if (data.startsWith("dmode"))

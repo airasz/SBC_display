@@ -237,7 +237,7 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
     {
         tmppaterns[i] = TenSegmenPaterns[number][i];
     }
-    if (!noanim)
+    if (!noanim && animation)
         for (int i = 0; i < 10; i++) // random flicker animation before displaying the number
         {
             for (int i = 0; i < 10; i++)
@@ -247,7 +247,7 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
                 drawTSegment(x, y, tenSegment[i], state, size, col);
                 delay(5);
             }
-            if (!noanim)
+            if (!noanim && animation)
                 delay(25);
         }
     for (int i = 0; i < 10; i++)
@@ -256,7 +256,7 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
         // Serial.print(state);
         drawTSegment(x, y, tenSegment[i], state, size, col);
 
-        if (!noanim)
+        if (!noanim && animation)
             delay(75);
     }
 }
