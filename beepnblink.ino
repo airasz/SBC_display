@@ -41,6 +41,7 @@ void beepnblink()
                     endmatch = 2;
                 }
             }
+            ledcWrite(BUZZER_CHANNEL, 0);
 
             angka = 0;
         }

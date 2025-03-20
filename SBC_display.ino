@@ -34,6 +34,7 @@ int nblinking = 6;
 bool blinkstate = false;
 int blinkval = 255;
 int countblink = 16;
+bool animation = true;
 
 const uint32_t COLORS_LIGHT[10] = {
     0xDB5B, 0x97E9, 0x8C7F, 0xFACC, 0xFFED,
@@ -578,6 +579,12 @@ void proccesCMD(String data)
       Serial.println("start beeping");
       data = "";
       prevmill2 = millis();
+      return;
+    }
+    else if (data.startsWith("anim"))
+    {
+      animation = !animation;
+      data = "";
       return;
     }
     else if (data.startsWith("dmode"))
