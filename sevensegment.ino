@@ -88,7 +88,7 @@ void drawSegment(int x, int y, int segment, bool state, int size, uint32_t col)
     // M5.Lcd.drawLine(x0, y0, x1, y1, state ? TFT_RED : TFT_BLACK);
     if (x0 == x1)
     { // Vertical segment
-        M5.Lcd.drawLine(x0, y0, x1, y1, state ? col : SS_DISABLE);
+        M5.Lcd.drawBoldLine(x0, y0, x1, y1, 3, state ? col : SS_DISABLE);
         // M5.Lcd.drawWideLine(x0 - 1, y0, x1 - 1, y1, 10, state ? TFT_RED : TFT_BLACK, TFT_BLACK);
         // M5.Lcd.drawWideLine(x0 + 1, y0, x1 + 1, y1, 10, state ? TFT_RED : TFT_BLACK, TFT_BLACK);
         // M5.Lcd.drawLine(x0 - 1, y0, x1 - 1, y1, state ? TFT_RED : TFT_BLACK);
@@ -96,7 +96,7 @@ void drawSegment(int x, int y, int segment, bool state, int size, uint32_t col)
     }
     else
     { // Horizontal segment
-        M5.Lcd.drawLine(x0, y0, x1, y1, state ? col : SS_DISABLE);
+        M5.Lcd.drawBoldLine(x0, y0, x1, y1, 3, state ? col : SS_DISABLE);
         // M5.Lcd.drawWideLine(x0, y0 - 1, x1, y1 - 1, 10, state ? TFT_RED : TFT_BLACK, TFT_BLACK);
         // M5.Lcd.drawWideLine(x0, y0 + 1, x1, y1 + 1, 10, state ? TFT_RED : TFT_BLACK, TFT_BLACK);
         // M5.Lcd.drawLine(x0, y0 - 1, x1, y1 - 1, state ? TFT_RED : TFT_BLACK);
@@ -1163,42 +1163,52 @@ void displayDigitHW(int count)
                 {
                     if (curr_digit == 0)
                     {
-                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
-                        M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
+                        M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 2, colll);
+                        ;
                         if (i > 0)
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 2, colll);
+                        ;
                         if (i == 1)
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[15], ypath[15], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[15], ypath[15], 2, colll);
+                        ;
 
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
                         if (i == 0)
-                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[15], ypath[15], colll);
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[15], ypath[15], colll);
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[15], ypath[15], colll);
+                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[15], ypath[15],  2, colll);;
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[15], ypath[15], 2, colll);
+                        ;
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[15], ypath[15],  2, colll);;
                     }
                     else if (curr_digit == 1)
                     {
                         if (i == 6)
                         {
-                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9], colll);
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[8], ypath[8], colll);
-                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9], colll);}
+                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9],  2, colll);;
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[8], ypath[8], 2, colll);
+                            ;
+                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9],  2, colll);;}
                         }
                         else
-                        { //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        { //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
 
                             if (i == 7)
                             {
-                                M5.Lcd.drawLine(xpath[i - 2], ypath[i - 2], xpath[6], ypath[6], colll);
+                                M5.Lcd.drawBoldLine(xpath[i - 2], ypath[i - 2], xpath[6], ypath[6], 2, colll);
+                                ;
                             }
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 2, colll);
+                            ;
                             if (i > 0 && i - 1 != 6)
-                                M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], colll);
-                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);}
+                                M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 2, colll);
+                            ;
+                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;}
                             if (i == 8)
                             {
-                                M5.Lcd.drawLine(xpath[6], ypath[6], xpath[8], ypath[8], colll);
-                                M5.Lcd.drawLine(xpath[1], ypath[1], xpath[3], ypath[3], colll);
+                                M5.Lcd.drawBoldLine(xpath[6], ypath[6], xpath[8], ypath[8], 2, colll);
+                                ;
+                                M5.Lcd.drawBoldLine(xpath[1], ypath[1], xpath[3], ypath[3], 2, colll);
+                                ;
                             }
                         }
                     }
@@ -1206,61 +1216,78 @@ void displayDigitHW(int count)
                     {
                         if (i != 7)
                         {
-                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 2, colll);
+                            ;
                             if (i > 0 && i - 1 != 7)
-                                M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], colll);
-                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                                M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 2, colll);
+                            ;
+                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
                             if (i == 8)
-                                //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[8], ypath[8], colll);
-                                M5.Lcd.drawLine(xpath[i - 2], ypath[i - 2], xpath[8], ypath[8], colll);
+                                //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[8], ypath[8],  2, colll);;
+                                M5.Lcd.drawBoldLine(xpath[i - 2], ypath[i - 2], xpath[8], ypath[8], 2, colll);
+                            ;
                             if (i == 9)
                             {
-                                M5.Lcd.drawLine(xpath[6], ypath[6], xpath[7], ypath[7], colll);
-                                M5.Lcd.drawLine(xpath[6], ypath[6], xpath[5], ypath[5], colll);
+                                M5.Lcd.drawBoldLine(xpath[6], ypath[6], xpath[7], ypath[7], 2, colll);
+                                ;
+                                M5.Lcd.drawBoldLine(xpath[6], ypath[6], xpath[5], ypath[5], 2, colll);
+                                ;
                             }
-                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[8], ypath[8], colll);
+                            // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[8], ypath[8],  2, colll);;
                         }
 
                         else // i==7
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[8], ypath[8], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[8], ypath[8], 2, colll);
+                        ;
                     }
                     else if (curr_digit == 8)
                     {
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
-                        M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
+                        M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 2, colll);
+                        ;
                         if (i > 0)
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 2, colll);
+                        ;
 
-                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
                         if (i == 0)
-                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9], colll);
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9], colll);
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9], colll);
+                            //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9],  2, colll);;
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[9], ypath[9], 2, colll);
+                        ;
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[9], ypath[9],  2, colll);;
                         if (i == 1)
-                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[16], ypath[16], colll);
+                        //   M5.Lcd.drawLine(xpath[i], ypath[i], xpath[16], ypath[16],  2, colll);;
                         {
-                            M5.Lcd.drawLine(xpath[i], ypath[i], xpath[16], ypath[16], colll);
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[9], ypath[9], colll);
+                            M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[16], ypath[16], 2, colll);
+                            ;
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[9], ypath[9], 2, colll);
+                            ;
                         }
                         if (i == 2)
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[16], ypath[16], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[16], ypath[16], 2, colll);
+                        ;
                         if (i == 15)
                         {
-                            M5.Lcd.drawLine(xpath[1], ypath[1], xpath[16], ypath[16], colll);
-                            M5.Lcd.drawLine(xpath[0], ypath[0], xpath[1], ypath[1], colll);
-                            M5.Lcd.drawLine(xpath[0], ypath[0], xpath[9], ypath[9], colll);
+                            M5.Lcd.drawBoldLine(xpath[1], ypath[1], xpath[16], ypath[16], 2, colll);
+                            ;
+                            M5.Lcd.drawBoldLine(xpath[0], ypath[0], xpath[1], ypath[1], 2, colll);
+                            ;
+                            M5.Lcd.drawBoldLine(xpath[0], ypath[0], xpath[9], ypath[9], 2, colll);
+                            ;
                         }
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[16], ypath[16], colll);
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[16], ypath[16],  2, colll);;
                     }
                     else
                     {
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
-                        M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
+                        M5.Lcd.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 2, colll);
+                        ;
                         if (i > 0)
-                            M5.Lcd.drawLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], colll);
-                        // M5.Lcd.drawLine(xpath[-i], ypath[-i], xpath[i], ypath[i], 6, colll);
-                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], colll);
+                            M5.Lcd.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 2, colll);
+                        ;
+                        // M5.Lcd.drawLine(xpath[-i], ypath[-i], xpath[i], ypath[i], 6,  2, colll);;
+                        // M5.Lcd.drawLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1],  2, colll);;
                     }
                     if (!noanim)
                         delay(50);
