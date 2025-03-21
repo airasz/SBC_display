@@ -181,6 +181,9 @@ void ssgmnt(String score)
     draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
     draw7Segment(x + (sz * 10), y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+
+    cx = 70, cy = 60;
+    drawtext(matchtime, COLOR_MEDIUM[random(10)]);
 }
 
 //=================5x3 digit font=======================
