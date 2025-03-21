@@ -311,9 +311,22 @@ void proccesCMD(String data)
       prevmill2 = millis();
       return;
     }
-    else if (data.startsWith("anim"))
+    else if (data.startsWith("animation"))
     {
       animation = !animation;
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 9;
+      endblink = 10;
+      countblink = 0;
+      angka = 7;
+      Serial.println("startblinking");
+      data = "";
+      prevmill2 = millis();
+      Serial.printf("animation  : %s \n", (animation) ? "true" : "false");
+      tft.fillScreen(TFT_BLACK);
+      tft.printf("animation  : %s \n", (animation) ? "true" : "false");
       data = "";
       return;
     }
