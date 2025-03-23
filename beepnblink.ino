@@ -8,12 +8,12 @@ void beepnblink()
             if (blinking)
             {
                 countblink++;
-                analogWrite(16, 255);
-                tone(BUZZER_CHANNEL, tmpNOTE);
+                analogWrite(12, 255);
+                tone(BUZZER_PIN, tmpNOTE);
                 if (countblink > nblinking)
                 {
                     blinking = false;
-                    analogWrite(16, 0);
+                    analogWrite(12, 0);
                     countblink = 0;
                     // ledcWrite(BUZZER_CHANNEL, 0);
                     noTone(BUZZER_PIN);
@@ -24,7 +24,7 @@ void beepnblink()
         {
             if (blinking)
             {
-                analogWrite(16, 0);
+                analogWrite(12, 0);
                 // ledcWrite(BUZZER_CHANNEL, 0);
                 noTone(BUZZER_PIN);
                 if (endmatch == 2)

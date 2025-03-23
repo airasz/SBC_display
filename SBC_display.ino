@@ -38,7 +38,7 @@ String siteonread;
 bool noanim = false;
 bool animation = true;
 
-#define BUZZER_PIN PIN_D2
+#define BUZZER_PIN PIN_D8
 #define BUZZER_CHANNEL 0
 
 int httpGetChar();
@@ -102,11 +102,11 @@ void setup(void)
   Serial.begin(115200);
   // serial.begin(9600);
   Serial.print("Hello! ST77xx TFT Test");
-  pinMode(25, OUTPUT);
-  pinMode(16, OUTPUT);
+  // pinMode(25, OUTPUT);
+  pinMode(12, OUTPUT);
   tb_display_init(1);
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(3);
   if (!SPIFFS.begin())
   {
     Serial.println("SPIFFS initialisation failed!");
@@ -114,7 +114,7 @@ void setup(void)
       yield(); // Stay here twiddling thumbs waiting
   }
   Serial.println("\r\nInitialisation done.");
-  digitalWrite(25, HIGH);
+  // digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
 
@@ -142,7 +142,7 @@ void setup(void)
   //  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   delay(1000);
 
-  digitalWrite(25, LOW);
+  // digitalWrite(25, LOW);
   tft.fillScreen(TFT_BLACK);
   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
 
