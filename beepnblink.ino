@@ -9,13 +9,14 @@ void beepnblink()
             {
                 countblink++;
                 analogWrite(16, 255);
-                ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
+                tone(BUZZER_CHANNEL, tmpNOTE);
                 if (countblink > nblinking)
                 {
                     blinking = false;
                     analogWrite(16, 0);
                     countblink = 0;
-                    ledcWrite(BUZZER_CHANNEL, 0);
+                    // ledcWrite(BUZZER_CHANNEL, 0);
+                    noTone(BUZZER_PIN);
                 }
             }
         }
@@ -24,7 +25,8 @@ void beepnblink()
             if (blinking)
             {
                 analogWrite(16, 0);
-                ledcWrite(BUZZER_CHANNEL, 0);
+                // ledcWrite(BUZZER_CHANNEL, 0);
+                noTone(BUZZER_PIN);
                 if (endmatch == 2)
                 {
                     Serial.println("endmatch == 2");

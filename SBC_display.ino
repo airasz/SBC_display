@@ -8,14 +8,28 @@
 #include <SoftwareSerial.h>
 // #include <Tone32.h>
 #include "note.h"
+// #include "pitches.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
-#define TFT_CS 33
-#define TFT_RST 14 // you can also connect this to the Arduino reset
-// in which case, set this #define pin to -1!
-#define TFT_DC 26
+#define ST7789_DRIVER
+#define TFT_RGB_ORDER TFT_BGR // Colour order Blue-Green-
+#define TFT_INVERSION_ON
+#define TFT_BACKLIGHT_ON HIGH // HIGH or LOW are options
+// #define TFT_BL PIN_D2         // LED back-light (only for ST7789 with backlight control pin)
+#define TFT_DC PIN_D5  // Data Command control pin
+#define TFT_RST PIN_D6 // Reset pin (could connect to NodeMCU RST, see next line)
+#define TFT_BL PIN_D2  // LED back-light (only for ST7789 with backlight control pin)
+#define TFT_MISO PIN_D7
+#define TFT_SCLK PIN_D8
+// #define TFT_CS 33
+// #define TFT_RST 14 // you can also connect this to the Arduino reset
+// // in which case, set this #define pin to -1!
+// #define TFT_DC 26
+
+#define TFT_WIDTH 240  // ST7789 240 x 240 and 240 x 320
+#define TFT_HEIGHT 240 // ST7789 240 x 240
 int tmpNOTE = 1123;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
@@ -41,7 +55,7 @@ String siteonread;
 bool noanim = false;
 bool animation = true;
 
-#define BUZZER_PIN 27
+#define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
 
 int httpGetChar();
@@ -149,8 +163,8 @@ void setup(void)
   tft.fillScreen(TFT_BLACK);
   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
 
-  ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
-  ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+  // ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
+  // ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
   // noTone(BUZZER_PIN);
 }
 long prevmill = 0;
