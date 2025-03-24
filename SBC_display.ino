@@ -1,4 +1,4 @@
-// board: esp32
+// board: esp8266
 //  methode: usb or software serial
 
 #include <SPI.h>
@@ -13,6 +13,7 @@
 #include "tft_setup.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 
+#define SS_DISABLE 0x1062 // black
 int tmpNOTE = 1123;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
