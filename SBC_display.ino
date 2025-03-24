@@ -567,6 +567,48 @@ void printtextbig(
   delay(25);
   tft.loadFont(sfpt_r14);
 }
+void printtextcs(int x, int y,
+                 String text, uint16_t color, uint8_t fsize)
+{
+
+  tft.unloadFont();
+  delay(25);
+  if (fsize == 16)
+  {
+    tft.loadFont(sfpt_r16);
+  }
+  else if (fsize == 18)
+  {
+    tft.loadFont(sfpt_r18);
+  }
+  else if (fsize == 20)
+  {
+    tft.loadFont(sfpd_r20);
+  }
+  else if (fsize == 24)
+  {
+    tft.loadFont(sfpd_r24);
+  }
+  else
+  {
+    tft.loadFont(sfpt_r16);
+  }
+  tft.setCursor(x, y);
+  tft.setTextWrap(true);
+  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
+  // tft.print(oldsdata);
+  // tft.fillScreen(TFT_BLACK);
+  // tft.setTextColor(color, TFT_BLACK);
+
+  // tft.print(tl);
+  tft.print(text);
+  oldsdata = text;
+
+  tft.unloadFont();
+  delay(25);
+  tft.loadFont(sfpt_r14);
+}
+
 void printtextcs(
     String text, uint16_t color, uint8_t fsize)
 {

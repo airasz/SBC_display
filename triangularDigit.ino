@@ -288,13 +288,13 @@ void tsgmnt(String score)
     tft.fillScreen(TFT_BLACK);
     cx = 0, cy = 0;
     // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-    printtextcs(hometeam, TFT_BLACK, 16);
+    printtextcs(cx, cy, hometeam, TFT_BLACK, 16);
 
     // tft.setCursor(0, 82);
     // tft.print(awayteam);
-    cx = 0, cy = 98;
+    cx = 0, cy = 106;
     // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-    printtextcs(awayteam, COLOR_MEDIUM[random(10)], 16);
+    printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(10)], 16);
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
     drawT7Segment(x, y, ihscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
     drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]);                // Position at (20,20) with size 10
@@ -306,13 +306,13 @@ void tsgmnt(String score)
     // tft.fillScreen(TFT_BLACK);
     cx = 0, cy = 0;
     // drawtext(hometeam, TFT_BLACK);
-    printtextcs(hometeam, TFT_BLACK, 16);
+    printtextcs(cx, cy, hometeam, TFT_BLACK, 16);
     // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-    printtextcs(hometeam, COLOR_MEDIUM[random(10)], 16);
-    cx = 0, cy = 98;
-    printtextcs(awayteam, TFT_BLACK, 16);
+    printtextcs(cx, cy, hometeam, COLOR_MEDIUM[random(10)], 16);
+    cx = 0, cy = 106;
+    printtextcs(cx, cy, awayteam, TFT_BLACK, 16);
     // drawtext(awayteam, TFT_BLACK);
-    printtextcs(awayteam, COLOR_MEDIUM[random(10)], 16);
+    printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(10)], 16);
     // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
     drawT7Segment(x, y, ihscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10

@@ -79,8 +79,8 @@ bool found_new_title = false;
 //   10 rows of text in landscape mode
 
 // screen buffer for 10 rows of 60 characters max.
-#define TEXT_BUFFER_HEIGHT_MAX 10
-#define TEXT_BUFFER_LINE_LENGTH_MAX 60
+#define TEXT_BUFFER_HEIGHT_MAX 18
+#define TEXT_BUFFER_LINE_LENGTH_MAX 96
 char text_buffer[TEXT_BUFFER_HEIGHT_MAX][TEXT_BUFFER_LINE_LENGTH_MAX];
 
 int text_buffer_height;
@@ -146,6 +146,10 @@ void tb_display_init(int ScreenRotation)
     break;
   }
   }
+  text_buffer_height = 16;
+  text_buffer_line_length = 96;
+
+  screen_max = 240 - 2;
   tb_display_clear();
   tb_display_show();
 }
