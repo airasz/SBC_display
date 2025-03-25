@@ -243,7 +243,8 @@ void drawAnimatedDigit(int x, int y, int fsize, int digit, uint16_t color)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    tft.fillRoundRect((z * (sizee * 4)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
+                    tft.fillRoundRect((z * (sizee * 8)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
+                    // tft.fillRoundRect(fromLeft + j * sizee - 1, fromTop + i * sizee - 1, sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
                     // delay(20);
                 }
             }
@@ -252,14 +253,16 @@ void drawAnimatedDigit(int x, int y, int fsize, int digit, uint16_t color)
                 for (int j = 0; j < 3; j++)
                 {
                     int rnd = random(2);
-                    tft.fillRoundRect((z * (sizee * 4)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, colors[rnd]);
+                    tft.fillRoundRect((z * (sizee * 8)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, colors[rnd]);
+                    // tft.fillRoundRect(fromLeft + j * sizee - 1, fromTop + i * sizee - 1, sizee, sizee, Round, colors[rnd]);
                 }
             }
             if (i == 4 && f == 4)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    tft.fillRoundRect((z * (sizee * 4)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
+                    tft.fillRoundRect((z * (sizee * 8)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
+                    // tft.fillRoundRect(fromLeft + j * sizee - 1, fromTop + i * sizee - 1, sizee, sizee, Round, (digit == 10) ? colors[arr[10][i][j]] : colors[arr[b][i][j]]);
                     // delay(20);
                 }
             }
@@ -399,6 +402,8 @@ void drawDigitLivescore(String score)
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(10)], 16);
         drawAnimatedDigit(20, 20, sz, digit, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -421,8 +426,8 @@ void drawDigitLivescore(String score)
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(20, 20, sz, ihscore, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
     }
 }
 uint32_t tmpDigit[7][5][2] = {
@@ -505,6 +510,7 @@ void displayDigitHW(int count)
     // int testgigit=DIGITS[0][0][4];
     // Serial.printf("testgigit %d\n",testgigit);
     int y_start = 36;
+    int isize = 10;
     if (clock_style == 0)
         for (int pos = 1; pos < 4; pos++)
         {
@@ -539,8 +545,8 @@ void displayDigitHW(int count)
                     uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
                     // if (DIGITS[curr_digit][row][col] == 1)
                     bool state = DIGITS[curr_digit][row][col];
-                    tmpDigit[row][col][0] = x_start + col * 7 - 1 + random(4);
-                    tmpDigit[row][col][1] = y_start + row * 7 - 1 + random(4);
+                    tmpDigit[row][col][0] = x_start + col * isize - 1 + random(4);
+                    tmpDigit[row][col][1] = y_start + row * isize - 1 + random(4);
                     // tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, colorrnd);
                 }
             }
@@ -591,11 +597,12 @@ void displayDigitHW(int count)
                     delay(40);
             }
 
-            x_start += 39;
+            // x_start += 39;
+            x_start += (5 * isize) + 20;
         }
     else if (clock_style == 1)
     {
-        int isize = 10;
+        // int isize = 4;
         for (int pos = 1; pos < 4; pos++)
         {
             uint8_t curr_digit = 0;
@@ -656,7 +663,7 @@ void displayDigitHW(int count)
                         int state = LineTrack[curr_digit][row][col];
                         if (state == patternSequences[i])
                         {
-                            tft.fillRoundRect(x_start - r + col * 7, y_start - r + row * 7, r * 1, r * 1, 0, colorrnd);
+                            tft.fillRoundRect(x_start - r + col * isize, y_start - r + row * isize, r * 1, r * 1, 0, colorrnd);
                             match = true;
                         }
                         // delay(40);
@@ -670,7 +677,8 @@ void displayDigitHW(int count)
                     delay(40);
             }
 
-            x_start += 39;
+            // x_start += 39;
+            x_start += (5 * isize) + 20;
         }
     }
     else if (clock_style == 2)
@@ -721,8 +729,8 @@ void displayDigitHW(int count)
                     // tmpDigit[row][col][1] = y_start + row * 7 - 1 + random(4);
                     if (LineTrack[curr_digit][row][col] > 0)
                     {
-                        int xc = x_start + col * 10 - 1 + (random(4));
-                        int yc = y_start + row * 10 - 1 + (random(4));
+                        int xc = x_start + col * isize - 1 + (random(4));
+                        int yc = y_start + row * isize - 1 + (random(4));
                         xpath[LineTrack[curr_digit][row][col] - 1] = xc; // put  squence path X point to array
                         ypath[LineTrack[curr_digit][row][col] - 1] = yc; // put  squence path Y point to array
                                                                          // Serial.printf("---xpath[%d] : %d \n", LineTrack[curr_digit][row][col] - 1, xc);
@@ -872,7 +880,8 @@ void displayDigitHW(int count)
             //       }
             //       delay(40);
             //   }
-            x_start += 39;
+            x_start += (5 * isize) + 20;
+            // Serial.printf("x_start : %d \n", x_start);
         }
     }
 }

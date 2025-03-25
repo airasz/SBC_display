@@ -10,10 +10,17 @@
 #include "note.h"
 // #include "pitches.h"
 
+#include <TimeLib.h>
 #include "tft_setup.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 
-#define SS_DISABLE 0x1062 // black
+// #define SS_DISABLE 0x1062 // black
+
+#define SS_DISABLE 0 // black
+
+#include <Adafruit_NeoPixel.h>
+#define NEOPIN PIN_D3
+Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 int tmpNOTE = 1123;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
@@ -102,6 +109,12 @@ void setup(void)
 {
   Serial.begin(115200);
   // serial.begin(9600);
+  NEO.begin();
+  NEO.show();
+  // NEO.setPixelColor(0, 0);
+  NEO.setPixelColor(0, NEO.Color(170, 0, 0));
+  // NEO.show();
+  NEO.show();
   Serial.print("Hello! ST77xx TFT Test");
   // pinMode(25, OUTPUT);
   pinMode(12, OUTPUT);
@@ -277,6 +290,24 @@ void proccesCMD(String data)
       angka = 7;
       Serial.println("startblinking");
       data = "";
+      prevmill2 = millis();
+      return;
+    }
+    else if (data.startsWith("settime"))
+    {
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 9;
+      endblink = 10;
+      countblink = 0;
+      angka = 7;
+      Serial.println("startblinking");
+      // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
+      //         2, 7, 2021);
+      data = "";
+      // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
+      //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
       prevmill2 = millis();
       return;
     }
