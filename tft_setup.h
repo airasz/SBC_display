@@ -12,9 +12,9 @@
 // #define TFT_MOSI PIN_D7
 // #define TFT_SCLK PIN_D8
 
-#define TFT_DC PIN_D1  // Data Command control pin
-#define TFT_RST PIN_D0 // Reset pin (could connect to NodeMCU RST, see next line)
-#define TFT_BL PIN_D2  // LED back-light (only for ST7789 with backlight control pin)
+// #define TFT_DC PIN_D1  // Data Command control pin
+// #define TFT_RST PIN_D0 // Reset pin (could connect to NodeMCU RST, see next line)
+// #define TFT_BL PIN_D2  // LED back-light (only for ST7789 with backlight control pin)
 // #define TFT_CS 33
 // #define TFT_RST 14 // you can also connect this to the Arduino reset
 // // in which case, set this #define pin to -1!

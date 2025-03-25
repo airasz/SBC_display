@@ -104,7 +104,7 @@ int endmatch = 0;
 int startblink = 0;
 int endblink = 0;
 #define usbbaud 115200
-int dmode = 3;
+int dmode = 10;
 void setup(void)
 {
   Serial.begin(115200);
@@ -120,7 +120,7 @@ void setup(void)
   pinMode(12, OUTPUT);
   tb_display_init(1);
   tft.init();
-  tft.setRotation(3);
+  tft.setRotation(2);
   if (!SPIFFS.begin())
   {
     Serial.println("SPIFFS initialisation failed!");
@@ -198,6 +198,8 @@ void loop()
   }
   if (millis() > prevmill + 1000)
   {
+    if (dmode == 10)
+      analogClock(0);
     toScreenSleep++;
     // if (toScreenSleep > 10)
     // {
@@ -295,6 +297,9 @@ void proccesCMD(String data)
     }
     else if (data.startsWith("settime"))
     {
+      int h = data.substring(8, 10).toInt();
+      int m = data.substring(11, 13).toInt();
+      int s = data.substring(14, 16).toInt();
       nblinking = 1;
       blinking = true;
       blinkduration = 9;
@@ -303,8 +308,7 @@ void proccesCMD(String data)
       countblink = 0;
       angka = 7;
       Serial.println("startblinking");
-      // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
-      //         2, 7, 2021);
+      setTime(h, m, s, 2, 7, 2021);
       data = "";
       // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
       //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
@@ -365,12 +369,15 @@ void proccesCMD(String data)
       {
         tft.fillScreen(TFT_BLACK);
         tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+
         return;
       }
       else
       {
         int dmod = data.substring(6).toInt();
-        if (dmod < 3)
+        if (dmod == 10)
+          tft.fillScreen(TFT_BLACK);
+        if (dmod < 3 || dmod == 10)
           dmode = dmod;
         // Serial.println("startblinking");
         tft.setCursor(0, 0);
