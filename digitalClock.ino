@@ -169,8 +169,8 @@ void displayDigitHW()
     {
         // int isize = 4;
 
-        x_start = 30;
-        y_start = 14;
+        x_start = 36;
+        y_start = 24;
         isize = 14;
         r = 12;
         for (int pos = 0; pos < 4; pos++)
@@ -235,8 +235,8 @@ void displayDigitHW()
             x_start += (5 * isize) + 55;
             if (pos == 1)
             {
-                y_start += 126;
-                x_start = 30;
+                y_start += 118;
+                x_start = 36;
             }
         }
     }
