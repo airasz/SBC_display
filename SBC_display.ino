@@ -9,7 +9,7 @@
 // #include <Tone32.h>
 #include "note.h"
 // #include "pitches.h"
-
+#include "SBC_display.h"
 #include <TimeLib.h>
 #include "tft_setup.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
@@ -216,7 +216,8 @@ void loop()
       if (oldss != second())
       {
         oldss = second();
-        analogClock(0);
+        // analogClock(0);
+        digitalClock(1);
       }
       // analogClock(0);
     }
@@ -396,7 +397,7 @@ void proccesCMD(String data)
       else
       {
         int dmod = data.substring(6).toInt();
-        if (dmod == 10)
+        if (dmod == 10 && dmode != 10)
           tft.fillScreen(TFT_BLACK);
         if (dmod < 3 || dmod == 10)
           dmode = dmod;

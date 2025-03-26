@@ -1,13 +1,5 @@
 
-int sevensegment[7] = {0, 1, 2, 3, 4, 5, 6};
-int tmpRow[7] = {0, 1, 2, 3, 4, 5, 6};
-int tmpRowSize = sizeof(tmpRow) / sizeof(tmpRow[0]);
-int tmpCol[5] = {0, 1, 2, 3, 4};
-int tmpColSize = sizeof(tmpCol) / sizeof(tmpCol[0]);
-int patternSequences[20] = {
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20};
-int patternSequencesSize = sizeof(patternSequences) / sizeof(patternSequences[0]);
+
 void shuffleArray(int *array, int size)
 {
     for (int i = size - 1; i > 0; i--)
@@ -430,42 +422,6 @@ void drawDigitLivescore(String score)
         drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
     }
 }
-uint32_t tmpDigit[7][5][2] = {
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}}};
 void displayscore(String score)
 {
 
