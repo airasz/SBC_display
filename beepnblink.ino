@@ -9,9 +9,6 @@ void beepnblink()
             {
                 countblink++;
                 // analogWrite(12, 255);
-                NEO.setPixelColor(0, NEO.Color(0, 170, 0));
-                NEO.show();
-                tone(BUZZER_PIN, tmpNOTE);
                 if (countblink > nblinking)
                 {
                     blinking = false;
@@ -21,6 +18,12 @@ void beepnblink()
                     countblink = 0;
                     // ledcWrite(BUZZER_CHANNEL, 0);
                     noTone(BUZZER_PIN);
+                }
+                else
+                {
+                    NEO.setPixelColor(0, NEO.Color(0, 170, 0));
+                    NEO.show();
+                    tone(BUZZER_PIN, tmpNOTE);
                 }
             }
         }
