@@ -7,15 +7,19 @@ void beepnblink()
         {
             if (blinking)
             {
-                countblink++;
-                analogWrite(16, 255);
-                ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
                 if (countblink > nblinking)
                 {
                     blinking = false;
                     analogWrite(16, 0);
                     countblink = 0;
                     ledcWrite(BUZZER_CHANNEL, 0);
+                }
+                else
+                {
+
+                    countblink++;
+                    analogWrite(16, 255);
+                    ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
                 }
             }
         }
