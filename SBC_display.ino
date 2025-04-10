@@ -13,7 +13,8 @@
 #include <TimeLib.h>
 #include "tft_setup.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
-
+#include <ArduinoJson.h>
+StaticJsonDocument<200> doc;
 // #define SS_DISABLE 0x1062 // black
 
 #define SS_DISABLE 0 // black
@@ -40,7 +41,8 @@ TFT_eSPI tft = TFT_eSPI(); // Invoke library, pins defined in User_Setup.h
 
 #include "res.h"
 float p = 3.1415926;
-
+uint32_t hcolor = TFT_WHITE;
+uint32_t acolor = TFT_WHITE;
 bool updateSecondhand = false;
 String rssmsg[300];
 String siteonread;
@@ -209,6 +211,8 @@ void loop()
   {
     if (!data.startsWith("#"))
       proccesData(data);
+    else if (data.startsWith("$"))
+      proccesJsonData(data);
     else
       proccesCMD(data.substring(1));
     data = "";
@@ -250,6 +254,56 @@ void loop()
   beepnblink(); // beepnblink.ino
 } // end loop
 int displaylivescore = 0;
+void proccesJsonData(String data)
+{
+  data.replace("$", "");
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  if (doc.containsKey("dmode"))
+  {
+    dmode = doc["dmode"];
+  }
+  if (doc.containsKey("animation"))
+  {
+    animation = doc["animation"];
+  }
+  if (doc.containsKey("note"))
+  {
+    tmpNOTE = doc["note"];
+  }
+  if (doc.containsKey("rotation"))
+  {
+    int sr = doc["rotation"];
+    tft.setRotation(sr);
+  }
+  if (doc.containsKey("clockface"))
+  {
+    clockFace = doc["clockface"];
+  }
+  if (doc.containsKey("beep"))
+  {
+  }
+  if (doc.containsKey("time"))
+  {
+    String stime = doc["time"];
+    int h = stime.substring(0, 2).toInt();
+    int m = stime.substring(3, 5).toInt();
+    int s = stime.substring(6, 8).toInt();
+    setTime(h, m, s, 2, 7, 2021);
+    // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
+    //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
+  }
+
+  // dmode = doc["dmode"];
+  // animation = doc["animation"];
+  // tmpNOTE = doc["note"];
+  // tft.setRotation(doc["rotation"]);
+}
 void proccesCMD(String data)
 {
   if (data.length() > 4)
@@ -420,7 +474,12 @@ void proccesCMD(String data)
     }
     else if (data.startsWith("animation"))
     {
-      animation = !animation;
+      String sdata = data.substring(10);
+      if (sdata == "1")
+        animation = true;
+      else
+        animation = false;
+      // animation = !animation;
       nblinking = 1;
       blinking = true;
       blinkduration = 9;
@@ -707,7 +766,7 @@ void printtextcs(int x, int y,
   }
   tft.setCursor(x, y);
   tft.setTextWrap(true);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
+  tft.setTextColor(color, TFT_BLACK);
   // tft.print(oldsdata);
   // tft.fillScreen(TFT_BLACK);
   // tft.setTextColor(color, TFT_BLACK);
