@@ -396,9 +396,9 @@ void drawDigitLivescore(String score)
         cx = 0, cy = 110;
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         printtextcs(cx, cy, awayteam, acolor, 16);
-        drawAnimatedDigit(20, 20, sz, digit, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, 20, sz, digit, hcolor);
         drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, acolor);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -410,19 +410,19 @@ void drawDigitLivescore(String score)
         // drawtext(hometeam, TFT_BLACK);
         printtextcs(cx, cy, hometeam, TFT_BLACK, 16);
         // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, hometeam, COLOR_MEDIUM[random(10)], 16);
+        printtextcs(cx, cy, hometeam, hcolor, 16);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 110;
         // drawtext(awayteam, TFT_BLACK);
         printtextcs(cx, cy, awayteam, TFT_BLACK, 16);
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(10)], 16);
+        printtextcs(cx, cy, awayteam, acolor, 16);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, 20, sz, ihscore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, 20, sz, ihscore, hcolor);
         drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, acolor);
     }
 }
 void displayscore(String score)
