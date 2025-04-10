@@ -209,12 +209,12 @@ void loop()
   }
   if (data.length() > 0)
   {
-    if (!data.startsWith("#"))
-      proccesData(data);
+    if (data.startsWith("#"))
+      proccesCMD(data);
     else if (data.startsWith("$"))
       proccesJsonData(data);
     else
-      proccesCMD(data.substring(1));
+      proccesData(data.substring(1));
     data = "";
   }
   if (millis() > prevmill + 100)
@@ -256,6 +256,7 @@ void loop()
 int displaylivescore = 0;
 void proccesJsonData(String data)
 {
+  printtextcs(0, 129, data, TFT_WHITE, 16);
   data.replace("$", "");
   DeserializationError error = deserializeJson(doc, data);
   if (error)
@@ -274,7 +275,7 @@ void proccesJsonData(String data)
   }
   if (doc.containsKey("note"))
   {
-    tmpNOTE = doc["note"];
+    setNote(doc["note"]);
   }
   if (doc.containsKey("rotation"))
   {
@@ -306,7 +307,8 @@ void proccesJsonData(String data)
 }
 void proccesCMD(String data)
 {
-  if (data.length() > 4)
+  data.replace("#", "");
+  if (data.length() > 3)
   {
 
     //    Serial.println(data);
@@ -836,6 +838,33 @@ void drawClockFace()
     if (second() % 5 == 0)
     {
       digitFace(clockFace - 1);
+    }
+  }
+}
+void setNote(String note)
+{
+  for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
+  {
+    // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
+
+    if (note.startsWith(notes[i].name))
+    {
+      // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);
+      // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
+
+      tmpNOTE = notes[i].frequency;
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 2;
+      endblink = 8;
+      angka = 0;
+      countblink = 0;
+      Serial.println("start beeping " + notes[i].name);
+      data = "";
+      prevmill2 = millis();
+      printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+      break;
     }
   }
 }
