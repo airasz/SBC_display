@@ -377,13 +377,14 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
                 }
     }
 }
+// 5*3 square
 void drawDigitLivescore(String score)
 {
 
     hcolor = COLOR_MEDIUM[random(12)];
     acolor = COLOR_MEDIUM[random(12)];
     int sz = 16; // segment size
-    int x = 10, y = 30;
+    int x = 40, y = 20;
     int digit = (ihscore * 100) + iascore;
     if (score != old_score)
     {
@@ -396,9 +397,9 @@ void drawDigitLivescore(String score)
         cx = 0, cy = 110;
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         printtextcs(cx, cy, awayteam, acolor, 16);
-        drawAnimatedDigit(20, 20, sz, digit, hcolor);
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, acolor);
+        drawAnimatedDigit(x, y, sz, digit, hcolor);
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, acolor);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -420,11 +421,12 @@ void drawDigitLivescore(String score)
         printtextcs(cx, cy, awayteam, acolor, 16);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, 20, sz, ihscore, hcolor);
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3), 20, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(20 + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), 20, sz, iascore, acolor);
+        drawAnimatedDigit(x, y, sz, ihscore, hcolor);
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, acolor);
     }
 }
+// 7*5
 void displayscore(String score)
 {
 
