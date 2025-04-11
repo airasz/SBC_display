@@ -214,7 +214,7 @@ void loop()
     else if (data.startsWith("$"))
       proccesJsonData(data);
     else
-      proccesData(data.substring(1));
+      proccesData(data);
     data = "";
   }
   if (millis() > prevmill + 100)
