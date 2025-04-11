@@ -54,6 +54,9 @@ const uint32_t COLORS_LIGHT[10] = {
 const uint32_t COLORS_DARK[10] = {
     0x2004, 0x0920, 0x0808, 0x4005, 0x0900,
     0x00E4, 0x280D, 0x20C0, 0x0006, 0x3000};
+
+uint32_t hcolor = TFT_WHITE;
+uint32_t acolor = TFT_WHITE;
 String nsb15 = "NotoSansBold15";
 String sui14 = "SegoeUI-14";
 String sfpt_r14 = "SFProText-Regular-14";

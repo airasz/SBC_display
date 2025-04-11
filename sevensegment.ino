@@ -127,6 +127,9 @@ String old_score;
 void ssgmnt(String score)
 {
 
+    hcolor = COLOR_MEDIUM[random(12)];
+    acolor = COLOR_MEDIUM[random(12)];
+
     int sz = 10; // segment size
     int x = 10, y = 16;
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
@@ -134,11 +137,11 @@ void ssgmnt(String score)
     {
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, hcolor);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        drawtext(awayteam, acolor);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         old_score = score;
     }
@@ -147,12 +150,12 @@ void ssgmnt(String score)
         // tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, hcolor);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
         drawtext(awayteam, TFT_BLACK);
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        drawtext(awayteam, acolor);
 
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
@@ -164,11 +167,11 @@ void ssgmnt(String score)
         // drawDigit(60, 10, 10, ihscore, COLOR_MEDIUM[random(12)]);
     }
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x, y, ihscore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    draw7Segment(x, y, ihscore, sz, hcolor); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
     draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x + (sz * 10), y, iascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+    draw7Segment(x + (sz * 10), y, iascore, sz, acolor); // Position at (20,20) with size 10
 }
 
 //=================5x3 digit font=======================
@@ -378,6 +381,8 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
 }
 void drawDigitLivescore(String score)
 {
+    hcolor = COLOR_MEDIUM[random(12)];
+    acolor = COLOR_MEDIUM[random(12)];
 
     int sz = 10; // segment size
     int x = 10, y = 30;
@@ -386,11 +391,11 @@ void drawDigitLivescore(String score)
     {
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, hcolor);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        drawtext(awayteam, acolor);
         drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
@@ -401,17 +406,17 @@ void drawDigitLivescore(String score)
         // tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, hcolor);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
         drawtext(awayteam, TFT_BLACK);
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        drawtext(awayteam, acolor);
 
         // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20, 20, 10, ihscore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20, 20, 10, ihscore, hcolor);
         drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 10, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, acolor);
     }
 }
 uint32_t tmpDigit[7][5][2] = {
@@ -452,14 +457,16 @@ uint32_t tmpDigit[7][5][2] = {
      {0, 0}}};
 void displayscore(String score)
 {
+    hcolor = COLOR_MEDIUM[random(12)];
+    acolor = COLOR_MEDIUM[random(12)];
 
     tft.fillScreen(TFT_BLACK);
     // tft.setTextColor(TFT_GREENYELLOW);
     tft.setCursor(0, 0);
     cx = 0, cy = 0;
-    drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+    drawtext(hometeam, hcolor);
     cx = 0, cy = 96;
-    drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+    drawtext(awayteam, acolor);
     // printWordWrap(hometeam, COLOR_MEDIUM[random(12)]);
     score.replace("-", "");
     score.replace(" ", "");
