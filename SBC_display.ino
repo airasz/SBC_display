@@ -188,7 +188,7 @@ void loop()
     else if (data.startsWith("$"))
       proccesJsonData(data);
     else
-      proccesData(data.substring(1));
+      proccesData(data);
     data = "";
   }
   if (millis() > prevmill + 1000)
@@ -258,6 +258,7 @@ void proccesJsonData(String data)
 }
 void proccesCMD(String data)
 {
+  data.replace("#", "");
   if (data.length() > 4)
   {
 
