@@ -293,6 +293,9 @@ void tsgmnt(String score)
     printtextcs(cx, cy, hometeam, hcolor, 16);
     cx = 0, cy = 106;
     printtextcs(cx, cy, awayteam, acolor, 16);
+
+    cx = 120 - (50 * (MATCHTIME.length() / 2)), cy = 120;
+    printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
     drawT7Segment(x, y, ihscore, sz, hcolor);                        // Position at (20,20) with size 10
     drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
@@ -311,6 +314,9 @@ void tsgmnt(String score)
     printtextcs(cx, cy, awayteam, TFT_BLACK, 16);
     // drawtext(awayteam, TFT_BLACK);
     printtextcs(cx, cy, awayteam, acolor, 16);
+
+    cx = 120 - (50 * (MATCHTIME.length() / 2)), cy = 120;
+    printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
     // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
     drawT7Segment(x, y, ihscore, sz, hcolor);                        // Position at (20,20) with size 10
