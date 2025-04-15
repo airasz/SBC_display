@@ -48,11 +48,12 @@ String rssmsg[300];
 String siteonread;
 bool noanim = false;
 bool animation = true;
+String MATCHTIME = "";
 
+// int httpGetChar();
 #define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
 
-int httpGetChar();
 const uint32_t COLOR_MEDIUM[] = {TFT_WHITE, TFT_BLUE, TFT_GREEN, TFT_YELLOW, TFT_GREENYELLOW, TFT_PINK, TFT_ORANGE, TFT_RED, TFT_CYAN, TFT_MAGENTA, TFT_PINK, TFT_SKYBLUE};
 
 const uint32_t COLORS_LIGHT[10] = {
@@ -70,6 +71,8 @@ String sfpt_r18 = "SFProText-Regular-18";
 String sfpd_r20 = "SFProDisplay-Regular-20";
 String sfpd_r24 = "SFProDisplay-Regular-24";
 String sfpd_r28 = "SFProDisplay-Regular-28";
+String sfpd_r56 = "SFProDisplay-Regular-56";
+String sfpd_r84 = "SFProDisplay-Regular-84";
 
 String scores = "";
 String homescore = "";
@@ -582,11 +585,12 @@ void proccesData(String data)
         homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
         awayscore = scores.substring(scores.indexOf("-") + 1);
         hometeam = data.substring(0, data.indexOf("vs"));
-        awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+        awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf("["));
         matchtime = awayteam.substring(data.indexOf("\n"));
         ihscore = homescore.toInt();
         iascore = awayscore.toInt();
-
+        MATCHTIME = data.substring(data.indexOf("[") + 1, data.indexOf("]"));
+        Serial.printf(" cx : %d \n", 120 - (50 * (MATCHTIME.length() / 2)));
         if (displaylivescore == 0)
           ssgmnt(homescore);
         else if (displaylivescore == 1)
@@ -761,6 +765,18 @@ void printtextcs(int x, int y,
   else if (fsize == 24)
   {
     tft.loadFont(sfpd_r24);
+  }
+  else if (fsize == 28)
+  {
+    tft.loadFont(sfpd_r28);
+  }
+  else if (fsize == 56)
+  {
+    tft.loadFont(sfpd_r56);
+  }
+  else if (fsize == 84)
+  {
+    tft.loadFont(sfpd_r84);
   }
   else
   {
