@@ -146,9 +146,10 @@ void setup(void) {
   // large block of text
   tft.fillScreen(TFT_BLACK);
   // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
-  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
+  // testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   //  testdrawtext(usbbaud, TFT_WHITE);
   //  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
+  printtextcs("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", COLOR_MEDIUM[random(12)], 16);
   delay(1000);
 
   digitalWrite(25, LOW);
@@ -565,7 +566,8 @@ void printtextbig(
   delay(25);
   tft.loadFont(sfpt_r14);
 }
-void printtextcs(int x, int y, String text, uint16_t color, uint8_t fsize) {
+void printtextcs(int x, int y,
+                 String text, uint16_t color, uint8_t fsize) {
 
   tft.unloadFont();
   delay(25);
@@ -583,6 +585,38 @@ void printtextcs(int x, int y, String text, uint16_t color, uint8_t fsize) {
     tft.loadFont(sfpd_r56);
   } else if (fsize == 84) {
     tft.loadFont(sfpd_r84);
+  } else {
+    tft.loadFont(sfpt_r16);
+  }
+  tft.setCursor(x, y);
+  tft.setTextWrap(true);
+  tft.setTextColor(color, TFT_BLACK);
+  // tft.print(oldsdata);
+  // tft.fillScreen(TFT_BLACK);
+  // tft.setTextColor(color, TFT_BLACK);
+
+  // tft.print(tl);
+  tft.print(text);
+  oldsdata = text;
+
+  tft.unloadFont();
+  delay(25);
+  tft.loadFont(sfpt_r14);
+}
+
+void printtextcs(
+  String text, uint16_t color, uint8_t fsize) {
+
+  tft.unloadFont();
+  delay(25);
+  if (fsize == 16) {
+    tft.loadFont(sfpt_r16);
+  } else if (fsize == 18) {
+    tft.loadFont(sfpt_r18);
+  } else if (fsize == 20) {
+    tft.loadFont(sfpd_r20);
+  } else if (fsize == 24) {
+    tft.loadFont(sfpd_r24);
   } else {
     tft.loadFont(sfpt_r16);
   }
@@ -604,7 +638,6 @@ void printtextcs(int x, int y, String text, uint16_t color, uint8_t fsize) {
   delay(25);
   tft.loadFont(sfpt_r14);
 }
-
 void setNote(String note) {
   for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++) {
     // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
