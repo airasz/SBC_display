@@ -244,19 +244,19 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
   {
     tmppaterns[i] = TenSegmenPaterns[number][i];
   }
-  if (!noanim && animation)
-    for (int i = 0; i < 10; i++) // random flicker animation before displaying the number
+  // if (!noanim && animation)
+  for (int i = 0; i < 10; i++) // random flicker animation before displaying the number
+  {
+    for (int i = 0; i < 10; i++)
     {
-      for (int i = 0; i < 10; i++)
-      {
-        bool state = random(2);
-        // Serial.print(state);
-        drawTSegment(x, y, tenSegment[i], state, size, col);
-        delay(5);
-      }
-      if (!noanim && animation)
-        delay(25);
+      bool state = random(2);
+      // Serial.print(state);
+      drawTSegment(x, y, tenSegment[i], state, size, col);
+      delay(5);
     }
+    if (!noanim && animation)
+      delay(ANIMATIONSPEED);
+  }
   for (int i = 0; i < 10; i++)
   {
     bool state = TenSegmenPaterns[number][i];
@@ -264,7 +264,7 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
     drawTSegment(x, y, tenSegment[i], state, size, col);
 
     if (!noanim && animation)
-      delay(75);
+      delay(ANIMATIONSPEED);
   }
 }
 // String old_score;

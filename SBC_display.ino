@@ -49,7 +49,7 @@ String siteonread;
 bool noanim = false;
 bool animation = true;
 String MATCHTIME = "";
-
+int ANIMATIONSPEED = 40;
 // int httpGetChar();
 #define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
@@ -289,8 +289,12 @@ void proccesJsonData(String data)
   {
     clockFace = doc["clockface"];
   }
-  if (doc.containsKey("beep"))
+  if (doc.containsKey("aspeed"))
   {
+    if (doc["aspeed"] > 0)
+      ANIMATIONSPEED = doc["aspeed"];
+    // else
+    // ANIMATIONSPEED = doc["anspeed"];
   }
   if (doc.containsKey("time"))
   {
@@ -339,7 +343,7 @@ void proccesCMD(String data)
     }
     else if (data.startsWith("setnote"))
     {
-      tft.fillScreen(TFT_BLACK);
+      // tft.fillScreen(TFT_BLACK);
       data = data.substring(8);
       // data.replace("\n", "");
       // data.replace("\r", "");
@@ -354,16 +358,12 @@ void proccesCMD(String data)
           // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
 
           tmpNOTE = notes[i].frequency;
-          nblinking = 1;
-          blinking = true;
-          blinkduration = 9;
-          startblink = 2;
-          endblink = 8;
-          angka = 0;
-          countblink = 0;
+          beep();
           Serial.println("start beeping " + notes[i].name);
           data = "";
-          prevmill2 = millis();
+          tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+          tft.setCursor(0, 230);
+          tft.setTextColor(TFT_GREENYELLOW);
           printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
           break;
         }
@@ -386,6 +386,23 @@ void proccesCMD(String data)
       prevmill2 = millis();
       return;
     }
+    else if (data.startsWith("aspeed"))
+    {
+      int idata = data.substring(7).toInt();
+      if (idata > 0)
+      {
+        ANIMATIONSPEED = idata;
+
+        // tft.fillScreen(TFT_BLACK);
+        tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+        tft.setCursor(0, 230);
+        tft.setTextColor(TFT_GREENYELLOW);
+        tft.printf("animation speed  : %d \n", ANIMATIONSPEED);
+
+        beep();
+      }
+      data = "";
+    }
     else if (data.startsWith("clockface"))
     {
       int idata = data.substring(10).toInt();
@@ -396,36 +413,20 @@ void proccesCMD(String data)
 
           tft.fillScreen(TFT_BLACK);
           clockFace = idata;
-          nblinking = 1;
-          blinking = true;
-          blinkduration = 9;
-          startblink = 9;
-          endblink = 10;
-          countblink = 0;
-          angka = 7;
+          beep();
           Serial.println("startblinking");
         }
       }
       data = "";
-      prevmill2 = millis();
-      return;
     }
     else if (data.startsWith("shakeface"))
     {
 
       tft.fillScreen(TFT_BLACK);
       clockFace = random(5);
-      nblinking = 1;
-      blinking = true;
-      blinkduration = 9;
-      startblink = 9;
-      endblink = 10;
-      countblink = 0;
-      angka = 7;
+      beep();
       Serial.println("startblinking");
       data = "";
-      prevmill2 = millis();
-      return;
     }
     else if (data.startsWith("settime"))
     {
@@ -433,16 +434,16 @@ void proccesCMD(String data)
       int m = data.substring(11, 13).toInt();
       int s = data.substring(14, 16).toInt();
       updateSecondhand = false;
-      nblinking = 1;
-      blinking = true;
-      blinkduration = 9;
-      startblink = 9;
-      endblink = 10;
-      countblink = 0;
-      angka = 7;
+      beep();
       Serial.println("startblinking");
       setTime(h, m, s, 2, 7, 2021);
       data = "";
+
+      tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+      tft.setCursor(0, 230);
+      tft.setTextColor(TFT_GREENYELLOW);
+      tft.printf("time set to %02d:%02d:%02d \n", h, m, s);
+      // printWordWrap("time set to " + String(h) + ":" + String(m) + ":" + String(s), COLOR_MEDIUM[random(12)]);
       // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
       //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
       prevmill2 = millis();
@@ -479,26 +480,21 @@ void proccesCMD(String data)
     }
     else if (data.startsWith("animation"))
     {
-      String sdata = data.substring(10);
+      String sdata = data.substring(10, 11);
+      Serial.printf("sdata  : %s \n", sdata.c_str());
       if (sdata == "1")
         animation = true;
       else
         animation = false;
       // animation = !animation;
-      nblinking = 1;
-      blinking = true;
-      blinkduration = 9;
-      startblink = 9;
-      endblink = 10;
-      countblink = 0;
-      angka = 7;
-      Serial.println("startblinking");
-      data = "";
-      prevmill2 = millis();
+      tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+      tft.setCursor(0, 230);
+      tft.setTextColor(TFT_GREENYELLOW);
       Serial.printf("animation  : %s \n", (animation) ? "true" : "false");
-      tft.fillScreen(TFT_BLACK);
+      // tft.fillScreen(TFT_BLACK);
       tft.printf("animation  : %s \n", (animation) ? "true" : "false");
       data = "";
+      beep();
       return;
     }
     else if (data.startsWith("dmode"))
@@ -531,6 +527,18 @@ void proccesCMD(String data)
 
     data = "";
   }
+}
+
+void beep()
+{
+
+  tone(BUZZER_PIN, tmpNOTE);
+  NEO.setPixelColor(0, NEO.Color(0, 0, 255));
+  NEO.show();
+  delay(100);
+  noTone(BUZZER_PIN);
+  NEO.setPixelColor(0, NEO.Color(0, 0, 0));
+  NEO.show();
 }
 
 void proccesData(String data)

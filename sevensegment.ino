@@ -266,7 +266,7 @@ void drawAnimatedDigit(int x, int y, int fsize, int digit, uint16_t color)
             }
         }
         if (!noanim && animation)
-            delay(60);
+            delay(ANIMATIONSPEED + 20);
     }
 }
 
@@ -340,7 +340,7 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
                     // delay(20);
                 }
                 if (!noanim && animation)
-                    delay(80);
+                    delay(ANIMATIONSPEED);
             }
             for (int j = 0; j < 3; j++)
             {
@@ -567,7 +567,7 @@ void displayDigitHW(int count)
                 //     break;
 
                 if (!noanim && animation)
-                    delay(40);
+                    delay(ANIMATIONSPEED);
             }
 
             // x_start += 39;
@@ -647,7 +647,7 @@ void displayDigitHW(int count)
                 //     break;
 
                 if (!noanim && animation)
-                    delay(40);
+                    delay(ANIMATIONSPEED);
             }
 
             // x_start += 39;
@@ -828,7 +828,7 @@ void displayDigitHW(int count)
                         // tft.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 4, colll);
                     }
                     if (!noanim && animation)
-                        delay(50);
+                        delay(ANIMATIONSPEED);
                 }
                 else
                 {
