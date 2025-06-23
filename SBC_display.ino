@@ -14,6 +14,7 @@
 #include "tft_setup.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
+
 StaticJsonDocument<200> doc;
 // #define SS_DISABLE 0x1062 // black
 
@@ -139,6 +140,26 @@ void setup(void)
       yield(); // Stay here twiddling thumbs waiting
   }
   Serial.println("\r\nInitialisation done.");
+
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM_readAnything(0, config); // get saved settings
+  if (config.magic_number != CONFIG_REVISION)
+  { // this will set it up for very first use
+
+    Serial.printf("magic wrong, was %ld, should be %ld\n", config.magic_number, CONFIG_REVISION);
+    config.magic_number = CONFIG_REVISION;
+
+    config.dmode = 0;
+
+    EEPROM_writeAnything(0, config);
+    int sz = sizeof(config);
+    Serial.print("config size used");
+    Serial.println(sz);
+    Serial.print("config size alocated");
+    Serial.println(EEPROM_SIZE);
+    EEPROM.commit();
+  }
+  dmode = config.dmode;
   // digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
@@ -272,6 +293,29 @@ void proccesJsonData(String data)
   {
     dmode = doc["dmode"];
   }
+  if (doc.containsKey("save"))
+  {
+    String vdata = doc["save"];
+    Serial.println(vdata);
+    if (vdata.startsWith("dmode"))
+    {
+      Serial.print("seave>");
+
+      int idata = vdata.substring(6).toInt();
+      Serial.printf("dmode = %d\n", idata);
+      if (idata >= 0 && idata <= 10)
+      {
+        dmode = idata;
+        EEPROM_writeAnything(0, config);
+        EEPROM.commit();
+        tft.fillScreen(TFT_BLACK);
+        tft.setCursor(0, 230);
+        tft.setTextColor(TFT_GREENYELLOW);
+        printWordWrap("dmode set to " + String(dmode), COLOR_MEDIUM[random(12)]);
+        beep();
+      }
+    }
+  }
   if (doc.containsKey("animation"))
   {
     animation = doc["animation"];
@@ -334,6 +378,29 @@ void proccesCMD(String data)
       printWordWrap("rotated", COLOR_MEDIUM[random(12)]);
       data = "";
       return;
+    }
+    else if (data.startsWith("save"))
+    {
+      String sdata = data.substring(6);
+      Serial.print("save> ");
+      Serial.println(sdata);
+      if (sdata.startsWith("dmode"))
+      {
+        int idata = data.substring(12).toInt();
+        Serial.printf("dmode = %d\n", idata);
+        if (idata >= 0 && idata <= 10)
+        {
+          dmode = idata;
+          config.dmode = dmode;
+          EEPROM_writeAnything(0, config);
+          EEPROM.commit();
+          tft.fillScreen(TFT_BLACK);
+          tft.setCursor(0, 230);
+          tft.setTextColor(TFT_GREENYELLOW);
+          printWordWrap("dmode set to " + String(dmode), COLOR_MEDIUM[random(12)]);
+          beep();
+        }
+      }
     }
     else if (data.startsWith("resetscreen"))
     {
@@ -892,3 +959,15 @@ void setNote(String note)
     }
   }
 }
+
+void writePref()
+{
+  EEPROM_writeAnything(0, config);
+  EEPROM.commit();
+} // end of writePref
+
+// function for readPref
+void readPref()
+{
+  EEPROM_readAnything(0, config); // get saved settings
+} // end of readPref
