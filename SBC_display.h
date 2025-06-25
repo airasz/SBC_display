@@ -1,13 +1,26 @@
 
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+#include <ESP8266Ping.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+
 #include <EEPROM.h>
 #include "EEPROM_rw_anything.h"
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
+const char *remote_host = "www.google.co.id";
+
+ESP8266WiFiMulti wifiMulti;
 #define EEPROM_SIZE 256
 #define CONFIG_REVISION 12349L
 typedef struct config_t
 {
-  long magic_number;
-  uint8_t dmode;
+    long magic_number;
+    uint8_t dmode;
 } CONFIGGEN;
 CONFIGGEN config;
 int sevensegment[7] = {0, 1, 2, 3, 4, 5, 6};

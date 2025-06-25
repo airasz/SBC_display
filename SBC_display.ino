@@ -160,6 +160,8 @@ void setup(void)
     EEPROM.commit();
   }
   dmode = config.dmode;
+  Serial.printf("dmode = %d\n", dmode);
+  // tb_display_print_String("\nConnecting to WiFi...", 20);
   // digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
@@ -169,10 +171,26 @@ void setup(void)
 
   // Use this initializer (uncomment) if you're using a 1.54" 240x240 TFT
   // tft.init(240, 240);   // initialize a ST7789 chip, 240x240 pixels
+  WiFi.begin("ASUS", "air46664");
+  // WiFi.begin("RMN20", "air46664");
+  // WiFi.begin("OFFLINE", "terbaik2025");
+  wifiMulti.addAP("OFFLINE", "terbaik2025");
+  wifiMulti.addAP("ASUS", "air46664");
+  wifiMulti.addAP("RMN20", "air46664");
+  tb_display_print_String("\nConnecting to WiFi...", 20);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    /* code */
 
+    Serial.print(".");
+    delay(200);
+  }
+
+  tb_display_print_String("\nsyncing to internet time", 20);
   tft.loadFont(sfpt_r14);
   Serial.println("Initialized");
 
+  syncTime();
   uint16_t time = millis();
   tft.fillScreen(TFT_BLACK);
   time = millis() - time;
@@ -195,6 +213,26 @@ void setup(void)
   noTone(BUZZER_PIN);
   // ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
   // ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+}
+
+void syncTime()
+{
+  if (Ping.ping(remote_host))
+  {
+    Serial.println("has internet");
+    timeClient.begin();
+    timeClient.setTimeOffset(3600 * 7);
+    timeClient.update();
+    // setSyncProvider(timeClient.getEpochTime());
+    // setTime(int hr, int min, int sec, int dy, int mnth, int yr)
+    Serial.println("has internet, sync device with internet time");
+    setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
+            timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
+  }
+  else
+  {
+    Serial.println("ping failed");
+  }
 }
 long prevmill = 0;
 String oldsdata;
@@ -249,6 +287,20 @@ void loop()
       if (oldss != second())
       {
         oldss = second();
+        if (oldss % 5 == 0)
+        {
+          if (year() == 1970)
+          {
+            syncTime();
+          }
+          else
+          {
+            if (WiFi.status() == WL_CONNECTED)
+            {
+              WiFi.mode(WIFI_OFF);
+            }
+          }
+        }
         if (minute() % 5 == 0 && second() == 0)
         {
           clockFace = random(5);
@@ -381,12 +433,12 @@ void proccesCMD(String data)
     }
     else if (data.startsWith("save"))
     {
-      String sdata = data.substring(6);
+      String sdata = data.substring(5);
       Serial.print("save> ");
       Serial.println(sdata);
       if (sdata.startsWith("dmode"))
       {
-        int idata = data.substring(12).toInt();
+        int idata = data.substring(11).toInt();
         Serial.printf("dmode = %d\n", idata);
         if (idata >= 0 && idata <= 10)
         {
