@@ -48,9 +48,10 @@ bool updateSecondhand = false;
 String rssmsg[300];
 String siteonread;
 bool noanim = false;
-bool animation = true;
+bool animation = false;
 String MATCHTIME = "";
 int ANIMATIONSPEED = 40;
+bool gosave = false;
 // int httpGetChar();
 #define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
@@ -84,6 +85,16 @@ String matchtime = "";
 int ihscore = 0; // home score in integer
 int iascore = 0; // away score in integer
 
+long prevmill = 0;
+String oldsdata;
+int tryrequest = 0;
+bool foundRadio = false;
+String data;
+char c;
+int toScreenSleep = 0;
+int maxWait = 20;
+String olddata = "";
+int clockFace = 3, oldClockFace = 0;
 const struct site_t
 {
   char *title;
@@ -150,6 +161,10 @@ void setup(void)
     config.magic_number = CONFIG_REVISION;
 
     config.dmode = 0;
+    config.animation = false;
+    config.note = "NOTE_A6";
+    config.clockFace = 3; // default clock face
+    config.aspeed = 40;   // default animation speed
 
     EEPROM_writeAnything(0, config);
     int sz = sizeof(config);
@@ -159,6 +174,9 @@ void setup(void)
     Serial.println(EEPROM_SIZE);
     EEPROM.commit();
   }
+  clockFace = config.clockFace;
+  animation = config.animation;
+  ANIMATIONSPEED = config.aspeed;
   dmode = config.dmode;
   Serial.printf("dmode = %d\n", dmode);
   // tb_display_print_String("\nConnecting to WiFi...", 20);
@@ -234,16 +252,6 @@ void syncTime()
     Serial.println("ping failed");
   }
 }
-long prevmill = 0;
-String oldsdata;
-int tryrequest = 0;
-bool foundRadio = false;
-String data;
-char c;
-int toScreenSleep = 0;
-int maxWait = 20;
-String olddata = "";
-int clockFace = 3, oldClockFace = 0;
 void fillacf()
 {
   for (int i = 0; i < 8; i++)
@@ -371,6 +379,9 @@ void proccesJsonData(String data)
   if (doc.containsKey("animation"))
   {
     animation = doc["animation"];
+    config.animation = animation;
+    EEPROM_writeAnything(0, config);
+    EEPROM.commit();
   }
   if (doc.containsKey("note"))
   {
@@ -443,13 +454,63 @@ void proccesCMD(String data)
         if (idata >= 0 && idata <= 10)
         {
           dmode = idata;
-          config.dmode = dmode;
-          EEPROM_writeAnything(0, config);
-          EEPROM.commit();
+          savepref();
           tft.fillScreen(TFT_BLACK);
           tft.setCursor(0, 230);
           tft.setTextColor(TFT_GREENYELLOW);
           printWordWrap("dmode set to " + String(dmode), COLOR_MEDIUM[random(12)]);
+          beep();
+        }
+      }
+      else if (sdata.startsWith("animation"))
+      {
+        String sdata = data.substring(15);
+        Serial.printf("sdata  : %s \n", sdata.c_str());
+        if (sdata == "1")
+          animation = true;
+        else
+          animation = false;
+        savepref();
+        tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+        tft.setCursor(0, 230);
+        tft.setTextColor(TFT_GREENYELLOW);
+        tft.printf("animation : %d \n", animation);
+      }
+      else if (sdata.startsWith("note"))
+      {
+        setNote(sdata.substring(5));
+        savepref();
+      }
+      else if (sdata.startsWith("clockface"))
+      {
+        int idata = sdata.substring(10).toInt();
+        if (idata < 5)
+        {
+          if (idata != clockFace)
+          {
+
+            tft.fillScreen(TFT_BLACK);
+            clockFace = idata;
+            savepref();
+            beep();
+            Serial.println("startblinking");
+          }
+        }
+      }
+      else if (sdata.startsWith("aspeed"))
+      {
+        int idata = sdata.substring(7).toInt();
+        if (idata > 0)
+        {
+          ANIMATIONSPEED = idata;
+          savepref();
+
+          // tft.fillScreen(TFT_BLACK);
+          tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+          tft.setCursor(0, 230);
+          tft.setTextColor(TFT_GREENYELLOW);
+          tft.printf("animation speed  : %d \n", ANIMATIONSPEED);
+
           beep();
         }
       }
@@ -477,6 +538,9 @@ void proccesCMD(String data)
           // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
 
           tmpNOTE = notes[i].frequency;
+          config.note = notes[i].name;
+          EEPROM_writeAnything(0, config);
+          EEPROM.commit();
           beep();
           Serial.println("start beeping " + notes[i].name);
           data = "";
@@ -605,6 +669,12 @@ void proccesCMD(String data)
         animation = true;
       else
         animation = false;
+      if (config.animation != animation)
+      {
+        config.animation = animation;
+        EEPROM_writeAnything(0, config);
+        EEPROM.commit();
+      }
       // animation = !animation;
       tft.fillRect(0, 230, 240, 10, TFT_BLACK);
       tft.setCursor(0, 230);
@@ -1009,6 +1079,23 @@ void setNote(String note)
       printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
       break;
     }
+  }
+}
+void savepref()
+{
+  if (gosave)
+  {
+    gosave = false;
+  }
+  if (config.dmode != dmode || config.animation != animation || config.note != tmpNOTE || config.clockFace != clockFace || config.aspeed != ANIMATIONSPEED)
+  {
+    config.dmode = dmode;
+    config.animation = animation;
+    config.note = tmpNOTE;
+    config.clockFace = clockFace;
+    config.aspeed = ANIMATIONSPEED;
+    writePref();
+    Serial.println("saved preferences");
   }
 }
 

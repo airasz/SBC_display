@@ -21,6 +21,10 @@ typedef struct config_t
 {
     long magic_number;
     uint8_t dmode;
+    bool animation;
+    String note;
+    uint8_t clockFace;
+    uint8_t aspeed; // animation speed
 } CONFIGGEN;
 CONFIGGEN config;
 int sevensegment[7] = {0, 1, 2, 3, 4, 5, 6};
