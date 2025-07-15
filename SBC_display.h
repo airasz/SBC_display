@@ -22,7 +22,7 @@ typedef struct config_t
     long magic_number;
     uint8_t dmode;
     bool animation;
-    String note;
+    uint16_t note;
     uint8_t clockFace;
     uint8_t aspeed; // animation speed
 } CONFIGGEN;

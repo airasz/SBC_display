@@ -162,7 +162,7 @@ void setup(void)
 
     config.dmode = 0;
     config.animation = false;
-    config.note = "NOTE_A6";
+    config.note = 2093;
     config.clockFace = 3; // default clock face
     config.aspeed = 40;   // default animation speed
 
@@ -174,6 +174,7 @@ void setup(void)
     Serial.println(EEPROM_SIZE);
     EEPROM.commit();
   }
+  tmpNOTE = config.note;
   clockFace = config.clockFace;
   animation = config.animation;
   ANIMATIONSPEED = config.aspeed;
@@ -192,9 +193,9 @@ void setup(void)
   WiFi.begin("ASUS", "air46664");
   // WiFi.begin("RMN20", "air46664");
   // WiFi.begin("OFFLINE", "terbaik2025");
-  wifiMulti.addAP("OFFLINE", "terbaik2025");
-  wifiMulti.addAP("ASUS", "air46664");
-  wifiMulti.addAP("RMN20", "air46664");
+  // wifiMulti.addAP("OFFLINE", "terbaik2025");
+  // wifiMulti.addAP("ASUS", "air46664");
+  // wifiMulti.addAP("RMN20", "air46664");
   tb_display_print_String("\nConnecting to WiFi...", 20);
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -208,25 +209,34 @@ void setup(void)
   tft.loadFont(sfpt_r14);
   Serial.println("Initialized");
 
+  // tft.fillScreen(TFT_BLACK);
   syncTime();
+  if (dmode == 10)
+  {
+    drawClockFace();
+    Serial.println("draw clock");
+  }
+  else
+  {
+    testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", COLOR_MEDIUM[random(10)]);
+  }
   uint16_t time = millis();
-  tft.fillScreen(TFT_BLACK);
   time = millis() - time;
 
   Serial.println(time, DEC);
   delay(500);
 
   // large block of text
-  tft.fillScreen(TFT_BLACK);
+  // tft.fillScreen(TFT_BLACK);
   // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
-  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
+  // testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   //  testdrawtext(usbbaud, TFT_WHITE);
   //  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   delay(1000);
   fillacf();
   // digitalWrite(25, LOW);
-  tft.fillScreen(TFT_BLACK);
-  testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
+  // tft.fillScreen(TFT_BLACK);
+  // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
   delay(200);
   noTone(BUZZER_PIN);
   // ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
@@ -359,15 +369,13 @@ void proccesJsonData(String data)
     Serial.println(vdata);
     if (vdata.startsWith("dmode"))
     {
-      Serial.print("seave>");
+      Serial.print("save>");
 
       int idata = vdata.substring(6).toInt();
       Serial.printf("dmode = %d\n", idata);
       if (idata >= 0 && idata <= 10)
       {
-        dmode = idata;
-        EEPROM_writeAnything(0, config);
-        EEPROM.commit();
+        savepref();
         tft.fillScreen(TFT_BLACK);
         tft.setCursor(0, 230);
         tft.setTextColor(TFT_GREENYELLOW);
@@ -379,13 +387,12 @@ void proccesJsonData(String data)
   if (doc.containsKey("animation"))
   {
     animation = doc["animation"];
-    config.animation = animation;
-    EEPROM_writeAnything(0, config);
-    EEPROM.commit();
+    // savepref();
   }
   if (doc.containsKey("note"))
   {
     setNote(doc["note"]);
+    // savepref();
   }
   if (doc.containsKey("rotation"))
   {
@@ -395,6 +402,7 @@ void proccesJsonData(String data)
   if (doc.containsKey("clockface"))
   {
     clockFace = doc["clockface"];
+    // savepref();
   }
   if (doc.containsKey("aspeed"))
   {
@@ -470,7 +478,7 @@ void proccesCMD(String data)
           animation = true;
         else
           animation = false;
-        savepref();
+        // savepref();
         tft.fillRect(0, 230, 240, 10, TFT_BLACK);
         tft.setCursor(0, 230);
         tft.setTextColor(TFT_GREENYELLOW);
@@ -479,7 +487,7 @@ void proccesCMD(String data)
       else if (sdata.startsWith("note"))
       {
         setNote(sdata.substring(5));
-        savepref();
+        // savepref();
       }
       else if (sdata.startsWith("clockface"))
       {
@@ -491,7 +499,7 @@ void proccesCMD(String data)
 
             tft.fillScreen(TFT_BLACK);
             clockFace = idata;
-            savepref();
+            // savepref();
             beep();
             Serial.println("startblinking");
           }
@@ -503,7 +511,7 @@ void proccesCMD(String data)
         if (idata > 0)
         {
           ANIMATIONSPEED = idata;
-          savepref();
+          // savepref();
 
           // tft.fillScreen(TFT_BLACK);
           tft.fillRect(0, 230, 240, 10, TFT_BLACK);
@@ -538,9 +546,9 @@ void proccesCMD(String data)
           // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
 
           tmpNOTE = notes[i].frequency;
-          config.note = notes[i].name;
-          EEPROM_writeAnything(0, config);
-          EEPROM.commit();
+          // config.note = notes[i].name;
+          // EEPROM_writeAnything(0, config);
+          // EEPROM.commit();
           beep();
           Serial.println("start beeping " + notes[i].name);
           data = "";
@@ -669,12 +677,12 @@ void proccesCMD(String data)
         animation = true;
       else
         animation = false;
-      if (config.animation != animation)
-      {
-        config.animation = animation;
-        EEPROM_writeAnything(0, config);
-        EEPROM.commit();
-      }
+      // if (config.animation != animation)
+      // {
+      //   config.animation = animation;
+      //   EEPROM_writeAnything(0, config);
+      //   EEPROM.commit();
+      // }
       // animation = !animation;
       tft.fillRect(0, 230, 240, 10, TFT_BLACK);
       tft.setCursor(0, 230);
@@ -691,7 +699,7 @@ void proccesCMD(String data)
       if (data == "dmode")
       {
         tft.fillScreen(TFT_BLACK);
-        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
 
         return;
       }
@@ -707,8 +715,10 @@ void proccesCMD(String data)
         // tft.setTextSize(2);
         Serial.printf("change display mode to : %d \n", dmode);
         tft.fillScreen(TFT_BLACK);
-        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
         // tft.setTextSize(1);
+
+        drawClockFace();
         data = "";
         return;
       }
@@ -1048,7 +1058,7 @@ void drawClockFace()
   }
   else
   {
-    if (second() % 5 == 0)
+    if (second() % 10 == 0)
     {
       digitFace(clockFace - 1);
     }
