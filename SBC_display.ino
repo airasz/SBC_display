@@ -52,6 +52,7 @@ bool animation = false;
 String MATCHTIME = "";
 int ANIMATIONSPEED = 40;
 bool gosave = false;
+bool forcedrawclock = false;
 // int httpGetChar();
 #define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
@@ -190,13 +191,13 @@ void setup(void)
 
   // Use this initializer (uncomment) if you're using a 1.54" 240x240 TFT
   // tft.init(240, 240);   // initialize a ST7789 chip, 240x240 pixels
+  tb_display_print_String("\nConnecting to WiFi...", 2);
   WiFi.begin("ASUS", "air46664");
   // WiFi.begin("RMN20", "air46664");
   // WiFi.begin("OFFLINE", "terbaik2025");
   // wifiMulti.addAP("OFFLINE", "terbaik2025");
   // wifiMulti.addAP("ASUS", "air46664");
   // wifiMulti.addAP("RMN20", "air46664");
-  tb_display_print_String("\nConnecting to WiFi...", 20);
   while (WiFi.status() != WL_CONNECTED)
   {
     /* code */
@@ -205,7 +206,7 @@ void setup(void)
     delay(200);
   }
 
-  tb_display_print_String("\nsyncing to internet time", 20);
+  tb_display_print_String("\nsyncing to internet time", 2);
   tft.loadFont(sfpt_r14);
   Serial.println("Initialized");
 
@@ -213,6 +214,7 @@ void setup(void)
   syncTime();
   if (dmode == 10)
   {
+    forcedrawclock = true;
     drawClockFace();
     Serial.println("draw clock");
   }
@@ -1058,9 +1060,10 @@ void drawClockFace()
   }
   else
   {
-    if (second() % 10 == 0)
+    if (second() % 10 == 0 || forcedrawclock)
     {
       digitFace(clockFace - 1);
+      forcedrawclock = false;
     }
   }
 }
