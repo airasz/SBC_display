@@ -9,6 +9,22 @@
 #include "note.h"
 #include "res.h"
 
+#include <EEPROM.h>
+#include "EEPROM_rw_anything.h"
+
+#define EEPROM_SIZE 256
+#define CONFIG_REVISION 12349L
+typedef struct config_t
+{
+  long magic_number;
+  uint8_t dmode;
+  bool animation;
+  uint16_t note;
+  // uint8_t clockFace;
+  uint8_t aspeed; // animation speed
+} CONFIGGEN;
+CONFIGGEN config;
+
 bool newline = false;
 // #include  <ESP8266WiFi.h>
 bool screenOR = true;
@@ -35,6 +51,7 @@ bool blinkstate = false;
 int blinkval = 255;
 int countblink = 16;
 bool animation = true;
+uint8_t ANIMATIONSPEED = 40; // 0-100
 
 const uint32_t COLORS_LIGHT[10] = {
     0xDB5B, 0x97E9, 0x8C7F, 0xFACC, 0xFFED,
@@ -114,6 +131,7 @@ int endmatch = 0;
 int startblink = 0;
 int endblink = 0;
 
+int dmode = 1;
 int tmpNOTE = 1123;
 #define usbbaud 115200
 // int dmode = 3;
@@ -129,8 +147,37 @@ void setup()
   pinMode(BUTTON_HOME, INPUT | PULLUP);
   pinMode(BUTTON_PIN, INPUT | PULLUP);
   pinMode(10, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), mode, RISING);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_HOME), resett, RISING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), resett, RISING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_HOME), mode, RISING);
+
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM_readAnything(0, config); // get saved settings
+  if (config.magic_number != CONFIG_REVISION)
+  { // this will set it up for very first use
+
+    Serial.printf("magic wrong, was %ld, should be %ld\n", config.magic_number, CONFIG_REVISION);
+    config.magic_number = CONFIG_REVISION;
+
+    config.dmode = 0;
+    config.animation = false;
+    config.note = 2093;
+    // config.clockFace = 3; // default clock face
+    config.aspeed = 40; // default animation speed
+
+    EEPROM_writeAnything(0, config);
+    int sz = sizeof(config);
+    Serial.print("config size used");
+    Serial.println(sz);
+    Serial.print("config size alocated");
+    Serial.println(EEPROM_SIZE);
+    EEPROM.commit();
+  }
+  tmpNOTE = config.note;
+  // clockFace = config.clockFace;
+  animation = config.animation;
+  ANIMATIONSPEED = config.aspeed;
+  dmode = config.dmode;
+  Serial.printf("dmode = %d\n", dmode);
 
   // M5.Lcd.SMOOTH_FONT();
   M5.Axp.ScreenBreath(50); // 0-100
@@ -155,7 +202,6 @@ void resett()
 {
   ESP.restart();
 }
-int dmode = 1;
 void mode()
 {
   dmode++;
@@ -167,6 +213,7 @@ void mode()
   M5.Lcd.setCursor(0, 0);
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode", dmode);
+  // delay(100);
   // M5.Lcd.setTextSize(1);
 }
 
@@ -185,14 +232,15 @@ void loop()
 
   ArduinoOTA.handle();
   M5.update();
-  if (M5.BtnA.wasPressed())
-  {
-    screenOR = !screenOR;
+  // if (M5.BtnA.wasPressed())
+  // {
+  //   screenOR = !screenOR;
 
-    M5.Lcd.setRotation((screenOR) ? 1 : 3);
-    // tb_display_init(screen_orientation);
-  }
-  // for (int i = 0; i < sizeof(sites) / sizeof(struct site_t); i++) {
+  //   M5.Lcd.setRotation((screenOR) ? 1 : 3);
+  //   // tb_display_init(screen_orientation);
+  // }
+
+    // for (int i = 0; i < sizeof(sites) / sizeof(struct site_t); i++) {
   //   Serial.print("size of site : ");
   //   Serial.println(sizeof(sites) / sizeof(struct site_t));
   //   // Serial.println("wifi status = ");
@@ -625,6 +673,79 @@ void proccesCMD(String data)
         return;
       }
     }
+    else if (data.startsWith("save"))
+    {
+      String sdata = data.substring(5);
+      Serial.print("save> ");
+      Serial.println(sdata);
+      if (sdata.startsWith("dmode"))
+      {
+        int idata = data.substring(11).toInt();
+        Serial.printf("dmode = %d\n", idata);
+        if (idata >= 0 && idata <= 10)
+        {
+          dmode = idata;
+          savepref();
+          M5.Lcd.fillScreen(TFT_BLACK);
+          M5.Lcd.setCursor(0, 230);
+          M5.Lcd.setTextColor(TFT_GREENYELLOW);
+          printWordWrap("dmode set to " + String(dmode), COLOR_MEDIUM[random(12)]);
+          beep();
+        }
+      }
+      else if (sdata.startsWith("animation"))
+      {
+        String sdata = data.substring(15);
+        Serial.printf("sdata  : %s \n", sdata.c_str());
+        if (sdata == "1")
+          animation = true;
+        else
+          animation = false;
+        // savepref();
+        M5.Lcd.fillRect(0, 230, 240, 10, TFT_BLACK);
+        M5.Lcd.setCursor(0, 230);
+        M5.Lcd.setTextColor(TFT_GREENYELLOW);
+        M5.Lcd.printf("animation : %d \n", animation);
+      }
+      else if (sdata.startsWith("note"))
+      {
+        setNote(sdata.substring(5));
+        // savepref();
+      }
+      // else if (sdata.startsWith("clockface"))
+      // {
+      //   int idata = sdata.substring(10).toInt();
+      //   if (idata < 5)
+      //   {
+      //     if (idata != clockFace)
+      //     {
+
+      //       M5.Lcd.fillScreen(TFT_BLACK);
+      //       clockFace = idata;
+      //       // savepref();
+      //       beep();
+      //       Serial.println("startblinking");
+      //     }
+      //   }
+      // }
+      else if (sdata.startsWith("aspeed"))
+      {
+        int idata = sdata.substring(7).toInt();
+        if (idata > 0)
+        {
+          ANIMATIONSPEED = idata;
+          // savepref();
+
+          // M5.Lcd.fillScreen(TFT_BLACK);
+          M5.Lcd.fillRect(0, 230, 240, 10, TFT_BLACK);
+          M5.Lcd.setCursor(0, 230);
+          M5.Lcd.setTextColor(TFT_GREENYELLOW);
+          M5.Lcd.printf("animation speed  : %d \n", ANIMATIONSPEED);
+
+          beep();
+        }
+      }
+    }
 
     data = "";
   }
@@ -906,3 +1027,66 @@ void cekIMU()
     M5.Lcd.setRotation(lastOrient);
   }
 }
+
+void beep()
+{
+
+  ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
+  digitalWrite(10, LOW);
+  delay(100);
+  ledcWrite(BUZZER_CHANNEL, 0);
+  digitalWrite(10, HIGH);
+}
+
+void setNote(String note)
+{
+  for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
+  {
+    // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
+
+    if (note.startsWith(notes[i].name))
+    {
+      // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);
+      // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
+
+      tmpNOTE = notes[i].frequency;
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 2;
+      endblink = 8;
+      angka = 0;
+      countblink = 0;
+      Serial.println("start beeping " + notes[i].name);
+      data = "";
+      prevmill2 = millis();
+      printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+      break;
+    }
+  }
+}
+void savepref()
+{
+  if (config.dmode != dmode || config.animation != animation || config.note != tmpNOTE || config.aspeed != ANIMATIONSPEED)
+  {
+    config.dmode = dmode;
+    config.animation = animation;
+    config.note = tmpNOTE;
+    // config.clockFace = clockFace;
+    config.aspeed = ANIMATIONSPEED;
+    writePref();
+    Serial.println("saved preferences");
+  }
+}
+
+void writePref()
+{
+  EEPROM_writeAnything(0, config);
+  EEPROM.commit();
+} // end of writePref
+
+// function for readPref
+void readPref()
+{
+  EEPROM_readAnything(0, config); // get saved settings
+} // end of readPref
