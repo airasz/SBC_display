@@ -257,8 +257,8 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
     if (!noanim && animation)
     {
       delay(ANIMATIONSPEED);
-      if (data.length() > 3)
-        return;
+      // if (data.length() > 3)
+      // return;
     }
   }
   for (int i = 0; i < 10; i++)
@@ -270,8 +270,8 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
     if (!noanim && animation)
     {
       delay(ANIMATIONSPEED);
-      if (data.length() > 3)
-        return;
+      // if (data.length() > 3)
+      // return;
     }
   }
 }

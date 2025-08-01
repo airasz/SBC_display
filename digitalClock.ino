@@ -126,8 +126,8 @@ void digitFace(int face)
                 if (!noanim && animation)
                 {
                     delay(8);
-                    if (data.length() > 3)
-                        return;
+                    // if (data.length() > 3)
+                    // return;
                 }
             }
 
@@ -213,8 +213,8 @@ void digitFace(int face)
                 if (!noanim && animation)
                 {
                     delay(8);
-                    if (data.length() > 3)
-                        return;
+                    // if (data.length() > 3)
+                    // return;
                 }
             }
             x_start += (5 * isize) + 55;
@@ -397,8 +397,8 @@ void digitFace(int face)
                     if (!noanim && animation)
                     {
                         delay(10);
-                        if (data.length() > 3)
-                            return;
+                        // if (data.length() > 3)
+                        // return;
                     }
                 }
                 else
@@ -515,8 +515,8 @@ void digitFace(int face)
                 if (!noanim && animation)
                 {
                     delay(8);
-                    if (data.length() > 3)
-                        return;
+                    // if (data.length() > 3)
+                    // return;
                 }
             }
 
