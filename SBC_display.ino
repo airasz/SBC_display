@@ -23,7 +23,7 @@ StaticJsonDocument<200> doc;
 #include <Adafruit_NeoPixel.h>
 #define NEOPIN PIN_D3
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
-int tmpNOTE = 110;
+int tmpNOTE = 440;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
 // an output. This is much faster - also required if you want
@@ -369,6 +369,9 @@ void proccesJsonData(String data)
   {
     String vdata = doc["save"];
     Serial.println(vdata);
+    tft.fillScreen(TFT_BLACK);
+    tft.setCursor(0, 0);
+    tft.printf("save> %s\n", vdata.c_str());
     if (vdata.startsWith("dmode"))
     {
       Serial.print("save>");
@@ -410,6 +413,7 @@ void proccesJsonData(String data)
   {
     if (doc["aspeed"] > 0)
       ANIMATIONSPEED = doc["aspeed"];
+    ANIMATIONSPEED = constrain(ANIMATIONSPEED, 4, 100);
     // else
     // ANIMATIONSPEED = doc["anspeed"];
   }
@@ -1060,7 +1064,7 @@ void drawClockFace()
   }
   else
   {
-    if (second() % 10 == 0 || forcedrawclock)
+    if (second() % 30 == 0 || forcedrawclock)
     {
       digitFace(clockFace - 1);
       forcedrawclock = false;
@@ -1072,7 +1076,8 @@ void setNote(String note)
   for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
   {
     // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
-
+    tmpNOTE = 440; // default note
+    // if (note.startsWith(notes[i].name))
     if (note.startsWith(notes[i].name))
     {
       // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);

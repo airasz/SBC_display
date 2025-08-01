@@ -112,7 +112,7 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
         drawSegment(x, y, sevensegment[i], state, size, col);
 
         if (!noanim && animation)
-            delay(75);
+            delay(ANIMATIONSPEED + 20);
     }
 }
 String old_score;

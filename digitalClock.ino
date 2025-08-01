@@ -124,7 +124,7 @@ void digitFace(int face)
                 //     break;
 
                 if (!noanim && animation)
-                    delay(40);
+                    delay(8);
             }
 
             // x_start += 39;
@@ -207,7 +207,7 @@ void digitFace(int face)
                 //     break;
 
                 if (!noanim && animation)
-                    delay(40);
+                    delay(8);
             }
             x_start += (5 * isize) + 55;
             if (pos == 1)
@@ -387,7 +387,7 @@ void digitFace(int face)
                             tft.drawBoldLine(xpath[i - 1], ypath[i - 1], xpath[i], ypath[i], 4, colll);
                     }
                     if (!noanim && animation)
-                        delay(50);
+                        delay(10);
                 }
                 else
                 {
@@ -501,7 +501,7 @@ void digitFace(int face)
                 //     break;
 
                 if (!noanim && animation)
-                    delay(40);
+                    delay(8);
             }
 
             // x_start += 39;
