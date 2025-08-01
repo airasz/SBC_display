@@ -255,7 +255,11 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
       delay(5);
     }
     if (!noanim && animation)
+    {
       delay(ANIMATIONSPEED);
+      if (data.length() > 3)
+        return;
+    }
   }
   for (int i = 0; i < 10; i++)
   {
@@ -264,7 +268,11 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
     drawTSegment(x, y, tenSegment[i], state, size, col);
 
     if (!noanim && animation)
+    {
       delay(ANIMATIONSPEED);
+      if (data.length() > 3)
+        return;
+    }
   }
 }
 // String old_score;

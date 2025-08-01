@@ -112,7 +112,11 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
         drawSegment(x, y, sevensegment[i], state, size, col);
 
         if (!noanim && animation)
+        {
             delay(ANIMATIONSPEED + 20);
+            if (data.length() > 3)
+                return;
+        }
     }
 }
 String old_score;
@@ -266,7 +270,11 @@ void drawAnimatedDigit(int x, int y, int fsize, int digit, uint16_t color)
             }
         }
         if (!noanim && animation)
+        {
             delay(ANIMATIONSPEED + 20);
+            if (data.length() > 3)
+                return;
+        }
     }
 }
 
@@ -340,7 +348,11 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
                     // delay(20);
                 }
                 if (!noanim && animation)
+                {
                     delay(ANIMATIONSPEED);
+                    if (data.length() > 3)
+                        return;
+                }
             }
             for (int j = 0; j < 3; j++)
             {
@@ -568,6 +580,8 @@ void displayDigitHW(int count)
 
                 if (!noanim && animation)
                     delay(ANIMATIONSPEED);
+                if (data.length() > 3)
+                    return;
             }
 
             // x_start += 39;
@@ -648,6 +662,8 @@ void displayDigitHW(int count)
 
                 if (!noanim && animation)
                     delay(ANIMATIONSPEED);
+                if (data.length() > 3)
+                    return;
             }
 
             // x_start += 39;
@@ -829,6 +845,8 @@ void displayDigitHW(int count)
                     }
                     if (!noanim && animation)
                         delay(ANIMATIONSPEED);
+                    if (data.length() > 3)
+                        return;
                 }
                 else
                 {
