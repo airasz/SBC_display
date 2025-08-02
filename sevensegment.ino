@@ -844,7 +844,7 @@ void displayDigitHW(int count)
                         // tft.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 4, colll);
                     }
                     if (!noanim && animation)
-                        delay(ANIMATIONSPEED);
+                        delay(ANIMATIONSPEED + 20);
                     // if (data.length() > 3)
                     // return;
                 }

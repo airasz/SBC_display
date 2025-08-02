@@ -176,9 +176,11 @@ void setup(void)
     EEPROM.commit();
   }
   tmpNOTE = config.note;
+  // setNote(config.note);
   clockFace = config.clockFace;
   animation = config.animation;
   ANIMATIONSPEED = config.aspeed;
+  ANIMATIONSPEED = constrain(ANIMATIONSPEED, 4, 60);
   dmode = config.dmode;
   Serial.printf("dmode = %d\n", dmode);
   // tb_display_print_String("\nConnecting to WiFi...", 20);
@@ -469,10 +471,7 @@ void proccesCMD(String data)
         {
           dmode = idata;
           savepref();
-          tft.fillScreen(TFT_BLACK);
-          tft.setCursor(0, 230);
-          tft.setTextColor(TFT_GREENYELLOW);
-          printWordWrap("dmode set to " + String(dmode), COLOR_MEDIUM[random(12)]);
+          snackBar("dmode : " + String(dmode));
           beep();
         }
       }
@@ -484,11 +483,8 @@ void proccesCMD(String data)
           animation = true;
         else
           animation = false;
-        // savepref();
-        tft.fillRect(0, 230, 240, 10, TFT_BLACK);
-        tft.setCursor(0, 230);
-        tft.setTextColor(TFT_GREENYELLOW);
-        tft.printf("animation : %d \n", animation);
+        snackBar("enable animation : " + String(animation));
+        beep();
       }
       else if (sdata.startsWith("note"))
       {
@@ -506,6 +502,7 @@ void proccesCMD(String data)
             tft.fillScreen(TFT_BLACK);
             clockFace = idata;
             // savepref();
+            snackBar("clock face : " + String(clockFace));
             beep();
             Serial.println("startblinking");
           }
@@ -517,18 +514,12 @@ void proccesCMD(String data)
         if (idata > 0)
         {
           ANIMATIONSPEED = idata;
-          // savepref();
-
-          // tft.fillScreen(TFT_BLACK);
-          tft.fillRect(0, 230, 240, 10, TFT_BLACK);
-          tft.setCursor(0, 230);
-          tft.setTextColor(TFT_GREENYELLOW);
-          tft.printf("animation speed  : %d \n", ANIMATIONSPEED);
-
+          snackBar("animation speed  : " + String(ANIMATIONSPEED));
           beep();
         }
       }
-    }
+      writePref();
+    } //============= end save================
     else if (data.startsWith("resetscreen"))
     {
       tft.fillScreen(TFT_BLACK);
@@ -589,13 +580,7 @@ void proccesCMD(String data)
       if (idata > 0)
       {
         ANIMATIONSPEED = idata;
-
-        // tft.fillScreen(TFT_BLACK);
-        tft.fillRect(0, 230, 240, 10, TFT_BLACK);
-        tft.setCursor(0, 230);
-        tft.setTextColor(TFT_GREENYELLOW);
-        tft.printf("animation speed  : %d \n", ANIMATIONSPEED);
-
+        snackBar("animation speed  : " + String(ANIMATIONSPEED));
         beep();
       }
       data = "";
@@ -636,10 +621,13 @@ void proccesCMD(String data)
       setTime(h, m, s, 2, 7, 2021);
       data = "";
 
-      tft.fillRect(0, 230, 240, 10, TFT_BLACK);
-      tft.setCursor(0, 230);
-      tft.setTextColor(TFT_GREENYELLOW);
-      tft.printf("time set to %02d:%02d:%02d \n", h, m, s);
+      // tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+      // tft.setCursor(0, 230);
+      // tft.setTextColor(TFT_GREENYELLOW);
+      // tft.printf("time set to %02d:%02d:%02d \n", h, m, s);
+      char info[40];
+      sprintf(info, "time set to %02d:%02d:%02d", h, m, s);
+      snackBar(info);
       // printWordWrap("time set to " + String(h) + ":" + String(m) + ":" + String(s), COLOR_MEDIUM[random(12)]);
       // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
       //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
@@ -683,19 +671,10 @@ void proccesCMD(String data)
         animation = true;
       else
         animation = false;
-      // if (config.animation != animation)
-      // {
-      //   config.animation = animation;
-      //   EEPROM_writeAnything(0, config);
-      //   EEPROM.commit();
-      // }
-      // animation = !animation;
-      tft.fillRect(0, 230, 240, 10, TFT_BLACK);
-      tft.setCursor(0, 230);
-      tft.setTextColor(TFT_GREENYELLOW);
-      Serial.printf("animation  : %s \n", (animation) ? "true" : "false");
-      // tft.fillScreen(TFT_BLACK);
-      tft.printf("animation  : %s \n", (animation) ? "true" : "false");
+      char info[40];
+      sprintf(info, "animation  : %s \n", (animation) ? "true" : "false");
+      snackBar(info);
+
       data = "";
       beep();
       return;
@@ -722,8 +701,11 @@ void proccesCMD(String data)
         Serial.printf("change display mode to : %d \n", dmode);
         tft.fillScreen(TFT_BLACK);
         tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
-        // tft.setTextSize(1);
+        // char info[40];
+        // sprintf(info, "dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
+        // snackBar(info);
 
+        // tft.setTextSize(1);
         drawClockFace();
         data = "";
         return;
@@ -858,59 +840,32 @@ void testdrawtext(char *text, uint16_t color)
 }
 void testdrawtext(String text, uint16_t color)
 {
-
-  tft.setCursor(cx, cy);
-  tft.setTextWrap(true);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
-  // tft.print(oldsdata);
   tft.fillScreen(TFT_BLACK);
   int tl = text.length();
   int cymr = map(tl, 10, 100, 80, 15);
   tft.setCursor(cx, random(1, cymr));
   tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
   tft.setTextWrap(true);
   tft.print(text);
   oldsdata = text;
-
-  // tft.unloadFont();
 }
 void drawtext(String text, uint16_t color)
 {
-
   tft.setCursor(cx, cy);
   tft.setTextWrap(true);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
-  // tft.print(oldsdata);
-  // tft.fillScreen(TFT_BLACK);
-  int tl = text.length();
-  int cymr = map(tl, 10, 100, 80, 15);
-  // tft.setCursor(cx, random(1, cymr));
   tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
-  tft.setTextWrap(true);
   tft.print(text);
   oldsdata = text;
-
-  // tft.unloadFont();
 }
+
 void printWordWrap(String text, uint16_t color)
 {
-
-  tft.setCursor(cx, cy);
-  // tft.printf("maxwait = %d\n", maxWait);
   tft.setTextWrap(true, false);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
-  // tft.print(oldsdata);
   tft.fillScreen(TFT_BLACK);
   int tl = text.length();
   int cymr = map(tl, 10, 100, 80, 15);
   tft.setCursor(cx, random(1, cymr));
   tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
   printSplitString(text, color);
 }
 void printSplitString(String text, uint16_t color)
@@ -939,20 +894,14 @@ void printtextbig(
   tft.unloadFont();
   delay(25);
   tft.loadFont(sfpd_r28);
-  tft.setCursor(cx, cy);
   tft.setTextWrap(true);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
-  // tft.print(oldsdata);
   tft.fillScreen(TFT_BLACK);
   int tl = text.length();
   int cymr = map(tl, 10, 100, 80, 15);
   tft.setCursor(cx, random(1, cymr));
   tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
   tft.print(text);
   oldsdata = text;
-
   tft.unloadFont();
   delay(25);
   tft.loadFont(sfpt_r14);
@@ -963,46 +912,27 @@ void printtextcs(int x, int y,
 
   tft.unloadFont();
   delay(25);
+
   if (fsize == 16)
-  {
     tft.loadFont(sfpt_r16);
-  }
   else if (fsize == 18)
-  {
     tft.loadFont(sfpt_r18);
-  }
   else if (fsize == 20)
-  {
     tft.loadFont(sfpd_r20);
-  }
   else if (fsize == 24)
-  {
     tft.loadFont(sfpd_r24);
-  }
   else if (fsize == 28)
-  {
     tft.loadFont(sfpd_r28);
-  }
   else if (fsize == 56)
-  {
     tft.loadFont(sfpd_r56);
-  }
   else if (fsize == 84)
-  {
     tft.loadFont(sfpd_r84);
-  }
   else
-  {
     tft.loadFont(sfpt_r16);
-  }
+
   tft.setCursor(x, y);
   tft.setTextWrap(true);
   tft.setTextColor(color, TFT_BLACK);
-  // tft.print(oldsdata);
-  // tft.fillScreen(TFT_BLACK);
-  // tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
   tft.print(text);
   oldsdata = text;
 
@@ -1018,39 +948,24 @@ void printtextcs(
   tft.unloadFont();
   delay(25);
   if (fsize == 16)
-  {
     tft.loadFont(sfpt_r16);
-  }
   else if (fsize == 18)
-  {
     tft.loadFont(sfpt_r18);
-  }
   else if (fsize == 20)
-  {
     tft.loadFont(sfpd_r20);
-  }
   else if (fsize == 24)
-  {
     tft.loadFont(sfpd_r24);
-  }
   else
-  {
     tft.loadFont(sfpt_r16);
-  }
   tft.setCursor(cx, cy);
   tft.setTextWrap(true);
-  // tft.setTextColor(TFT_BLACK, TFT_BLACK);
-  // tft.print(oldsdata);
   tft.fillScreen(TFT_BLACK);
   int tl = text.length();
   int cymr = map(tl, 10, 100, 80, 15);
   tft.setCursor(cx, random(1, cymr));
   tft.setTextColor(color, TFT_BLACK);
-
-  // tft.print(tl);
   tft.print(text);
   oldsdata = text;
-
   tft.unloadFont();
   delay(25);
   tft.loadFont(sfpt_r14);
@@ -1071,6 +986,7 @@ void drawClockFace()
     }
   }
 }
+
 void setNote(String note)
 {
   for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
@@ -1094,11 +1010,13 @@ void setNote(String note)
       Serial.println("start beeping " + notes[i].name);
       data = "";
       prevmill2 = millis();
-      printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+      // printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+      snackBar("note set to " + notes[i].name);
       break;
     }
   }
 }
+
 void savepref()
 {
   if (gosave)
@@ -1113,6 +1031,7 @@ void savepref()
     config.clockFace = clockFace;
     config.aspeed = ANIMATIONSPEED;
     writePref();
+    snackBar("saved preferences");
     Serial.println("saved preferences");
   }
 }
@@ -1128,3 +1047,11 @@ void readPref()
 {
   EEPROM_readAnything(0, config); // get saved settings
 } // end of readPref
+// bottom info
+void snackBar(String text)
+{
+  tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+  tft.setCursor(0, 230);
+  tft.setTextColor(TFT_GREENYELLOW);
+  tft.printf("%s\n", text.c_str());
+}
