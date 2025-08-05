@@ -183,16 +183,7 @@ void setup(void)
   ANIMATIONSPEED = constrain(ANIMATIONSPEED, 4, 60);
   dmode = config.dmode;
   Serial.printf("dmode = %d\n", dmode);
-  // tb_display_print_String("\nConnecting to WiFi...", 20);
-  // digitalWrite(25, HIGH);
-  // Use this initializer (uncomment) if you're using a 1.44" TFT
-  // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
 
-  // Use this initializer (uncomment) if you're using a 0.96" 180x60 TFT
-  // tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
-
-  // Use this initializer (uncomment) if you're using a 1.54" 240x240 TFT
-  // tft.init(240, 240);   // initialize a ST7789 chip, 240x240 pixels
   tb_display_print_String("\nConnecting to WiFi...", 2);
   WiFi.begin("ASUS", "air46664");
   // WiFi.begin("RMN20", "air46664");
@@ -202,9 +193,8 @@ void setup(void)
   // wifiMulti.addAP("RMN20", "air46664");
   while (WiFi.status() != WL_CONNECTED)
   {
-    /* code */
-
     Serial.print(".");
+    tb_display_print_String(".", 2);
     delay(200);
   }
 
@@ -230,21 +220,10 @@ void setup(void)
   Serial.println(time, DEC);
   delay(500);
 
-  // large block of text
-  // tft.fillScreen(TFT_BLACK);
-  // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
-  // testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
-  //  testdrawtext(usbbaud, TFT_WHITE);
-  //  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   delay(1000);
   fillacf();
-  // digitalWrite(25, LOW);
-  // tft.fillScreen(TFT_BLACK);
-  // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
   delay(200);
   noTone(BUZZER_PIN);
-  // ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
-  // ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
 }
 
 void syncTime()
@@ -310,19 +289,10 @@ void loop()
       {
         oldss = second();
         if (oldss % 5 == 0)
-        {
           if (year() == 1970)
-          {
             syncTime();
-          }
-          else
-          {
-            if (WiFi.status() == WL_CONNECTED)
-            {
-              WiFi.mode(WIFI_OFF);
-            }
-          }
-        }
+          else if (WiFi.status() == WL_CONNECTED)
+            WiFi.mode(WIFI_OFF);
         if (minute() % 5 == 0 && second() == 0)
         {
           clockFace = random(5);
@@ -335,18 +305,8 @@ void loop()
       // analogClock(0);
     }
     toScreenSleep++;
-    // if (toScreenSleep > 10)
-    // {
-    //   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
-    // }
-    // else
-    // Serial.printf("maxwait = %d", maxWait);
     if (toScreenSleep > maxWait)
-    {
       toScreenSleep = 0;
-      // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
-      // printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
-    }
     prevmill = millis();
   }
   beepnblink(); // beepnblink.ino
@@ -441,12 +401,7 @@ void proccesCMD(String data)
   if (data.length() > 3)
   {
 
-    //    Serial.println(data);
-    // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
-    // if (data.length() > 10)
-    //   maxWait = data.length() / 10
-    // else
     maxWait = (data.length() > 18) ? data.length() / 6 : 40;
     // tft.printf("maxwait = %d\n", maxWait);
     if (data.startsWith("rotation"))
@@ -539,13 +494,7 @@ void proccesCMD(String data)
 
         if (data.startsWith(notes[i].name))
         {
-          // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);
-          // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
-
           tmpNOTE = notes[i].frequency;
-          // config.note = notes[i].name;
-          // EEPROM_writeAnything(0, config);
-          // EEPROM.commit();
           beep();
           Serial.println("start beeping " + notes[i].name);
           data = "";
@@ -697,15 +646,10 @@ void proccesCMD(String data)
           dmode = dmod;
         // Serial.println("startblinking");
         tft.setCursor(0, 0);
-        // tft.setTextSize(2);
         Serial.printf("change display mode to : %d \n", dmode);
         tft.fillScreen(TFT_BLACK);
         tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
-        // char info[40];
-        // sprintf(info, "dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
-        // snackBar(info);
 
-        // tft.setTextSize(1);
         drawClockFace();
         data = "";
         return;
@@ -738,12 +682,7 @@ void proccesData(String data)
       noanim = true;
       data = data.substring(6);
     }
-    //    Serial.println(data);
-    // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
-    // if (data.length() > 10)
-    //   maxWait = data.length() / 10
-    // else
     maxWait = (data.length() > 18) ? data.length() / 6 : 40;
     // tft.printf("maxwait = %d\n", maxWait);
     if (data.startsWith("testnum"))
@@ -996,9 +935,6 @@ void setNote(String note)
     // if (note.startsWith(notes[i].name))
     if (note.startsWith(notes[i].name))
     {
-      // tone(BUZZER_PIN, notes[i].note, 500, BUZZER_CHANNEL);
-      // ledcWriteTone(BUZZER_CHANNEL, notes[i].note);
-
       tmpNOTE = notes[i].frequency;
       nblinking = 1;
       blinking = true;
