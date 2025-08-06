@@ -226,3 +226,5 @@ uint16_t blockColor[4] = {0, 0, 0, 0};
 int digitOrder[4] = {0, 1, 2, 3};
 int digitOrderSize = sizeof(digitOrder) / sizeof(digitOrder[0]);
 uint8_t digitOrderIndex = 0;
+
+String old_score;

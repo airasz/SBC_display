@@ -724,15 +724,36 @@ void proccesData(String data)
         ihscore = homescore.toInt();
         iascore = awayscore.toInt();
         MATCHTIME = data.substring(data.indexOf("[") + 1, data.indexOf("]"));
-        Serial.printf(" cx : %d \n", 120 - (50 * (MATCHTIME.length() / 2)));
-        if (displaylivescore == 0)
-          ssgmnt(homescore);
-        else if (displaylivescore == 1)
-          displayscore(homescore);
-        else if (displaylivescore == 2)
-          tsgmnt(homescore);
-        else if (displaylivescore == 3)
-          drawDigitLivescore(homescore);
+        // scores.replace(" ", "");
+        Serial.printf(" cx : %d \n", 120 - (50 * (scores.length() / 2)));
+        if (ihscore > 9 || iascore > 9)
+        {
+          if (scores != old_score)
+          {
+            tft.fillScreen(TFT_BLACK);
+            old_score = scores;
+          }
+          int cx = 0, cy = 0;
+          printtextcs(cx, cy, hometeam, COLOR_MEDIUM[random(12)], 16);
+          cx = 0, cy = 130;
+          printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(12)], 16);
+          cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
+          printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+
+          cx = 120 - ((50 * scores.length()) / 2), cy = 40;
+          printtextcs(cx, cy, scores, COLOR_MEDIUM[random(12)], 84);
+        }
+        else
+        {
+          if (displaylivescore == 0)
+            ssgmnt(homescore);
+          else if (displaylivescore == 1)
+            displayscore(homescore);
+          else if (displaylivescore == 2)
+            tsgmnt(homescore);
+          else if (displaylivescore == 3)
+            drawDigitLivescore(homescore);
+        }
         if (noanim)
           noanim = false;
         // ssgmnt(homescore);
