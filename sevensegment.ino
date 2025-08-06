@@ -119,7 +119,6 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
         }
     }
 }
-String old_score;
 void ssgmnt(String score)
 {
     hcolor = COLOR_MEDIUM[random(12)];
