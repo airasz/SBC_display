@@ -271,12 +271,6 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
 // String old_score;
 void tsgmnt(String score)
 {
-    String scores = data.substring(data.indexOf(">"));
-    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-    String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
 
     int hscore = homescore.toInt(); // home score
     int ascore = awayscore.toInt(); // away score

@@ -126,15 +126,8 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
         }
     }
 }
-String old_score;
 void ssgmnt(String score)
 {
-    String scores = data.substring(data.indexOf(">"));
-    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-    String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
 
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
@@ -481,11 +474,6 @@ void displayscore(String score)
 {
 
     tft.fillScreen(TFT_BLACK);
-    String scores = data.substring(data.indexOf(">"));
-    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-    String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
 
     // tft.setTextColor(TFT_GREENYELLOW);
     tft.setCursor(0, 0);

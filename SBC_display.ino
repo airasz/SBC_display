@@ -61,7 +61,19 @@ String sfpt_r18 = "SFProText-Regular-18";
 String sfpd_r20 = "SFProDisplay-Regular-20";
 String sfpd_r24 = "SFProDisplay-Regular-24";
 String sfpd_r28 = "SFProDisplay-Regular-28";
-const struct site_t
+String sfpd_r56 = "SFProDisplay-Regular-56";
+String sfpd_r84 = "SFProDisplay-Regular-84";
+
+String scores = "", old_score = "";
+String homescore = "";
+String awayscore = "";
+String hometeam = "";
+String awayteam = "";
+String matchtime = "";
+int ihscore = 0; // home score in integer
+int iascore = 0; // away score in integer
+String MATCHTIME = "";
+const struct site_tc
 {
   char *title;
   char *url;
@@ -362,7 +374,7 @@ void proccesData(String data)
       data = "";
       return;
     }
-    String homescore = data.substring(data.indexOf(">") + 2);
+    // String homescore = data.substring(data.indexOf(">") + 2);
     Serial.printf("dmode=%d\n", dmode);
     if (data.length() > 4)
       if (dmode == 0)
@@ -376,15 +388,49 @@ void proccesData(String data)
           displaylivescore = random(4);
           tft.fillScreen(TFT_BLACK);
         }
+
+        scores = data.substring(data.indexOf(">"));
+        homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+        awayscore = scores.substring(scores.indexOf("-") + 1);
+        hometeam = data.substring(0, data.indexOf("vs"));
+        // awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf("[")); // only awayteam
+        awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">")); // include minute progress
+        matchtime = awayteam.substring(data.indexOf("\n"));
+        ihscore = homescore.toInt();
+        iascore = awayscore.toInt();
+        MATCHTIME = data.substring(data.indexOf("[") + 1, data.indexOf("]"));
+
         maxWait = (data.length() > 10) ? data.length() / 2 : 80;
-        if (displaylivescore == 0)
-          ssgmnt(homescore);
-        else if (displaylivescore == 1)
-          displayscore(homescore);
-        else if (displaylivescore == 2)
-          tsgmnt(homescore);
-        else if (displaylivescore == 3)
-          drawDigitLivescore(homescore);
+
+        if (ihscore > 9 || iascore > 9)
+        {
+          if (scores != old_score)
+          {
+            tft.fillScreen(TFT_BLACK);
+            old_score = scores;
+          }
+          int cx = 0, cy = 0;
+          printtextcs(cx, cy, hometeam, COLOR_MEDIUM[random(12)], 16);
+          cx = 0, cy = 110;
+          printtextcs(cx, cy, awayteam, COLOR_MEDIUM[random(12)], 16);
+          // cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
+          // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+
+          // cx = 120 - ((34 * scores.length()) / 2), cy = 40;
+          cx = 0, cy = 20;
+          printtextcs(cx, cy, scores.substring(2), COLOR_MEDIUM[random(12)], 56);
+        }
+        else
+        {
+          if (displaylivescore == 0)
+            ssgmnt(homescore);
+          else if (displaylivescore == 1)
+            displayscore(homescore);
+          else if (displaylivescore == 2)
+            tsgmnt(homescore);
+          else if (displaylivescore == 3)
+            drawDigitLivescore(homescore);
+        }
 
         // ssgmnt(homescore);
 
@@ -566,6 +612,41 @@ void printtextbig(
   delay(25);
   tft.loadFont(sfpt_r14);
 }
+void printtextcs(int x, int y,
+                 String text, uint16_t color, uint8_t fsize)
+{
+
+  tft.unloadFont();
+  delay(25);
+
+  if (fsize == 16)
+    tft.loadFont(sfpt_r16);
+  else if (fsize == 18)
+    tft.loadFont(sfpt_r18);
+  else if (fsize == 20)
+    tft.loadFont(sfpd_r20);
+  else if (fsize == 24)
+    tft.loadFont(sfpd_r24);
+  else if (fsize == 28)
+    tft.loadFont(sfpd_r28);
+  else if (fsize == 56)
+    tft.loadFont(sfpd_r56);
+  else if (fsize == 84)
+    tft.loadFont(sfpd_r84);
+  else
+    tft.loadFont(sfpt_r16);
+
+  tft.setCursor(x, y);
+  tft.setTextWrap(true);
+  tft.setTextColor(color, TFT_BLACK);
+  tft.print(text);
+  oldsdata = text;
+
+  tft.unloadFont();
+  delay(25);
+  tft.loadFont(sfpt_r14);
+}
+
 void printtextcs(
     String text, uint16_t color, uint8_t fsize)
 {
