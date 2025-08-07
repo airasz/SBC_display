@@ -118,7 +118,12 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
     {
         bool state = bitRead(pattern, 6 - sevensegment[i]); // Bits are A to G (MSB to LSB)
         drawSegment(x, y, sevensegment[i], state, size, col);
-        delay(75);
+        if (!noanim && animation)
+        {
+            delay(ANIMATIONSPEED + 20);
+            // if (data.length() > 3)
+            // return;
+        }
     }
 }
 String old_score;
@@ -265,7 +270,12 @@ void drawAnimatedDigit(int x, int y, int fsize, int digit, uint16_t color)
                 }
             }
         }
-        delay(60);
+        if (!noanim && animation)
+        {
+            delay(ANIMATIONSPEED + 20);
+            // if (data.length() > 3)
+            // return;
+        }
     }
 }
 
@@ -338,7 +348,12 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
                     // tft.fillRoundRect((z * (sizee * 4)) + fromLeft + (j * sizee) + (j * space), fromTop + (i * sizee) + (i * space), sizee, sizee, Round, colors[random(2)]);
                     // delay(20);
                 }
-                delay(80);
+                if (!noanim && animation)
+                {
+                    delay(ANIMATIONSPEED);
+                    // if (data.length() > 3)
+                    // return;
+                }
             }
             for (int j = 0; j < 3; j++)
             {
@@ -592,7 +607,8 @@ void displayDigitHW(int count)
                 // if (!match)
                 //     break;
 
-                delay(40);
+                if (!noanim && animation)
+                    delay(ANIMATIONSPEED);
             }
 
             x_start += 39;
@@ -670,7 +686,8 @@ void displayDigitHW(int count)
                 // if (!match)
                 //     break;
 
-                delay(40);
+                if (!noanim && animation)
+                    delay(ANIMATIONSPEED);
             }
 
             x_start += 39;
@@ -849,7 +866,8 @@ void displayDigitHW(int count)
                         // tft.drawWideLine(xpath[-i], ypath[-i], xpath[i], ypath[i], 6, colll, bcoll);
                         // tft.drawBoldLine(xpath[i], ypath[i], xpath[i + 1], ypath[i + 1], 4, colll);
                     }
-                    delay(50);
+                    if (!noanim && animation)
+                        delay(ANIMATIONSPEED + 20);
                 }
                 else
                 {

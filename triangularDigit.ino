@@ -246,14 +246,26 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
             drawTSegment(x, y, tenSegment[i], state, size, col);
             delay(5);
         }
-        delay(25);
+
+        if (!noanim && animation)
+        {
+            delay(ANIMATIONSPEED);
+            // if (data.length() > 3)
+            // return;
+        }
     }
     for (int i = 0; i < 10; i++)
     {
         bool state = TenSegmenPaterns[number][i];
         // Serial.print(state);
         drawTSegment(x, y, tenSegment[i], state, size, col);
-        delay(75);
+
+        if (!noanim && animation)
+        {
+            delay(ANIMATIONSPEED);
+            // if (data.length() > 3)
+            // return;
+        }
     }
 }
 // String old_score;

@@ -9,7 +9,9 @@
 // #include <Tone32.h>
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
+#include <ArduinoJson.h>
 
+StaticJsonDocument<200> doc;
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
 #define TFT_CS 33
@@ -88,6 +90,9 @@ int startblink = 0;
 int endblink = 0;
 #define usbbaud 115200
 int dmode = 3;
+
+bool animation = false, noanim = false;
+int ANIMATIONSPEED = 20;
 void setup(void)
 {
   Serial.begin(115200);
@@ -169,6 +174,8 @@ void loop()
   {
     if (!data.startsWith("#"))
       proccesData(data);
+    else if (data.startsWith("$"))
+      proccesJsonData(data);
     else
       proccesCMD(data.substring(1));
     data = "";
@@ -409,6 +416,43 @@ void proccesData(String data)
   }
 }
 
+void proccesJsonData(String data)
+{
+  data.replace("$", "");
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    return;
+  }
+  if (doc.containsKey("dmode"))
+  {
+    dmode = doc["dmode"];
+  }
+  if (doc.containsKey("animation"))
+  {
+    animation = doc["animation"];
+    // savepref();
+  }
+  if (doc.containsKey("note"))
+  {
+    setNote(doc["note"]);
+    // savepref();
+  }
+  if (doc.containsKey("rotation"))
+  {
+    int sr = doc["rotation"];
+    tft.setRotation(sr);
+  }
+  if (doc.containsKey("aspeed"))
+  {
+    if (doc["aspeed"] > 0)
+      ANIMATIONSPEED = doc["aspeed"];
+    ANIMATIONSPEED = constrain(ANIMATIONSPEED, 4, 100);
+    // else
+    // ANIMATIONSPEED = doc["anspeed"];
+  }
+}
+
 int cx = 0, cy = 15;
 void testdrawtext(char *text, uint16_t color)
 {
@@ -565,4 +609,32 @@ void printtextcs(
   tft.unloadFont();
   delay(25);
   tft.loadFont(sfpt_r14);
+}
+void setNote(String note)
+{
+  for (int i = 0; i < sizeof(notes) / sizeof(struct Note); i++)
+  {
+    // Serial.printf("note : -%s- -%s-\n", data, notes[i].name);
+    tmpNOTE = 440; // default note
+    // if (note.startsWith(notes[i].name))
+    if (note.startsWith(notes[i].name))
+    {
+      tmpNOTE = notes[i].frequency;
+      nblinking = 1;
+      blinking = true;
+      blinkduration = 9;
+      startblink = 2;
+      endblink = 8;
+      angka = 0;
+      countblink = 0;
+      Serial.println("start beeping " + notes[i].name);
+      data = "";
+      prevmill2 = millis();
+      tft.setCursor(0, 118);
+      printWordWrap("note set to " + notes[i].name, COLOR_MEDIUM[random(12)]);
+      // snackBar("note set to " + notes[i].name);
+
+      break;
+    }
+  }
 }
