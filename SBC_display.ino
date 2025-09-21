@@ -7,10 +7,18 @@
 #include "tb_display.h"
 #include <SoftwareSerial.h>
 // #include <Tone32.h>
+#include "SD.h"
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
-
+SPIClass SPI_EXT;
+enum
+{
+  spi_sck = 18,
+  spi_miso = 26,
+  spi_mosi = 27,
+  spi_ss = 23
+};
 StaticJsonDocument<200> doc;
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
@@ -121,6 +129,44 @@ void setup(void)
     while (1)
       yield(); // Stay here twiddling thumbs waiting
   }
+
+  // SDカード初期化
+  if (!SD.begin(33))
+  {
+    tft.println("Card Mount Failed");
+    Serial.println("Card Mount Failed");
+    // return;
+  }
+  else
+  {
+    tft.println("SD Card Mount Success");
+    Serial.println("SD Card Mount Success");
+  }
+  uint8_t cardType = SD.cardType();
+  if (cardType == CARD_NONE)
+  {
+    tft.println("No SD card attached");
+    // return;
+  }
+  Serial.print("SD Card Type: ");
+  if (cardType == CARD_MMC)
+  {
+    Serial.println("MMC");
+  }
+  else if (cardType == CARD_SD)
+  {
+    Serial.println("SDSC");
+  }
+  else if (cardType == CARD_SDHC)
+  {
+    Serial.println("SDHC");
+  }
+  else
+  {
+    Serial.println("UNKNOWN");
+  }
+  uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+  Serial.printf("SD Card Size: %lluMB\n", cardSize);
   Serial.println("\r\nInitialisation done.");
   digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
