@@ -2,9 +2,12 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
-#include <ESP8266Ping.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
+#include <ESP32Ping.h>
+// #include <ESP8266WiFi.h>#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <WiFiClient.h>
+#include <HTTPClient.h>
+#include <WiFiMulti.h>
 
 #include <EEPROM.h>
 #include "EEPROM_rw_anything.h"
@@ -14,7 +17,7 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 const char *remote_host = "www.google.co.id";
 
-ESP8266WiFiMulti wifiMulti;
+WiFiMulti wifiMulti;
 #define EEPROM_SIZE 256
 #define CONFIG_REVISION 12349L
 typedef struct config_t

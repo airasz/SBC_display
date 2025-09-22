@@ -18,10 +18,10 @@
 StaticJsonDocument<200> doc;
 // #define SS_DISABLE 0x1062 // black
 
-#define SS_DISABLE 0 // black
+// #define SS_DISABLE 0 // black
 
 #include <Adafruit_NeoPixel.h>
-#define NEOPIN PIN_D3
+#define NEOPIN 6 // PIN_D3
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 int tmpNOTE = 440;
 // Option 1 (recommended): must use the hardware SPI pins
@@ -54,7 +54,7 @@ int ANIMATIONSPEED = 40;
 bool gosave = false;
 bool forcedrawclock = false;
 // int httpGetChar();
-#define BUZZER_PIN PIN_D2
+#define BUZZER_PIN 8
 #define BUZZER_CHANNEL 0
 
 const uint32_t COLOR_MEDIUM[] = {TFT_WHITE, TFT_BLUE, TFT_GREEN, TFT_YELLOW, TFT_GREENYELLOW, TFT_PINK, TFT_ORANGE, TFT_RED, TFT_CYAN, TFT_MAGENTA, TFT_PINK, TFT_SKYBLUE};
@@ -65,7 +65,7 @@ const uint32_t COLORS_LIGHT[10] = {
 const uint32_t COLORS_DARK[10] = {
     0x2004, 0x0920, 0x0808, 0x4005, 0x0900,
     0x00E4, 0x280D, 0x20C0, 0x0006, 0x3000};
-uint16 analogClockProps[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint16_t analogClockProps[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 String nsb15 = "NotoSansBold15";
 String sui14 = "SegoeUI-14";
 String sfpt_r14 = "SFProText-Regular-14";
