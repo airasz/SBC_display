@@ -11,7 +11,7 @@
 
 #include <EEPROM.h>
 #include "EEPROM_rw_anything.h"
-
+#include "LittleFS.h"
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 

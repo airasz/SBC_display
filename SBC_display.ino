@@ -1,8 +1,8 @@
-// board: esp8266
-//  methode: usb or software serial
+// board: esp32-c3, littleFS, 1.2APP/1.5DATA
+// methode: usb or software serial
 
 #include <SPI.h>
-#define FS_NO_GLOBALS
+// #define FS_NO_GLOBALS
 #include <FS.h>
 #include "tb_display.h"
 #include <SoftwareSerial.h>
@@ -124,7 +124,7 @@ int endmatch = 0;
 int startblink = 0;
 int endblink = 0;
 #define usbbaud 115200
-int dmode = 3;
+int dmode = 10;
 void setup(void)
 {
   Serial.begin(115200);
@@ -139,18 +139,22 @@ void setup(void)
   NEO.show();
   Serial.print("Hello! ST77xx TFT Test");
   // pinMode(25, OUTPUT);
-  pinMode(12, OUTPUT);
+  pinMode(8, OUTPUT);
 
   // tone(BUZZER_PIN, tmpNOTE);
+  Serial.print("tb init");
   tb_display_init(1);
+  Serial.print("after tb init");
   tft.init();
   tft.setRotation(0);
-  if (!SPIFFS.begin())
+  if (!LittleFS.begin())
   {
-    Serial.println("SPIFFS initialisation failed!");
+    Serial.println("LittleFS initialisation failed!");
     while (1)
       yield(); // Stay here twiddling thumbs waiting
   }
+
+  // listFiles(); // Lists the files so you can see what is in the SPIFFS
   Serial.println("\r\nInitialisation done.");
 
   EEPROM.begin(EEPROM_SIZE);
@@ -199,7 +203,7 @@ void setup(void)
   }
 
   tb_display_print_String("\nsyncing to internet time", 2);
-  tft.loadFont(sfpt_r14);
+  tft.loadFont(sfpt_r14, LittleFS);
   Serial.println("Initialized");
 
   // tft.fillScreen(TFT_BLACK);
@@ -212,7 +216,7 @@ void setup(void)
   }
   else
   {
-    testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", COLOR_MEDIUM[random(10)]);
+    testdrawtext("USB serial screen for pi-radio, \nbaud = 115200\nWaiting for incoming signal...", COLOR_MEDIUM[random(10)]);
   }
   uint16_t time = millis();
   time = millis() - time;
@@ -223,7 +227,9 @@ void setup(void)
   delay(1000);
   fillacf();
   delay(200);
-  noTone(BUZZER_PIN);
+  // noTone(BUZZER_PIN);c
+  ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
+  ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
 }
 
 void syncTime()
@@ -633,7 +639,7 @@ void proccesCMD(String data)
       if (data == "dmode")
       {
         tft.fillScreen(TFT_BLACK);
-        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n2 clock", dmode);
+        tft.printf("dmode=%d\n0 livescore\n1 typing mode\n2 statis mode\n10 clock", dmode);
 
         return;
       }
@@ -853,7 +859,7 @@ void printtextbig(
 
   tft.unloadFont();
   delay(25);
-  tft.loadFont(sfpd_r28);
+  tft.loadFont(sfpd_r28, LittleFS);
   tft.setTextWrap(true);
   tft.fillScreen(TFT_BLACK);
   int tl = text.length();
@@ -864,7 +870,7 @@ void printtextbig(
   oldsdata = text;
   tft.unloadFont();
   delay(25);
-  tft.loadFont(sfpt_r14);
+  tft.loadFont(sfpt_r14, LittleFS);
 }
 void printtextcs(int x, int y,
                  String text, uint16_t color, uint8_t fsize)
@@ -874,21 +880,21 @@ void printtextcs(int x, int y,
   delay(25);
 
   if (fsize == 16)
-    tft.loadFont(sfpt_r16);
+    tft.loadFont(sfpt_r16, LittleFS);
   else if (fsize == 18)
-    tft.loadFont(sfpt_r18);
+    tft.loadFont(sfpt_r18, LittleFS);
   else if (fsize == 20)
-    tft.loadFont(sfpd_r20);
+    tft.loadFont(sfpd_r20, LittleFS);
   else if (fsize == 24)
-    tft.loadFont(sfpd_r24);
+    tft.loadFont(sfpd_r24, LittleFS);
   else if (fsize == 28)
-    tft.loadFont(sfpd_r28);
+    tft.loadFont(sfpd_r28, LittleFS);
   else if (fsize == 56)
-    tft.loadFont(sfpd_r56);
+    tft.loadFont(sfpd_r56, LittleFS);
   else if (fsize == 84)
-    tft.loadFont(sfpd_r84);
+    tft.loadFont(sfpd_r84, LittleFS);
   else
-    tft.loadFont(sfpt_r16);
+    tft.loadFont(sfpt_r16, LittleFS);
 
   tft.setCursor(x, y);
   tft.setTextWrap(true);
@@ -898,7 +904,7 @@ void printtextcs(int x, int y,
 
   tft.unloadFont();
   delay(25);
-  tft.loadFont(sfpt_r14);
+  tft.loadFont(sfpt_r14, LittleFS);
 }
 
 void printtextcs(
@@ -908,15 +914,15 @@ void printtextcs(
   tft.unloadFont();
   delay(25);
   if (fsize == 16)
-    tft.loadFont(sfpt_r16);
+    tft.loadFont(sfpt_r16, LittleFS);
   else if (fsize == 18)
-    tft.loadFont(sfpt_r18);
+    tft.loadFont(sfpt_r18, LittleFS);
   else if (fsize == 20)
-    tft.loadFont(sfpd_r20);
+    tft.loadFont(sfpd_r20, LittleFS);
   else if (fsize == 24)
-    tft.loadFont(sfpd_r24);
+    tft.loadFont(sfpd_r24, LittleFS);
   else
-    tft.loadFont(sfpt_r16);
+    tft.loadFont(sfpt_r16, LittleFS);
   tft.setCursor(cx, cy);
   tft.setTextWrap(true);
   tft.fillScreen(TFT_BLACK);
@@ -928,7 +934,7 @@ void printtextcs(
   oldsdata = text;
   tft.unloadFont();
   delay(25);
-  tft.loadFont(sfpt_r14);
+  tft.loadFont(sfpt_r14, LittleFS);
 }
 
 void drawClockFace()
