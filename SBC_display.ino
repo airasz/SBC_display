@@ -54,7 +54,7 @@ int ANIMATIONSPEED = 40;
 bool gosave = false;
 bool forcedrawclock = false;
 // int httpGetChar();
-#define BUZZER_PIN 8
+#define BUZZER_PIN 6
 #define BUZZER_CHANNEL 0
 
 const uint32_t COLOR_MEDIUM[] = {TFT_WHITE, TFT_BLUE, TFT_GREEN, TFT_YELLOW, TFT_GREENYELLOW, TFT_PINK, TFT_ORANGE, TFT_RED, TFT_CYAN, TFT_MAGENTA, TFT_PINK, TFT_SKYBLUE};
@@ -230,6 +230,7 @@ void setup(void)
   // noTone(BUZZER_PIN);c
   ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
   ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+  beep();
 }
 
 void syncTime()
