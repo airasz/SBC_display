@@ -7,7 +7,7 @@ void beepnblink()
         {
             if (blinking)
             {
-                countblink++;
+                // countblink++;
                 // analogWrite(12, 255);
                 // if (countblink > nblinking)
                 // {
@@ -27,20 +27,24 @@ void beepnblink()
                 //     // tone(BUZZER_PIN, tmpNOTE);
                 // }
 
-                if (blinking)
+                
+            }
+            if (blinking)
                 {
                     countblink++;
-                    analogWrite(12, 0);
-                    ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
+                    // analogWrite(12, 0);
+                    // ledcWriteTone(BUZZER_CHANNEL, tmpNOTE);
+                    tone(BUZZER_PIN, tmpNOTE);
+
                     if (countblink > nblinking)
                     {
                         blinking = false;
-                        analogWrite(12, 0);
+                        // analogWrite(12, 0);
                         countblink = 0;
-                        ledcWrite(BUZZER_CHANNEL, 0);
+                        // ledcWrite(BUZZER_CHANNEL, 0);
+                        noTone(BUZZER_PIN);
                     }
                 }
-            }
         }
         if (angka == endblink)
         {
@@ -49,8 +53,8 @@ void beepnblink()
                 // analogWrite(12, 0);
                 NEO.setPixelColor(0, 0);
                 NEO.show();
-                ledcWrite(BUZZER_CHANNEL, 0);
-                // noTone(BUZZER_PIN);
+                // ledcWrite(BUZZER_CHANNEL, 0);
+                noTone(BUZZER_PIN);
                 if (endmatch == 2)
                 {
                     Serial.println("endmatch == 2");

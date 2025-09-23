@@ -21,7 +21,7 @@ StaticJsonDocument<200> doc;
 // #define SS_DISABLE 0 // black
 
 #include <Adafruit_NeoPixel.h>
-#define NEOPIN 6 // PIN_D3
+#define NEOPIN 3 // PIN_D3
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 int tmpNOTE = 440;
 // Option 1 (recommended): must use the hardware SPI pins
@@ -525,7 +525,7 @@ void proccesCMD(String data)
       endblink = 10;
       countblink = 0;
       angka = 7;
-      Serial.println("startblinking");
+      Serial.printf("startblinking %d\n", nblinking);
       data = "";
       prevmill2 = millis();
       return;
