@@ -241,12 +241,12 @@ void loop()
   }
   if (data.length() > 0)
   {
-    if (!data.startsWith("#"))
-      proccesData(data);
+    if (data.startsWith("#"))
+      proccesCMD(data);
     else if (data.startsWith("$"))
       proccesJsonData(data);
     else
-      proccesCMD(data.substring(1));
+      proccesData(data);
     data = "";
   }
   if (millis() > prevmill + 1000)
@@ -521,6 +521,7 @@ void proccesData(String data)
 
 void proccesJsonData(String data)
 {
+  Serial.println("its json data");
   data.replace("$", "");
   DeserializationError error = deserializeJson(doc, data);
   if (error)
@@ -529,7 +530,7 @@ void proccesJsonData(String data)
   }
   if (doc.containsKey("dmode"))
   {
-    dmode = doc["dmode"];
+    dmode = doc["dmode"].as<int>();
   }
   if (doc.containsKey("animation"))
   {
