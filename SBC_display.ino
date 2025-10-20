@@ -7,6 +7,8 @@
 #include "tb_display.h"
 #include <SoftwareSerial.h>
 // #include <Tone32.h>
+
+#include <TimeLib.h>
 #include "SD.h"
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
@@ -116,6 +118,7 @@ int dmode = 3;
 
 bool animation = false, noanim = false;
 int ANIMATIONSPEED = 20;
+int count10 = 0;
 void setup(void)
 {
   Serial.begin(115200);
@@ -251,6 +254,11 @@ void loop()
   }
   if (millis() > prevmill + 1000)
   {
+    if (count10++ > 10)
+    {
+      if (dmode == 10)
+        displayClock;
+    }
     toScreenSleep++;
     // if (toScreenSleep > 10)
     // {
@@ -385,7 +393,7 @@ void proccesCMD(String data)
       else
       {
         int dmod = data.substring(6).toInt();
-        if (dmod < 3)
+        if (dmod < 3 || dmod == 10)
           dmode = dmod;
         // Serial.println("startblinking");
         tft.setCursor(0, 0);
@@ -397,6 +405,29 @@ void proccesCMD(String data)
         data = "";
         return;
       }
+    }
+    else if (data.startsWith("settime"))
+    {
+      int h = data.substring(8, 10).toInt();
+      int m = data.substring(11, 13).toInt();
+      int s = data.substring(14, 16).toInt();
+      // beep();
+      Serial.println("startblinking");
+      setTime(h, m, s, 2, 7, 2025);
+      data = "";
+
+      // tft.fillRect(0, 230, 240, 10, TFT_BLACK);
+      // tft.setCursor(0, 230);
+      // tft.setTextColor(TFT_GREENYELLOW);
+      // tft.printf("time set to %02d:%02d:%02d \n", h, m, s);
+      // char info[40];
+      // sprintf(info, "time set to %02d:%02d:%02d", h, m, s);
+      // snackBar(info);
+      // printWordWrap("time set to " + String(h) + ":" + String(m) + ":" + String(s), COLOR_MEDIUM[random(12)]);
+      // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
+      //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
+      // prevmill2 = millis();
+      return;
     }
 
     data = "";
