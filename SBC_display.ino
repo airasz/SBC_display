@@ -11,6 +11,9 @@
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
+#include <Adafruit_NeoPixel.h>
+#define NEOPIN 12 // PIN_D3
+Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 SPIClass SPI_EXT;
 enum
 {
@@ -129,6 +132,12 @@ void setup(void)
     while (1)
       yield(); // Stay here twiddling thumbs waiting
   }
+  NEO.begin();
+  NEO.show();
+  // NEO.setPixelColor(0, 0);
+  NEO.setPixelColor(0, NEO.Color(170, 0, 0));
+  // NEO.show();
+  NEO.show();
 
   // SDカード初期化
   if (!SD.begin(33))
@@ -196,6 +205,8 @@ void setup(void)
   //  testdrawtext("USB serial screen fo pi-radio, baud = 115200\nWaiting for incoming signal...", TFT_WHITE);
   delay(1000);
 
+  NEO.setPixelColor(0, 0);
+  NEO.show();
   digitalWrite(25, LOW);
   tft.fillScreen(TFT_BLACK);
   testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(10)]);
