@@ -13,6 +13,11 @@
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
+
+Adafruit_MPU6050 mpu;
 #include <Adafruit_NeoPixel.h>
 #define NEOPIN 12 // PIN_D3
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -99,7 +104,7 @@ const struct site_tc
 char *url = "http://192.168.10.232/radio/oradio.php?cmd=status";
 String sdata;
 
-SoftwareSerial serial(21, 19);
+SoftwareSerial serial(4, 19);
 
 long prevmill2 = 0;
 long prevmill3 = 0;
@@ -118,7 +123,7 @@ int dmode = 3;
 
 bool animation = false, noanim = false;
 int ANIMATIONSPEED = 20;
-int count10 = 0;
+int count10 = 0, count2 = 0;
 void setup(void)
 {
   Serial.begin(115200);
@@ -135,6 +140,7 @@ void setup(void)
     while (1)
       yield(); // Stay here twiddling thumbs waiting
   }
+  setupMPU();
   NEO.begin();
   NEO.show();
   // NEO.setPixelColor(0, 0);
@@ -216,7 +222,102 @@ void setup(void)
 
   ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
   ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+  startUpMelody2();
   // noTone(BUZZER_PIN);
+} // void setup
+void startUpMelody2()
+{
+  int melody[] = {2093, 2637, 3136};
+  int noteDurations[] = {200, 200, 200};
+  for (int thisNote = 0; thisNote < 3; thisNote++)
+  {
+    // int noteDuration = 1000 / noteDurations[thisNote];
+    tone(BUZZER_PIN, melody[thisNote], noteDurations[thisNote]);
+    // digitalWrite(8, LOW);
+    // delay(noteDuration * 1.30);
+    // noTone(BUZZER_PIN);
+    // digitalWrite(8, HIGH);
+    // delay(50);
+  }
+  noTone(BUZZER_PIN);
+}
+void setupMPU()
+{
+  // Try to initialize!
+  if (!mpu.begin())
+  {
+    Serial.println("Failed to find MPU6050 chip");
+    while (1)
+    {
+      delay(10);
+    }
+  }
+  Serial.println("MPU6050 Found!");
+
+  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+  Serial.print("Accelerometer range set to: ");
+  switch (mpu.getAccelerometerRange())
+  {
+  case MPU6050_RANGE_2_G:
+    Serial.println("+-2G");
+    break;
+  case MPU6050_RANGE_4_G:
+    Serial.println("+-4G");
+    break;
+  case MPU6050_RANGE_8_G:
+    Serial.println("+-8G");
+    break;
+  case MPU6050_RANGE_16_G:
+    Serial.println("+-16G");
+    break;
+  }
+  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+  Serial.print("Gyro range set to: ");
+  switch (mpu.getGyroRange())
+  {
+  case MPU6050_RANGE_250_DEG:
+    Serial.println("+- 250 deg/s");
+    break;
+  case MPU6050_RANGE_500_DEG:
+    Serial.println("+- 500 deg/s");
+    break;
+  case MPU6050_RANGE_1000_DEG:
+    Serial.println("+- 1000 deg/s");
+    break;
+  case MPU6050_RANGE_2000_DEG:
+    Serial.println("+- 2000 deg/s");
+    break;
+  }
+
+  mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+  Serial.print("Filter bandwidth set to: ");
+  switch (mpu.getFilterBandwidth())
+  {
+  case MPU6050_BAND_260_HZ:
+    Serial.println("260 Hz");
+    break;
+  case MPU6050_BAND_184_HZ:
+    Serial.println("184 Hz");
+    break;
+  case MPU6050_BAND_94_HZ:
+    Serial.println("94 Hz");
+    break;
+  case MPU6050_BAND_44_HZ:
+    Serial.println("44 Hz");
+    break;
+  case MPU6050_BAND_21_HZ:
+    Serial.println("21 Hz");
+    break;
+  case MPU6050_BAND_10_HZ:
+    Serial.println("10 Hz");
+    break;
+  case MPU6050_BAND_5_HZ:
+    Serial.println("5 Hz");
+    break;
+  }
+
+  Serial.println("");
+  // delay(100);
 }
 long prevmill = 0;
 String oldsdata;
@@ -252,12 +353,18 @@ void loop()
       proccesData(data);
     data = "";
   }
+  beepnblink(); // beepnblink.ino
   if (millis() > prevmill + 1000)
   {
     if (count10++ > 10)
     {
       if (dmode == 10)
         displayClock;
+    }
+    getMpuData();
+    if (count2++ > 2)
+    {
+      getMpuData();
     }
     toScreenSleep++;
     // if (toScreenSleep > 10)
@@ -274,11 +381,48 @@ void loop()
     }
     prevmill = millis();
   }
-  beepnblink(); // beepnblink.ino
 } // end loop
+void getMpuData()
+{
+  /* Get new sensor events with the readings */
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+  // Print acceleration and gyro concisely
+
+  // Serial.printf("Acc: X=%.2f Y=%.2f Z=%.2f m/s^2\nGyro: X=%.2f Y=%.2f Z=%.2f rad/s\n",
+  //               a.acceleration.x, a.acceleration.y, a.acceleration.z,
+  //               g.gyro.x, g.gyro.y, g.gyro.z);
+  // Serial.printf("Temp: %.2f degC\n", temp.temperature);
+
+  // Serial.println("");
+  /* Print the same values to the TFT */
+  // Clear a small area at the top to avoid flicker of whole screen
+  // uint16_t areaH = 120;
+  // tft.fillRect(0, 0, tft.width(), areaH, TFT_BLACK);
+
+  // Print acceleration, gyro and temperature (2 decimal places)
+  if (dmode == 11)
+  {
+    tft.fillScreen(TFT_BLACK);
+
+    // Configure text appearance
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextSize(1);
+    tft.setCursor(0, 0);
+    tft.printf("Acc\n X: %.2f Y: %.2f Z: %.2f\n", a.acceleration.x, a.acceleration.y, a.acceleration.z);
+    tft.printf("Gyro\n X: %.2f Y: %.2f Z: %.2f\n", g.gyro.x, g.gyro.y, g.gyro.z);
+    // tft.printf("Temp: %.2f C\n", temp.temperature);
+  }
+  // delay(500);
+  if (a.acceleration.x > 3)
+    tft.setRotation(1);
+  else if (a.acceleration.x < -3)
+    tft.setRotation(3);
+}
 int displaylivescore = 0;
 void proccesCMD(String data)
 {
+  data.remove(0, 1); // remove starting #
   if (data.length() > 4)
   {
     //    Serial.println(data);
