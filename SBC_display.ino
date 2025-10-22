@@ -129,6 +129,7 @@ void setup(void)
   Serial.begin(115200);
   serial.begin(9600);
   Serial.print("Hello! ST77xx TFT Test");
+  setupMPU();
   pinMode(25, OUTPUT);
   pinMode(16, OUTPUT);
   tb_display_init(1);
@@ -140,7 +141,6 @@ void setup(void)
     while (1)
       yield(); // Stay here twiddling thumbs waiting
   }
-  setupMPU();
   NEO.begin();
   NEO.show();
   // NEO.setPixelColor(0, 0);
@@ -206,6 +206,7 @@ void setup(void)
   Serial.println(time, DEC);
   delay(500);
 
+  getMpuData();
   // large block of text
   tft.fillScreen(TFT_BLACK);
   // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
@@ -537,7 +538,7 @@ void proccesCMD(String data)
       else
       {
         int dmod = data.substring(6).toInt();
-        if (dmod < 3 || dmod == 10)
+        if (dmod < 3 || dmod == 10 || dmod == 11)
           dmode = dmod;
         // Serial.println("startblinking");
         tft.setCursor(0, 0);
