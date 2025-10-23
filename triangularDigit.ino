@@ -271,7 +271,11 @@ void drawT7Segment(int x, int y, int number, int size, uint32_t col)
 // String old_score;
 void tsgmnt(String score)
 {
-
+    if (!teamcolored)
+    {
+        homecolor = COLOR_MEDIUM[random(12)];
+        awaycolor = COLOR_MEDIUM[random(12)];
+    }
     int hscore = homescore.toInt(); // home score
     int ascore = awayscore.toInt(); // away score
     int sz = 16;                    // segment size
@@ -291,15 +295,15 @@ void tsgmnt(String score)
     {
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, homecolor);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 98;
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
+        drawtext(awayteam, homecolor);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
-        drawT7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
-        drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]);               // Position at (20,20) with size 10
-        drawT7Segment(x + nextpos + nextpos, y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        drawT7Segment(x, y, hscore, sz, homecolor);                      // Position at (20,20) with size 10
+        drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        drawT7Segment(x + nextpos + nextpos, y, ascore, sz, awaycolor);  // Position at (20,20) with size 10
         old_score = score;
     }
     else
@@ -307,14 +311,14 @@ void tsgmnt(String score)
         // tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         drawtext(hometeam, TFT_BLACK);
-        drawtext(hometeam, COLOR_MEDIUM[random(10)]);
+        drawtext(hometeam, homecolor);
         cx = 0, cy = 98;
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
-        drawT7Segment(x, y, hscore, sz, COLOR_MEDIUM[random(12)]);                     // Position at (20,20) with size 10
-        drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]);               // Position at (20,20) with size 10
-        drawT7Segment(x + nextpos + nextpos, y, ascore, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        drawT7Segment(x, y, hscore, sz, homecolor);                      // Position at (20,20) with size 10
+        drawT7Segment(x + nextpos, y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
+        drawT7Segment(x + nextpos + nextpos, y, ascore, sz, awaycolor);  // Position at (20,20) with size 10
     }
 }
 void testDTSegment(int number)

@@ -29,7 +29,7 @@ enum
   spi_mosi = 27,
   spi_ss = 23
 };
-StaticJsonDocument<1024> doc;
+StaticJsonDocument<1524> doc;
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
 #define TFT_CS 33
@@ -90,6 +90,9 @@ String awayteam = "";
 String matchtime = "";
 int ihscore = 0; // home score in integer
 int iascore = 0; // away score in integer
+bool teamcolored = false;
+uint32_t homecolor = TFT_WHITE;
+uint32_t awaycolor = TFT_WHITE;
 String MATCHTIME = "";
 const struct site_tc
 {
@@ -351,6 +354,8 @@ void loop()
       proccesCMD(data);
     else if (data.startsWith("$"))
       proccesJsonData(data);
+    else if (data.startsWith("*"))
+      proccesLiveScore(data);
     else
       proccesData(data);
     data = "";
@@ -790,6 +795,90 @@ void proccesJsonData(String data)
     else if (displaylivescore == 3)
       drawDigitLivescore(homescore);
 }
+
+void proccesLiveScore(String data)
+{
+  Serial.println("its json data");
+  data.replace("*", "");
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    return;
+  }
+  bool displals = false;
+  if (doc.containsKey("team_colored"))
+  {
+    teamcolored = doc["team_colored"].as<bool>();
+    if (teamcolored)
+    {
+      homecolor = doc["home"]["color"].as<uint32_t>();
+      Serial.printf("home color : %lu\n", homecolor);
+      Serial.println("home color : " + String(homecolor, HEX));
+      awaycolor = doc["away"]["color"].as<uint32_t>();
+    }
+  }
+
+  if (doc.containsKey("home"))
+  {
+    displals = true;
+    hometeam = doc["home"]["name"].as<String>();
+    homescore = doc["home"]["score"].as<String>();
+    // if (teamcolored)
+    // {
+    //   String colorhex = doc["home"]["color"].as<String>();
+    //   Serial.println("home color : " + colorhex);
+    //   uint32_t colorval = strtoul(&colorhex[1], NULL, 16);
+    //   Serial.printf("home color val : %lu\n", colorval);
+    //   setNeopixelColor(0, colorval);
+    // }
+  }
+  if (doc.containsKey("away"))
+  {
+    awayteam = doc["away"]["name"].as<String>();
+    awayscore = doc["away"]["score"].as<String>();
+  }
+  if (doc.containsKey("Score"))
+  {
+    scores = doc["Score"].as<String>();
+  }
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    int cx = 0, cy = 116;
+    tft.fillRect(0, cy, tft.width(), 12, TFT_BLACK);
+    printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], 16);
+  }
+  if (doc.containsKey("newScore"))
+  {
+    newScore = doc["newScore"].as<bool>();
+  }
+  if (doc.containsKey("MatchState"))
+  {
+    int matchState = doc["MatchState"].as<int>();
+    if (matchState == 1)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 800);
+    }
+    else if (matchState == 2)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 100);
+      noTone(BUZZER_PIN);
+      delay(200);
+      tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+
+  if (displals)
+    if (displaylivescore == 0)
+      ssgmnt(homescore);
+    else if (displaylivescore == 1)
+      displayscore(homescore);
+    else if (displaylivescore == 2)
+      tsgmnt(homescore);
+    else if (displaylivescore == 3)
+      drawDigitLivescore(homescore);
+}
+
 int cx = 0, cy = 15;
 void testdrawtext(char *text, uint16_t color)
 {
