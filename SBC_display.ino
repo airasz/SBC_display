@@ -29,7 +29,7 @@ enum
   spi_mosi = 27,
   spi_ss = 23
 };
-StaticJsonDocument<200> doc;
+StaticJsonDocument<1024> doc;
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
 #define TFT_CS 33
@@ -124,6 +124,7 @@ int dmode = 3;
 bool animation = false, noanim = false;
 int ANIMATIONSPEED = 20;
 int count10 = 0, count2 = 0;
+auto newScore = false;
 void setup(void)
 {
   Serial.begin(115200);
@@ -731,8 +732,64 @@ void proccesJsonData(String data)
     // else
     // ANIMATIONSPEED = doc["anspeed"];
   }
+  bool displals = false;
+  if (doc.containsKey("Hometeam"))
+  {
+    displals = true;
+    hometeam = doc["Hometeam"].as<String>();
+  }
+  if (doc.containsKey("Awayteam"))
+  {
+    awayteam = doc["Awayteam"].as<String>();
+  }
+  if (doc.containsKey("HomeScore"))
+  {
+    homescore = doc["HomeScore"].as<String>();
+  }
+  if (doc.containsKey("AwayScore"))
+  {
+    awayscore = doc["AwayScore"].as<String>();
+  }
+  if (doc.containsKey("Score"))
+  {
+    scores = doc["Score"].as<String>();
+  }
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    int cx = 0, cy = 116;
+    tft.fillRect(0, cy, tft.width(), 12, TFT_BLACK);
+    printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], 16);
+  }
+  if (doc.containsKey("newScore"))
+  {
+    newScore = doc["newScore"].as<bool>();
+  }
+  if (doc.containsKey("MatchState"))
+  {
+    int matchState = doc["MatchState"].as<int>();
+    if (matchState == 1)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 800);
+    }
+    else if (matchState == 2)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 100);
+      noTone(BUZZER_PIN);
+      delay(200);
+      tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+  if (displals)
+    if (displaylivescore == 0)
+      ssgmnt(homescore);
+    else if (displaylivescore == 1)
+      displayscore(homescore);
+    else if (displaylivescore == 2)
+      tsgmnt(homescore);
+    else if (displaylivescore == 3)
+      drawDigitLivescore(homescore);
 }
-
 int cx = 0, cy = 15;
 void testdrawtext(char *text, uint16_t color)
 {
