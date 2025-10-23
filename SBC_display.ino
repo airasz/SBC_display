@@ -812,11 +812,11 @@ void proccesLiveScore(String data)
     if (teamcolored)
     {
       homecolor = doc["home"]["color"].as<uint32_t>();
-      tft.fillRect(0, 0, 10, 40, homecolor);
+      // tft.fillRect(0, 0, 10, 40, homecolor);
       Serial.printf("home color : %lu\n", homecolor);
       Serial.println("home color : " + String(homecolor, HEX));
       awaycolor = doc["away"]["color"].as<uint32_t>();
-      tft.fillRect(tft.width() - 10, 0, 10, 40, awaycolor);
+      // tft.fillRect(tft.width() - 10, 0, 10, 40, awaycolor);
     }
   }
 
@@ -824,6 +824,7 @@ void proccesLiveScore(String data)
   {
     displals = true;
     hometeam = doc["home"]["name"].as<String>();
+    hometeam.replace("-", " ");
     homescore = doc["home"]["score"].as<String>();
     // if (teamcolored)
     // {
@@ -837,6 +838,7 @@ void proccesLiveScore(String data)
   if (doc.containsKey("away"))
   {
     awayteam = doc["away"]["name"].as<String>();
+    awayteam.replace("-", " ");
     awayscore = doc["away"]["score"].as<String>();
   }
   if (doc.containsKey("Score"))
