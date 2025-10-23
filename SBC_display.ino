@@ -812,9 +812,11 @@ void proccesLiveScore(String data)
     if (teamcolored)
     {
       homecolor = doc["home"]["color"].as<uint32_t>();
+      tft.fillRect(0, 0, 10, 40, homecolor);
       Serial.printf("home color : %lu\n", homecolor);
       Serial.println("home color : " + String(homecolor, HEX));
       awaycolor = doc["away"]["color"].as<uint32_t>();
+      tft.fillRect(tft.width() - 10, 0, 10, 40, awaycolor);
     }
   }
 
