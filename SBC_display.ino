@@ -855,20 +855,26 @@ void proccesLiveScore(String data)
   if (doc.containsKey("newScore"))
   {
     newScore = doc["newScore"].as<bool>();
+    if (newScore)
+    {
+      wristleBeep(2, 4);
+    }
   }
   if (doc.containsKey("MatchState"))
   {
     int matchState = doc["MatchState"].as<int>();
     if (matchState == 1)
     {
-      tone(BUZZER_PIN, tmpNOTE, 800);
+      // tone(BUZZER_PIN, tmpNOTE, 800);
+      wristleBeep(0, 0);
     }
     else if (matchState == 2)
     {
-      tone(BUZZER_PIN, tmpNOTE, 100);
-      noTone(BUZZER_PIN);
-      delay(200);
-      tone(BUZZER_PIN, tmpNOTE, 600);
+      wristleBeep(1, 0);
+      // tone(BUZZER_PIN, tmpNOTE, 100);
+      // noTone(BUZZER_PIN);
+      // delay(200);
+      // tone(BUZZER_PIN, tmpNOTE, 600);
     }
   }
 
@@ -1101,5 +1107,42 @@ void setNote(String note)
 
       break;
     }
+  }
+}
+void wristleBeep(int mode, int beepvalue)
+{
+  if (mode == 0) // long beep
+  {
+    nblinking = 1;
+    blinking = true;
+    startblink = 2;
+    endblink = 8;
+    angka = 0;
+    countblink = 0;
+    Serial.println("start beeping");
+    prevmill2 = millis();
+  }
+  else if (mode == 1) // end match
+  {
+    nblinking = 2;
+    blinking = true;
+    endmatch = 1;
+    startblink = 9;
+    endblink = 10;
+    angka = 7;
+    countblink = 0;
+    Serial.println("start beeping");
+    prevmill2 = millis();
+  }
+  else if (mode == 2) // n beep
+  {
+    nblinking = beepvalue;
+    blinking = true;
+    startblink = 5;
+    endblink = 6;
+    countblink = 0;
+    angka = startblink - 2;
+    Serial.println("startblinking");
+    prevmill2 = millis();
   }
 }

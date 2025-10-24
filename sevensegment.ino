@@ -159,6 +159,7 @@ void ssgmnt(String score)
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
+        tft.setTextDatum(TC_DATUM);
         drawtext(awayteam, TFT_BLACK);
         drawtext(awayteam, awaycolor);
 
