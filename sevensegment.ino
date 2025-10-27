@@ -420,8 +420,11 @@ void drawDigitLivescore(String score)
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 96;
-        drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        drawAnimatedDigit(20, 20, 10, digit, awaycolor);
+        drawtext(awayteam, awaycolor);
+        // drawAnimatedDigit(20, 20, 10, digit, awaycolor);
+        drawAnimatedDigit(20, 20, 10, hscore, homecolor);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 10, COLOR_MEDIUM[random(12)]);
+        drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, awaycolor);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, ascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -562,24 +565,6 @@ void displayDigitHW(int count)
                     // tft.fillCircle(x_start + col * 7 - 1 + random(4), y_start + row * 7 - 1 + random(4), r, colorrnd);
                 }
             }
-            // suffling row order
-            // shuffleArray(tmpRow, tmpRowSize);
-            // for (int row = 0; row < 7; row++)
-            // {
-            //     // suffling collum order
-            //     shuffleArray(tmpCol, tmpColSize);
-            //     for (int col = 0; col < 5; col++)
-            //     {
-            //         uint32_t color = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
-            //         uint32_t colorrnd = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
-            //         // if (DIGITS[curr_digit][row][col] == 1)
-            //         bool state = DIGITS[curr_digit][tmpRow[row]][tmpCol[col]];
-            //         if (state)
-            //             tft.fillCircle(tmpDigit[tmpRow[row]][tmpCol[col]][0], tmpDigit[tmpRow[row]][tmpCol[col]][1], r, colorrnd);
-            //         delay(40);
-            //     }
-            //     delay(40);
-            // }
             shuffleArray(patternSequences, patternSequencesSize);
             // int rnd = random(10);
             for (int i = 0; i < 20; i++)
@@ -591,6 +576,13 @@ void displayDigitHW(int count)
                     {
                         uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
                         uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                        if (teamcolored)
+                        {
+                            if (pos == 1)
+                                colorrnd = homecolor;
+                            else if (pos == 3)
+                                colorrnd = awaycolor;
+                        }
                         // if (DIGITS[curr_digit][row][col] == 1)
                         int state = LineTrack[curr_digit][row][col];
                         if (state == patternSequences[i])
@@ -670,6 +662,13 @@ void displayDigitHW(int count)
                     {
                         uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
                         uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                        if (teamcolored)
+                        {
+                            if (pos == 1)
+                                colorrnd = homecolor;
+                            else if (pos == 3)
+                                colorrnd = awaycolor;
+                        }
                         // if (DIGITS[curr_digit][row][col] == 1)
                         int state = LineTrack[curr_digit][row][col];
                         if (state == patternSequences[i])
@@ -733,6 +732,13 @@ void displayDigitHW(int count)
                     // Serial.printf("--digit[%d] :  \n", DIGITS[curr_digit][row][col]);
                     uint32_t color = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[curr_digit] : COLORS_DARK[curr_digit];
                     uint32_t colorrnd = DIGITS[curr_digit][row][col] ? COLORS_LIGHT[rnd] : COLORS_DARK[rnd];
+                    if (teamcolored)
+                    {
+                        if (pos == 1)
+                            colorrnd = homecolor;
+                        else if (pos == 3)
+                            colorrnd = awaycolor;
+                    }
                     // if (DIGITS[curr_digit][row][col] == 1)
                     // bool state = DIGITS[curr_digit][row][col];
                     // tmpDigit[row][col][0] = x_start + col * 7 - 1 + random(4);
@@ -752,6 +758,13 @@ void displayDigitHW(int count)
             }
 
             int colll = COLORS_LIGHT[rnd];
+            if (teamcolored)
+            {
+                if (pos == 1)
+                    colll = homecolor;
+                else if (pos == 3)
+                    colll = awaycolor;
+            }
             int bcoll = TFT_BLACK;
 
             for (int i = 0; i < 19; i++)

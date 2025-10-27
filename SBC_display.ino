@@ -37,6 +37,7 @@ StaticJsonDocument<1524> doc;
 // in which case, set this #define pin to -1!
 #define TFT_DC 26
 int tmpNOTE = 1123;
+auto mpuReady = false;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
 // an output. This is much faster - also required if you want
@@ -252,10 +253,12 @@ void setupMPU()
   if (!mpu.begin())
   {
     Serial.println("Failed to find MPU6050 chip");
-    while (1)
-    {
-      delay(10);
-    }
+    mpuReady = false;
+    return;
+    // while (1)
+    // {
+    //   delay(10);
+    // }
   }
   Serial.println("MPU6050 Found!");
 
@@ -322,6 +325,7 @@ void setupMPU()
   }
 
   Serial.println("");
+  mpuReady = true;
   // delay(100);
 }
 long prevmill = 0;
@@ -368,10 +372,11 @@ void loop()
       if (dmode == 10)
         displayClock;
     }
-    getMpuData();
+    // getMpuData();
     if (count2++ > 2)
     {
-      getMpuData();
+      if (mpuReady)
+        getMpuData();
     }
     toScreenSleep++;
     // if (toScreenSleep > 10)
@@ -394,6 +399,7 @@ void getMpuData()
   /* Get new sensor events with the readings */
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
+  Serial.println("get mpu data");
   // Print acceleration and gyro concisely
 
   // Serial.printf("Acc: X=%.2f Y=%.2f Z=%.2f m/s^2\nGyro: X=%.2f Y=%.2f Z=%.2f rad/s\n",
@@ -432,7 +438,7 @@ void proccesCMD(String data)
   data.remove(0, 1); // remove starting #
   if (data.length() > 4)
   {
-    //    Serial.println(data);
+    Serial.println(data);
     // tb_display_print_String(data.c_str(), 20);
     toScreenSleep = 0;
     // if (data.length() > 10)
@@ -798,7 +804,7 @@ void proccesJsonData(String data)
 
 void proccesLiveScore(String data)
 {
-  Serial.println("its json data");
+  Serial.println("its json ls data");
   data.replace("*", "");
   DeserializationError error = deserializeJson(doc, data);
   if (error)
