@@ -400,12 +400,12 @@ void drawDigitLivescore(String score)
         homecolor = COLOR_MEDIUM[random(12)];
         awaycolor = COLOR_MEDIUM[random(12)];
     }
-    String scores = data.substring(data.indexOf(">"));
-    String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
-    String awayscore = scores.substring(scores.indexOf("-") + 1);
-    String hometeam = data.substring(0, data.indexOf("vs"));
-    String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
-    String matchtime = awayteam.substring(data.indexOf("\n"));
+    // String scores = data.substring(data.indexOf(">"));
+    // String homescore = scores.substring(scores.indexOf(">") + 2, scores.indexOf("-"));
+    // String awayscore = scores.substring(scores.indexOf("-") + 1);
+    // String hometeam = data.substring(0, data.indexOf("vs"));
+    // String awayteam = data.substring(data.indexOf("vs") + 2, data.indexOf(">"));
+    // String matchtime = awayteam.substring(data.indexOf("\n"));
 
     int hscore = homescore.toInt();
     int ascore = awayscore.toInt();
@@ -486,7 +486,8 @@ uint32_t tmpDigit[7][5][2] = {
 void displayscore(String score)
 {
 
-    tft.fillScreen(TFT_BLACK);
+    // tft.fillScreen(TFT_BLACK);
+    tft.fillRect(0, 0, tft.width(), 114, TFT_BLACK);
 
     // tft.setTextColor(TFT_GREENYELLOW);
     tft.setCursor(0, 0);

@@ -711,6 +711,12 @@ void proccesJsonData(String data)
 {
   Serial.println("its json data");
   data.replace("$", "");
+  if (data != olddata)
+  {
+    olddata = data;
+    displaylivescore = random(4);
+    tft.fillScreen(TFT_BLACK);
+  }
   DeserializationError error = deserializeJson(doc, data);
   if (error)
   {
