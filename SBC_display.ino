@@ -461,6 +461,30 @@ void proccesCMD(String data)
       data = "";
       return;
     }
+    else if (data.startsWith("aspeed"))
+    {
+      int idata = data.substring(7).toInt();
+      if (idata > 0)
+      {
+        ANIMATIONSPEED = idata;
+        // beep();
+      }
+      data = "";
+    }
+    else if (data.startsWith("animation"))
+    {
+      String sdata = data.substring(10, 11);
+      Serial.printf("sdata  : %s \n", sdata.c_str());
+      if (sdata == "1")
+        animation = true;
+      else
+        animation = false;
+      // char info[40];
+
+      data = "";
+      // beep();
+      return;
+    }
     else if (data.startsWith("setnote"))
     {
       tft.fillScreen(TFT_BLACK);
