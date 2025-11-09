@@ -13,11 +13,17 @@
 #include "note.h"
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+// #include "Adafruit_MMA8451.h"
+// #include <Adafruit_MPU6050.h>
+// #include <Adafruit_Sensor.h>
+#include "SparkFun_MMA8452Q.h" // Click here to get the library: http://librarymanager/All#SparkFun_MMA8452Q
+
+MMA8452Q accel; // create instance of the MMA8452 class
+
 #include <Wire.h>
 
-Adafruit_MPU6050 mpu;
+// Adafruit_MPU6050 mpu;
+// Adafruit_MMA8451 mma = Adafruit_MMA8451();
 #include <Adafruit_NeoPixel.h>
 #define NEOPIN 12 // PIN_D3
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -37,7 +43,7 @@ StaticJsonDocument<1524> doc;
 // in which case, set this #define pin to -1!
 #define TFT_DC 26
 int tmpNOTE = 1123;
-auto mpuReady = false;
+auto mpuReady = true;
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
 // an output. This is much faster - also required if you want
@@ -134,7 +140,7 @@ void setup(void)
   Serial.begin(115200);
   serial.begin(9600);
   Serial.print("Hello! ST77xx TFT Test");
-  setupMPU();
+  // setupMPU();
   pinMode(25, OUTPUT);
   pinMode(16, OUTPUT);
   tb_display_init(1);
@@ -191,6 +197,9 @@ void setup(void)
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
   Serial.println("\r\nInitialisation done.");
+
+  Wire.begin();
+  setupMMA();
   digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
@@ -211,7 +220,8 @@ void setup(void)
   Serial.println(time, DEC);
   delay(500);
 
-  getMpuData();
+  // getMpuData();
+  getMMAData();
   // large block of text
   tft.fillScreen(TFT_BLACK);
   // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
@@ -247,87 +257,98 @@ void startUpMelody2()
   }
   noTone(BUZZER_PIN);
 }
-void setupMPU()
+void setupMMA()
 {
-  // Try to initialize!
-  if (!mpu.begin())
+
+  if (accel.begin() == false)
   {
-    Serial.println("Failed to find MPU6050 chip");
+    Serial.println("Not Connected. Please check connections and read the hookup guide.");
     mpuReady = false;
+    // while (1);
     return;
-    // while (1)
-    // {
-    //   delay(10);
-    // }
   }
-  Serial.println("MPU6050 Found!");
-
-  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-  Serial.print("Accelerometer range set to: ");
-  switch (mpu.getAccelerometerRange())
-  {
-  case MPU6050_RANGE_2_G:
-    Serial.println("+-2G");
-    break;
-  case MPU6050_RANGE_4_G:
-    Serial.println("+-4G");
-    break;
-  case MPU6050_RANGE_8_G:
-    Serial.println("+-8G");
-    break;
-  case MPU6050_RANGE_16_G:
-    Serial.println("+-16G");
-    break;
-  }
-  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-  Serial.print("Gyro range set to: ");
-  switch (mpu.getGyroRange())
-  {
-  case MPU6050_RANGE_250_DEG:
-    Serial.println("+- 250 deg/s");
-    break;
-  case MPU6050_RANGE_500_DEG:
-    Serial.println("+- 500 deg/s");
-    break;
-  case MPU6050_RANGE_1000_DEG:
-    Serial.println("+- 1000 deg/s");
-    break;
-  case MPU6050_RANGE_2000_DEG:
-    Serial.println("+- 2000 deg/s");
-    break;
-  }
-
-  mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
-  Serial.print("Filter bandwidth set to: ");
-  switch (mpu.getFilterBandwidth())
-  {
-  case MPU6050_BAND_260_HZ:
-    Serial.println("260 Hz");
-    break;
-  case MPU6050_BAND_184_HZ:
-    Serial.println("184 Hz");
-    break;
-  case MPU6050_BAND_94_HZ:
-    Serial.println("94 Hz");
-    break;
-  case MPU6050_BAND_44_HZ:
-    Serial.println("44 Hz");
-    break;
-  case MPU6050_BAND_21_HZ:
-    Serial.println("21 Hz");
-    break;
-  case MPU6050_BAND_10_HZ:
-    Serial.println("10 Hz");
-    break;
-  case MPU6050_BAND_5_HZ:
-    Serial.println("5 Hz");
-    break;
-  }
-
-  Serial.println("");
-  mpuReady = true;
-  // delay(100);
 }
+// void setupMPU()
+// {
+//   // Try to initialize!
+//   if (!mpu.begin())
+//   {
+//     Serial.println("Failed to find MPU6050 chip");
+//     mpuReady = false;
+//     return;
+//     // while (1)
+//     // {
+//     //   delay(10);
+//     // }
+//   }
+//   Serial.println("MPU6050 Found!");
+
+//   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+//   Serial.print("Accelerometer range set to: ");
+//   switch (mpu.getAccelerometerRange())
+//   {
+//   case MPU6050_RANGE_2_G:
+//     Serial.println("+-2G");
+//     break;
+//   case MPU6050_RANGE_4_G:
+//     Serial.println("+-4G");
+//     break;
+//   case MPU6050_RANGE_8_G:
+//     Serial.println("+-8G");
+//     break;
+//   case MPU6050_RANGE_16_G:
+//     Serial.println("+-16G");
+//     break;
+//   }
+//   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+//   Serial.print("Gyro range set to: ");
+//   switch (mpu.getGyroRange())
+//   {
+//   case MPU6050_RANGE_250_DEG:
+//     Serial.println("+- 250 deg/s");
+//     break;
+//   case MPU6050_RANGE_500_DEG:
+//     Serial.println("+- 500 deg/s");
+//     break;
+//   case MPU6050_RANGE_1000_DEG:
+//     Serial.println("+- 1000 deg/s");
+//     break;
+//   case MPU6050_RANGE_2000_DEG:
+//     Serial.println("+- 2000 deg/s");
+//     break;
+//   }
+
+//   mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+//   Serial.print("Filter bandwidth set to: ");
+//   switch (mpu.getFilterBandwidth())
+//   {
+//   case MPU6050_BAND_260_HZ:
+//     Serial.println("260 Hz");
+//     break;
+//   case MPU6050_BAND_184_HZ:
+//     Serial.println("184 Hz");
+//     break;
+//   case MPU6050_BAND_94_HZ:
+//     Serial.println("94 Hz");
+//     break;
+//   case MPU6050_BAND_44_HZ:
+//     Serial.println("44 Hz");
+//     break;
+//   case MPU6050_BAND_21_HZ:
+//     Serial.println("21 Hz");
+//     break;
+//   case MPU6050_BAND_10_HZ:
+//     Serial.println("10 Hz");
+//     break;
+//   case MPU6050_BAND_5_HZ:
+//     Serial.println("5 Hz");
+//     break;
+//   }
+
+//   Serial.println("");
+//   mpuReady = true;
+//   // delay(100);
+// }
 long prevmill = 0;
 String oldsdata;
 int tryrequest = 0;
@@ -371,12 +392,15 @@ void loop()
     {
       if (dmode == 10)
         displayClock;
+      // count10 = 0;
     }
     // getMpuData();
     if (count2++ > 2)
     {
       if (mpuReady)
-        getMpuData();
+        getMMAData();
+      // getMpuData();
+      count2 = 0;
     }
     toScreenSleep++;
     // if (toScreenSleep > 10)
@@ -394,43 +418,72 @@ void loop()
     prevmill = millis();
   }
 } // end loop
-void getMpuData()
+// void getMpuData()
+// {
+//   /* Get new sensor events with the readings */
+//   sensors_event_t a, g, temp;
+//   mpu.getEvent(&a, &g, &temp);
+//   Serial.println("get mpu data");
+//   // Print acceleration and gyro concisely
+
+//   // Serial.printf("Acc: X=%.2f Y=%.2f Z=%.2f m/s^2\nGyro: X=%.2f Y=%.2f Z=%.2f rad/s\n",
+//   //               a.acceleration.x, a.acceleration.y, a.acceleration.z,
+//   //               g.gyro.x, g.gyro.y, g.gyro.z);
+//   // Serial.printf("Temp: %.2f degC\n", temp.temperature);
+
+//   // Serial.println("");
+//   /* Print the same values to the TFT */
+//   // Clear a small area at the top to avoid flicker of whole screen
+//   // uint16_t areaH = 120;
+//   // tft.fillRect(0, 0, tft.width(), areaH, TFT_BLACK);
+
+//   // Print acceleration, gyro and temperature (2 decimal places)
+//   if (dmode == 11)
+//   {
+//     tft.fillScreen(TFT_BLACK);
+
+//     // Configure text appearance
+//     tft.setTextColor(TFT_WHITE, TFT_BLACK);
+//     tft.setTextSize(1);
+//     tft.setCursor(0, 0);
+//     tft.printf("Acc\n X: %.2f Y: %.2f Z: %.2f\n", a.acceleration.x, a.acceleration.y, a.acceleration.z);
+//     tft.printf("Gyro\n X: %.2f Y: %.2f Z: %.2f\n", g.gyro.x, g.gyro.y, g.gyro.z);
+//     // tft.printf("Temp: %.2f C\n", temp.temperature);
+//   }
+//   // delay(500);
+//   if (a.acceleration.x > 3)
+//     tft.setRotation(1);
+//   else if (a.acceleration.x < -3)
+//     tft.setRotation(3);
+// }
+void getMMAData()
 {
-  /* Get new sensor events with the readings */
-  sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
-  Serial.println("get mpu data");
-  // Print acceleration and gyro concisely
-
-  // Serial.printf("Acc: X=%.2f Y=%.2f Z=%.2f m/s^2\nGyro: X=%.2f Y=%.2f Z=%.2f rad/s\n",
-  //               a.acceleration.x, a.acceleration.y, a.acceleration.z,
-  //               g.gyro.x, g.gyro.y, g.gyro.z);
-  // Serial.printf("Temp: %.2f degC\n", temp.temperature);
-
-  // Serial.println("");
-  /* Print the same values to the TFT */
-  // Clear a small area at the top to avoid flicker of whole screen
-  // uint16_t areaH = 120;
-  // tft.fillRect(0, 0, tft.width(), areaH, TFT_BLACK);
-
-  // Print acceleration, gyro and temperature (2 decimal places)
-  if (dmode == 11)
-  {
-    tft.fillScreen(TFT_BLACK);
-
-    // Configure text appearance
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.setTextSize(1);
-    tft.setCursor(0, 0);
-    tft.printf("Acc\n X: %.2f Y: %.2f Z: %.2f\n", a.acceleration.x, a.acceleration.y, a.acceleration.z);
-    tft.printf("Gyro\n X: %.2f Y: %.2f Z: %.2f\n", g.gyro.x, g.gyro.y, g.gyro.z);
-    // tft.printf("Temp: %.2f C\n", temp.temperature);
+  if (accel.available())
+  { // Wait for new data from accelerometer
+    // Orientation of board (Right, Left, Down, Up);
+    if (accel.isRight() == true)
+    {
+      Serial.println("Right");
+    }
+    else if (accel.isLeft() == true)
+    {
+      Serial.println("Left");
+    }
+    else if (accel.isUp() == true)
+    {
+      Serial.println("Up");
+      tft.setRotation(1);
+    }
+    else if (accel.isDown() == true)
+    {
+      Serial.println("Down");
+      tft.setRotation(3);
+    }
+    else if (accel.isFlat() == true)
+    {
+      Serial.println("Flat");
+    }
   }
-  // delay(500);
-  if (a.acceleration.x > 3)
-    tft.setRotation(1);
-  else if (a.acceleration.x < -3)
-    tft.setRotation(3);
 }
 int displaylivescore = 0;
 void proccesCMD(String data)
