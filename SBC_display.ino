@@ -26,6 +26,7 @@ MMA8452Q accel; // create instance of the MMA8452 class
 // Adafruit_MMA8451 mma = Adafruit_MMA8451();
 #include <Adafruit_NeoPixel.h>
 #define NEOPIN 12 // PIN_D3
+#define PIN_BACKLIGHT 4
 Adafruit_NeoPixel NEO = Adafruit_NeoPixel(1, NEOPIN, NEO_GRB + NEO_KHZ800);
 SPIClass SPI_EXT;
 enum
@@ -114,7 +115,7 @@ const struct site_tc
 char *url = "http://192.168.10.232/radio/oradio.php?cmd=status";
 String sdata;
 
-SoftwareSerial serial(4, 19);
+SoftwareSerial serial(18, 19);
 
 long prevmill2 = 0;
 long prevmill3 = 0;
@@ -135,6 +136,7 @@ bool animation = false, noanim = false;
 int ANIMATIONSPEED = 20;
 int count10 = 0, count2 = 0;
 auto newScore = false;
+uint16_t backlight = 128, prevbacklight = 0;
 void setup(void)
 {
   Serial.begin(115200);
@@ -158,7 +160,7 @@ void setup(void)
   NEO.setPixelColor(0, NEO.Color(170, 0, 0));
   // NEO.show();
   NEO.show();
-
+  setBrightness(128);
   // SDカード初期化
   if (!SD.begin(33))
   {
@@ -197,7 +199,7 @@ void setup(void)
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
   Serial.println("\r\nInitialisation done.");
-
+  // pinMode(PIN_BACKLIGHT, OUTPUT);
   Wire.begin();
   setupMMA();
   digitalWrite(25, HIGH);
@@ -238,6 +240,8 @@ void setup(void)
 
   ledcSetup(BUZZER_CHANNEL, 1000, 8);        // Configure PWM
   ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL); // Attach the pin to the PWM channel
+  ledcSetup(1, 1000, 8);                     // Configure PWM for backlight
+  ledcAttachPin(PIN_BACKLIGHT, 1);           // Attach the pin to the PWM channel for backlight
   startUpMelody2();
   // noTone(BUZZER_PIN);
 } // void setup
@@ -402,6 +406,24 @@ void loop()
       // getMpuData();
       count2 = 0;
     }
+    if (hour() > 18 || hour() < 6)
+    {
+      if (prevbacklight != backlight)
+      {
+        setBrightness(backlight);
+        prevbacklight = backlight;
+      }
+      // analogWrite(BACKLIGHT_PIN, 40);
+    }
+    else
+    {
+      if (prevbacklight != backlight)
+      {
+        setBrightness(backlight);
+        prevbacklight = backlight;
+      }
+      // analogWrite(BACKLIGHT_PIN, 200);
+    }
     toScreenSleep++;
     // if (toScreenSleep > 10)
     // {
@@ -505,6 +527,19 @@ void proccesCMD(String data)
       tft.setRotation(sr);
       // testdrawtext("rotated", COLOR_MEDIUM[random(12)]);
       printWordWrap("rotated", COLOR_MEDIUM[random(12)]);
+      data = "";
+      return;
+    }
+    else if (data.startsWith("brightness"))
+    {
+      int b = data.substring(11).toInt();
+      if (b < 10)
+        b = 10;
+      if (b > 255)
+        b = 255;
+      backlight = b;
+      setBrightness(b);
+      printWordWrap("brightness set to " + String(b), COLOR_MEDIUM[random(12)]);
       data = "";
       return;
     }
@@ -1234,4 +1269,10 @@ void wristleBeep(int mode, int beepvalue)
     Serial.println("startblinking");
     prevmill2 = millis();
   }
+}
+
+void setBrightness(int b)
+{
+  ledcWrite(1, b);
+  // analogWrite(PIN_BACKLIGHT, b);
 }
