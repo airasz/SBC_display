@@ -137,18 +137,24 @@ int ANIMATIONSPEED = 20;
 int count10 = 0, count2 = 0;
 auto newScore = false;
 uint16_t backlight = 128, prevbacklight = 0;
-uint16_t screenOrintation = 1, prevscreenOrintation = 0;
+uint16_t screenOrientation = 1, prevscreenOrientation = 4;
+
+int displaylivescore = 0;
 void setup(void)
 {
   Serial.begin(115200);
   serial.begin(9600);
+  tft.init();
+  Wire.begin();
+  setupMMA();
+  delay(20);
+  tft.setRotation(mmaOrientation());
   Serial.print("Hello! ST77xx TFT Test");
   // setupMPU();
   pinMode(25, OUTPUT);
   pinMode(16, OUTPUT);
-  tb_display_init(1);
-  tft.init();
-  tft.setRotation(1);
+  tb_display_init(mmaOrientation());
+  // tft.setRotation(1);
   if (!SPIFFS.begin())
   {
     Serial.println("SPIFFS initialisation failed!");
@@ -201,8 +207,6 @@ void setup(void)
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
   Serial.println("\r\nInitialisation done.");
   // pinMode(PIN_BACKLIGHT, OUTPUT);
-  Wire.begin();
-  setupMMA();
   digitalWrite(25, HIGH);
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   // tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
@@ -224,7 +228,6 @@ void setup(void)
   delay(500);
 
   // getMpuData();
-  getMMAData();
   // large block of text
   tft.fillScreen(TFT_BLACK);
   // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", TFT_WHITE);
@@ -499,21 +502,45 @@ void getMMAData()
     else if (accel.isUp() == true)
     {
       Serial.println("Up");
-      screenOrintation = 1;
-      if (prevscreenOrintation != screenOrintation)
+      screenOrientation = 1;
+      if (prevscreenOrientation != screenOrientation)
       {
         tft.setRotation(1);
-        prevscreenOrintation = screenOrintation;
+        if (dmode == 0)
+        {
+          tft.fillScreen(TFT_BLACK);
+          if (displaylivescore == 0)
+            ssgmnt(homescore);
+          else if (displaylivescore == 1)
+            displayscore(homescore);
+          else if (displaylivescore == 2)
+            tsgmnt(homescore);
+          else if (displaylivescore == 3)
+            drawDigitLivescore(homescore);
+        }
+        prevscreenOrientation = screenOrientation;
       }
     }
     else if (accel.isDown() == true)
     {
       Serial.println("Down");
-      screenOrintation = 3;
-      if (prevscreenOrintation != screenOrintation)
+      screenOrientation = 3;
+      if (prevscreenOrientation != screenOrientation)
       {
         tft.setRotation(3);
-        prevscreenOrintation = screenOrintation;
+        if (dmode == 0)
+        {
+          tft.fillScreen(TFT_BLACK);
+          if (displaylivescore == 0)
+            ssgmnt(homescore);
+          else if (displaylivescore == 1)
+            displayscore(homescore);
+          else if (displaylivescore == 2)
+            tsgmnt(homescore);
+          else if (displaylivescore == 3)
+            drawDigitLivescore(homescore);
+        }
+        prevscreenOrientation = screenOrientation;
       }
     }
     else if (accel.isFlat() == true)
@@ -522,7 +549,30 @@ void getMMAData()
     }
   }
 }
-int displaylivescore = 0;
+uint8_t mmaOrientation()
+{
+  if (accel.isRight() == true)
+  {
+    return 1;
+  }
+  else if (accel.isLeft() == true)
+  {
+    return 2;
+  }
+  else if (accel.isUp() == true)
+  {
+    return 3;
+  }
+  else if (accel.isDown() == true)
+  {
+    return 4;
+  }
+  else if (accel.isFlat() == true)
+  {
+    return 5;
+  }
+  return 0;
+}
 void proccesCMD(String data)
 {
   data.remove(0, 1); // remove starting #
@@ -862,6 +912,12 @@ void proccesJsonData(String data)
   {
     setNote(doc["note"]);
     // savepref();
+  }
+  if (doc.containsKey("sleep"))
+  {
+    tft.fillScreen(TFT_BLACK);
+    backlight = 0;
+    setBrightness(backlight);
   }
   if (doc.containsKey("rotation"))
   {
