@@ -137,6 +137,7 @@ int ANIMATIONSPEED = 20;
 int count10 = 0, count2 = 0;
 auto newScore = false;
 uint16_t backlight = 128, prevbacklight = 0;
+uint16_t screenOrintation = 1, prevscreenOrintation = 0;
 void setup(void)
 {
   Serial.begin(115200);
@@ -408,8 +409,10 @@ void loop()
     }
     if (hour() > 18 || hour() < 6)
     {
+      backlight = 20;
       if (prevbacklight != backlight)
       {
+
         setBrightness(backlight);
         prevbacklight = backlight;
       }
@@ -417,6 +420,8 @@ void loop()
     }
     else
     {
+
+      backlight = 220;
       if (prevbacklight != backlight)
       {
         setBrightness(backlight);
@@ -494,12 +499,22 @@ void getMMAData()
     else if (accel.isUp() == true)
     {
       Serial.println("Up");
-      tft.setRotation(1);
+      screenOrintation = 1;
+      if (prevscreenOrintation != screenOrintation)
+      {
+        tft.setRotation(1);
+        prevscreenOrintation = screenOrintation;
+      }
     }
     else if (accel.isDown() == true)
     {
       Serial.println("Down");
-      tft.setRotation(3);
+      screenOrintation = 3;
+      if (prevscreenOrintation != screenOrintation)
+      {
+        tft.setRotation(3);
+        prevscreenOrintation = screenOrintation;
+      }
     }
     else if (accel.isFlat() == true)
     {
