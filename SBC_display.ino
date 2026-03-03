@@ -386,7 +386,7 @@ void loop()
   {
     if (isSleep)
     {
-      setBrightness(128);
+      setBrightness(backlight);
       isSleep = false;
     }
     if (data.startsWith("#"))
@@ -932,8 +932,7 @@ void proccesJsonData(String data)
   if (doc.containsKey("sleep"))
   {
     tft.fillScreen(TFT_BLACK);
-    backlight = 0;
-    setBrightness(backlight);
+    setBrightness(0);
   }
   if (doc.containsKey("rotation"))
   {
