@@ -364,6 +364,7 @@ bool foundRadio = false;
 String data;
 char c;
 int toScreenSleep = 0;
+auto isSleep = false;
 int maxWait = 20;
 String olddata = "";
 void loop()
@@ -383,6 +384,11 @@ void loop()
   }
   if (data.length() > 0)
   {
+    if (isSleep)
+    {
+      setBrightness(128);
+      isSleep = false;
+    }
     if (data.startsWith("#"))
       proccesCMD(data);
     else if (data.startsWith("$"))
@@ -412,23 +418,30 @@ void loop()
     }
     if (hour() > 18 || hour() < 6)
     {
-      backlight = 20;
-      if (prevbacklight != backlight)
+      // night time, dim the backlight
+      if (!isSleep)
       {
+        backlight = 20;
+        if (prevbacklight != backlight)
+        {
 
-        setBrightness(backlight);
-        prevbacklight = backlight;
+          setBrightness(backlight);
+          prevbacklight = backlight;
+        }
       }
       // analogWrite(BACKLIGHT_PIN, 40);
     }
     else
     {
-
-      backlight = 220;
-      if (prevbacklight != backlight)
+      // day time, brighten the backlight
+      if (!isSleep)
       {
-        setBrightness(backlight);
-        prevbacklight = backlight;
+        backlight = 220;
+        if (prevbacklight != backlight)
+        {
+          setBrightness(backlight);
+          prevbacklight = backlight;
+        }
       }
       // analogWrite(BACKLIGHT_PIN, 200);
     }
@@ -442,6 +455,9 @@ void loop()
     if (toScreenSleep > maxWait)
     {
       toScreenSleep = 0;
+      tft.fillScreen(TFT_BLACK);
+      setBrightness(0);
+      isSleep = true;
       // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
       // printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
     }
