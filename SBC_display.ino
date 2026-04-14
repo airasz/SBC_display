@@ -132,6 +132,7 @@ int endblink = 0;
 #define usbbaud 115200
 int dmode = 3;
 
+bool usingLightSensor = false;
 bool animation = false, noanim = false;
 int ANIMATIONSPEED = 20;
 int count10 = 0, count2 = 0;
@@ -419,7 +420,7 @@ void loop()
     if (hour() > 18 || hour() < 6)
     {
       // night time, dim the backlight
-      if (!isSleep)
+      if (!isSleep && usingLightSensor)
       {
         backlight = 20;
         if (prevbacklight != backlight)
@@ -434,7 +435,7 @@ void loop()
     else
     {
       // day time, brighten the backlight
-      if (!isSleep)
+      if (!isSleep && usingLightSensor)
       {
         backlight = 220;
         if (prevbacklight != backlight)
@@ -620,6 +621,11 @@ void proccesCMD(String data)
         b = 255;
       backlight = b;
       setBrightness(b);
+      if (usingLightSensor)
+      {
+        Serial.printf("backlight set to %d\n", b);
+        usingLightSensor = false; // disable auto backlight when brightness is set manually
+      }
       printWordWrap("brightness set to " + String(b), COLOR_MEDIUM[random(12)]);
       data = "";
       return;
