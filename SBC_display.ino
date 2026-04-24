@@ -5,6 +5,7 @@
 #define FS_NO_GLOBALS
 #include <FS.h>
 #include "tb_display.h"
+#include "indonesian_map.h"
 #include <SoftwareSerial.h>
 // #include <Tone32.h>
 
@@ -999,6 +1000,20 @@ void proccesJsonData(String data)
       noTone(BUZZER_PIN);
       delay(200);
       tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+  if (doc.containsKey("drawmap"))
+  {
+    if (doc["drawmap"] == true)
+    {
+
+      tft.drawBitmap(0, 0, indonesia, 160, 128, TFT_WHITE);
+      int lat = doc["latitude"].as<int>();
+      int lon = doc["longitude"].as<int>();
+      Serial.printf("lat : %d, lon : %d\n", lat, lon);
+      tft.fillCircle(lat, lon, 5, TFT_RED);
+
+      printtextcs(2, 12, "Lokasi Gempa", COLOR_MEDIUM[random(12)], 16);
     }
   }
   if (displals)
