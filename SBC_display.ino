@@ -369,7 +369,7 @@ String data;
 char c;
 int toScreenSleep = 0;
 auto isSleep = false;
-int maxWait = 20;
+int maxWait = 30;
 String olddata = "";
 void loop()
 {
@@ -918,6 +918,8 @@ void proccesJsonData(String data)
     olddata = data;
     displaylivescore = random(4);
     tft.fillScreen(TFT_BLACK);
+
+    maxWait = (data.length() > 18) ? data.length() / 6 : 40;
   }
   DeserializationError error = deserializeJson(doc, data);
   if (error)
@@ -1006,22 +1008,26 @@ void proccesJsonData(String data)
   }
   if (doc.containsKey("drawmap"))
   {
-    if (doc["drawmap"] == true)
+    if (doc["drawmap"].as<bool>() == true)
     {
-      if (doc["indexmap"] == 0)
+      maxWait += 20;
+      if (doc["indexmap"].as<int>() == 0)
       {
-        tft.drawBitmap(0, 0, indonesian_western, 160, 128, TFT_WHITE);
+        tft.drawBitmap(0, 0, _ina_w, 160, 128, TFT_WHITE);
+        // tft.pushImage(0, 0, 160, 128, indonesian_western);
       }
-      else if (doc["indexmap"] == 1)
+      else if (doc["indexmap"].as<int>() == 1)
       {
-        tft.drawBitmap(0, 0, indonesian_eastern, 160, 128, TFT_WHITE);
+        tft.drawBitmap(0, 0, _ina_e, 160, 128, TFT_WHITE);
+        // tft.pushImage(0, 0, 160, 128, indonesian_eastern);
       }
       int lat = doc["latitude"].as<int>();
       int lon = doc["longitude"].as<int>();
       Serial.printf("lat : %d, lon : %d\n", lat, lon);
       tft.fillCircle(lat, lon, 5, TFT_RED);
 
-      printtextcs(2, 12, "Lokasi Gempa", COLOR_MEDIUM[random(12)], 16);
+      printtextcs(2, (lon > 64) ? 2 : 112, "Lokasi Gempa", TFT_GREENYELLOW, 14);
+      // printtextcs(2, (lon > 64) ? 2 : 112, "Lokasi Gempa", COLOR_MEDIUM[random(12)], 14);
     }
   }
   if (displals)
@@ -1247,8 +1253,9 @@ void printtextcs(int x, int y,
 
   tft.unloadFont();
   delay(25);
-
-  if (fsize == 16)
+  if (fsize == 14)
+    tft.loadFont(sfpt_r14);
+  else if (fsize == 16)
     tft.loadFont(sfpt_r16);
   else if (fsize == 18)
     tft.loadFont(sfpt_r18);
