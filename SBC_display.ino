@@ -369,7 +369,7 @@ String data;
 char c;
 int toScreenSleep = 0;
 auto isSleep = false;
-int maxWait = 30;
+int maxWait = 50;
 String olddata = "";
 void loop()
 {
@@ -919,7 +919,7 @@ void proccesJsonData(String data)
     displaylivescore = random(4);
     tft.fillScreen(TFT_BLACK);
 
-    maxWait = (data.length() > 18) ? data.length() / 6 : 40;
+    maxWait = (data.length() > 18) ? data.length() / 5 : 40;
   }
   DeserializationError error = deserializeJson(doc, data);
   if (error)
@@ -1122,7 +1122,7 @@ void proccesLiveScore(String data)
       // tone(BUZZER_PIN, tmpNOTE, 600);
     }
   }
-
+  tft.fillScreen(TFT_BLACK);
   if (displals)
     if (displaylivescore == 0)
       ssgmnt(homescore);
