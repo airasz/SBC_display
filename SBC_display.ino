@@ -157,7 +157,7 @@ void setup()
   // put your setup code here, to run once:
 
   Serial.begin(115200);
-  serial.begin(115200);
+  serial.begin(9600);
   M5.begin();
   Serial.println("starting piradio reader");
   M5.IMU.Init();
@@ -355,21 +355,21 @@ void loop()
   }
   while (Serial.available() > 0)
   {
-    // delay(10);
+    delay(10);
     c = Serial.read();
     data += c;
   }
 
   if (data.length() > 0)
   {
-    if (!data.startsWith("#"))
-      proccesData(data);
+    if (data.startsWith("#"))
+      proccesCMD(data);
     else if (data.startsWith("$"))
       proccesJsonData(data);
     else if (data.startsWith("*"))
       proccesLiveScore(data);
     else
-      proccesCMD(data.substring(1));
+      proccesData(data);
     data = "";
   }
   if (millis() > prevmill + 1000)
