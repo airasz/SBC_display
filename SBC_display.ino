@@ -12,6 +12,7 @@
 #include <EEPROM.h>
 #include "EEPROM_rw_anything.h"
 
+#include <ArduinoJson.h>
 #define EEPROM_SIZE 256
 #define CONFIG_REVISION 12349L
 typedef struct config_t
@@ -134,7 +135,23 @@ int endblink = 0;
 int dmode = 1;
 int tmpNOTE = 1123;
 #define usbbaud 115200
+StaticJsonDocument<1524> doc;
 // int dmode = 3;
+
+String scores = "";
+String homescore = "";
+String awayscore = "";
+String hometeam = "";
+String awayteam = "";
+String matchtime = "";
+
+int ihscore = 0; // home score in integer
+int iascore = 0; // away score in integer
+bool teamcolored = false;
+auto newScore = false;
+
+uint32_t homecolor = TFT_WHITE;
+uint32_t awaycolor = TFT_WHITE;
 void setup()
 {
   // put your setup code here, to run once:
@@ -240,7 +257,7 @@ void loop()
   //   // tb_display_init(screen_orientation);
   // }
 
-    // for (int i = 0; i < sizeof(sites) / sizeof(struct site_t); i++) {
+  // for (int i = 0; i < sizeof(sites) / sizeof(struct site_t); i++) {
   //   Serial.print("size of site : ");
   //   Serial.println(sizeof(sites) / sizeof(struct site_t));
   //   // Serial.println("wifi status = ");
@@ -347,6 +364,10 @@ void loop()
   {
     if (!data.startsWith("#"))
       proccesData(data);
+    else if (data.startsWith("$"))
+      proccesJsonData(data);
+    else if (data.startsWith("*"))
+      proccesLiveScore(data);
     else
       proccesCMD(data.substring(1));
     data = "";
@@ -841,6 +862,208 @@ void proccesData(String data)
   }
 }
 
+void proccesJsonData(String data)
+{
+  Serial.println("its json data");
+  data.replace("$", "");
+  if (data != olddata)
+  {
+    olddata = data;
+    displaylivescore = random(4);
+    M5.Lcd.fillScreen(TFT_BLACK);
+
+    maxWait = (data.length() > 18) ? data.length() / 5 : 40;
+  }
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    return;
+  }
+  if (doc.containsKey("dmode"))
+  {
+    dmode = doc["dmode"].as<int>();
+  }
+  if (doc.containsKey("animation"))
+  {
+    animation = doc["animation"];
+    // savepref();
+  }
+  if (doc.containsKey("note"))
+  {
+    setNote(doc["note"]);
+    // savepref();
+  }
+  if (doc.containsKey("sleep"))
+  {
+    M5.Lcd.fillScreen(TFT_BLACK);
+    setBrightness(0);
+  }
+  if (doc.containsKey("rotation"))
+  {
+    int sr = doc["rotation"];
+    M5.Lcd.setRotation(sr);
+  }
+  if (doc.containsKey("aspeed"))
+  {
+    if (doc["aspeed"] > 0)
+      ANIMATIONSPEED = doc["aspeed"];
+    ANIMATIONSPEED = constrain(ANIMATIONSPEED, 4, 100);
+    // else
+    // ANIMATIONSPEED = doc["anspeed"];
+  }
+  bool displals = false;
+  if (doc.containsKey("Hometeam"))
+  {
+    displals = true;
+    hometeam = doc["Hometeam"].as<String>();
+  }
+  if (doc.containsKey("Awayteam"))
+  {
+    awayteam = doc["Awayteam"].as<String>();
+  }
+  if (doc.containsKey("HomeScore"))
+  {
+    homescore = doc["HomeScore"].as<String>();
+  }
+  if (doc.containsKey("AwayScore"))
+  {
+    awayscore = doc["AwayScore"].as<String>();
+  }
+  if (doc.containsKey("Score"))
+  {
+    scores = doc["Score"].as<String>();
+  }
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    int cx = 0, cy = 116;
+    M5.Lcd.fillRect(0, cy, M5.Lcd.width(), 12, TFT_BLACK);
+    printWordWrap(matchtime, COLOR_MEDIUM[random(12)]);
+  }
+  if (doc.containsKey("newScore"))
+  {
+    newScore = doc["newScore"].as<bool>();
+  }
+  if (doc.containsKey("MatchState"))
+  {
+    int matchState = doc["MatchState"].as<int>();
+    if (matchState == 1)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 800);
+    }
+    else if (matchState == 2)
+    {
+      tone(BUZZER_PIN, tmpNOTE, 100);
+      noTone(BUZZER_PIN);
+      delay(200);
+      tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+
+  if (displals)
+    if (displaylivescore == 0)
+      ssgmnt(homescore);
+    else if (displaylivescore == 1)
+      displayscore(homescore);
+    else if (displaylivescore == 2)
+      tsgmnt(homescore);
+    else if (displaylivescore == 3)
+      drawDigitLivescore(homescore);
+}
+
+void proccesLiveScore(String data)
+{
+  Serial.println("its json ls data");
+  data.replace("*", "");
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    return;
+  }
+  bool displals = false;
+  if (doc.containsKey("team_colored"))
+  {
+    teamcolored = doc["team_colored"].as<bool>();
+    if (teamcolored)
+    {
+      homecolor = doc["home"]["color"].as<uint32_t>();
+      // M5.Lcd.fillRect(0, 0, 10, 40, homecolor);
+      Serial.printf("home color : %lu\n", homecolor);
+      Serial.println("home color : " + String(homecolor, HEX));
+      awaycolor = doc["away"]["color"].as<uint32_t>();
+      // M5.Lcd.fillRect(M5.Lcd.width() - 10, 0, 10, 40, awaycolor);
+    }
+  }
+
+  if (doc.containsKey("home"))
+  {
+    displals = true;
+    hometeam = doc["home"]["name"].as<String>();
+    hometeam.replace("-", " ");
+    homescore = doc["home"]["score"].as<String>();
+    // if (teamcolored)
+    // {
+    //   String colorhex = doc["home"]["color"].as<String>();
+    //   Serial.println("home color : " + colorhex);
+    //   uint32_t colorval = strtoul(&colorhex[1], NULL, 16);
+    //   Serial.printf("home color val : %lu\n", colorval);
+    //   setNeopixelColor(0, colorval);
+    // }
+  }
+  if (doc.containsKey("away"))
+  {
+    awayteam = doc["away"]["name"].as<String>();
+    awayteam.replace("-", " ");
+    awayscore = doc["away"]["score"].as<String>();
+  }
+  if (doc.containsKey("Score"))
+  {
+    scores = doc["Score"].as<String>();
+  }
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    int cx = 0, cy = 116;
+    M5.Lcd.fillRect(0, cy, M5.Lcd.width(), 12, TFT_BLACK);
+    printWordWrap(matchtime, COLOR_MEDIUM[random(12)]);
+  }
+  if (doc.containsKey("newScore"))
+  {
+    newScore = doc["newScore"].as<bool>();
+    if (newScore)
+    {
+      // wristleBeep(2, 4);
+    }
+  }
+  if (doc.containsKey("MatchState"))
+  {
+    int matchState = doc["MatchState"].as<int>();
+    if (matchState == 1)
+    {
+      // tone(BUZZER_PIN, tmpNOTE, 800);
+      // wristleBeep(0, 0);
+    }
+    else if (matchState == 2)
+    {
+      // wristleBeep(1, 0);
+      // tone(BUZZER_PIN, tmpNOTE, 100);
+      // noTone(BUZZER_PIN);
+      // delay(200);
+      // tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+  M5.Lcd.fillScreen(TFT_BLACK);
+  if (displals)
+    if (displaylivescore == 0)
+      ssgmnt(homescore);
+    else if (displaylivescore == 1)
+      displayscore(homescore);
+    else if (displaylivescore == 2)
+      tsgmnt(homescore);
+    else if (displaylivescore == 3)
+      drawDigitLivescore(homescore);
+}
+
 int cx = 0, cy = 15;
 void testdrawtext(char *text, uint16_t color)
 {
@@ -1090,3 +1313,7 @@ void readPref()
 {
   EEPROM_readAnything(0, config); // get saved settings
 } // end of readPref
+void setBrightness(int b)
+{
+  M5.Axp.ScreenBreath(b);
+}
