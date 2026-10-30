@@ -15,7 +15,9 @@
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <ArduinoJson.h>
 
-StaticJsonDocument<200> doc;
+// StaticJsonDocument<200> doc;
+
+StaticJsonDocument<1524> doc;
 // #define SS_DISABLE 0x1062 // black
 
 #define SS_DISABLE 0 // black
@@ -86,6 +88,12 @@ String matchtime = "";
 int ihscore = 0; // home score in integer
 int iascore = 0; // away score in integer
 
+bool teamcolored = false;
+uint32_t homecolor = TFT_WHITE;
+uint32_t awaycolor = TFT_WHITE;
+// String MATCHTIME = "";
+
+auto newScore = false;
 long prevmill = 0;
 String oldsdata;
 int tryrequest = 0;
@@ -272,10 +280,17 @@ void loop()
   }
   if (data.length() > 0)
   {
+    // if (isSleep)
+    // {
+    //   setBrightness(backlight);
+    //   isSleep = false;
+    // }
     if (data.startsWith("#"))
       proccesCMD(data);
     else if (data.startsWith("$"))
       proccesJsonData(data);
+    else if (data.startsWith("*"))
+      proccesLiveScore(data);
     else
       proccesData(data);
     data = "";
@@ -784,6 +799,101 @@ void proccesData(String data)
 
     data = "";
   }
+}
+
+void proccesLiveScore(String data)
+{
+  Serial.println("its json ls data");
+  data.replace("*", "");
+  DeserializationError error = deserializeJson(doc, data);
+  if (error)
+  {
+    return;
+  }
+  bool displals = false;
+  if (doc.containsKey("team_colored"))
+  {
+    teamcolored = doc["team_colored"].as<bool>();
+    if (teamcolored)
+    {
+      homecolor = doc["home"]["color"].as<uint32_t>();
+      // tft.fillRect(0, 0, 10, 40, homecolor);
+      Serial.printf("home color : %lu\n", homecolor);
+      Serial.println("home color : " + String(homecolor, HEX));
+      awaycolor = doc["away"]["color"].as<uint32_t>();
+      // tft.fillRect(tft.width() - 10, 0, 10, 40, awaycolor);
+    }
+  }
+
+  if (doc.containsKey("home"))
+  {
+    displals = true;
+    hometeam = doc["home"]["name"].as<String>();
+    hometeam.replace("-", " ");
+    homescore = doc["home"]["score"].as<String>();
+    ihscore = homescore.toInt();
+    // if (teamcolored)
+    // {
+    //   String colorhex = doc["home"]["color"].as<String>();
+    //   Serial.println("home color : " + colorhex);
+    //   uint32_t colorval = strtoul(&colorhex[1], NULL, 16);
+    //   Serial.printf("home color val : %lu\n", colorval);
+    //   setNeopixelColor(0, colorval);
+    // }
+  }
+  if (doc.containsKey("away"))
+  {
+    awayteam = doc["away"]["name"].as<String>();
+    awayteam.replace("-", " ");
+    awayscore = doc["away"]["score"].as<String>();
+    iascore = awayscore.toInt();
+  }
+  if (doc.containsKey("Score"))
+  {
+    scores = doc["Score"].as<String>();
+  }
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    int cx = 0, cy = 116;
+    tft.fillRect(0, cy, tft.width(), 12, TFT_BLACK);
+    printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], 16);
+  }
+  if (doc.containsKey("newScore"))
+  {
+    newScore = doc["newScore"].as<bool>();
+    if (newScore)
+    {
+      // wristleBeep(2, 4);
+    }
+  }
+  if (doc.containsKey("MatchState"))
+  {
+    int matchState = doc["MatchState"].as<int>();
+    if (matchState == 1)
+    {
+      // tone(BUZZER_PIN, tmpNOTE, 800);
+      // wristleBeep(0, 0);
+    }
+    else if (matchState == 2)
+    {
+      // wristleBeep(1, 0);
+      // tone(BUZZER_PIN, tmpNOTE, 100);
+      // noTone(BUZZER_PIN);
+      // delay(200);
+      // tone(BUZZER_PIN, tmpNOTE, 600);
+    }
+  }
+  tft.fillScreen(TFT_BLACK);
+  if (displals)
+    if (displaylivescore == 0)
+      ssgmnt(homescore);
+    else if (displaylivescore == 1)
+      displayscore(homescore);
+    else if (displaylivescore == 2)
+      tsgmnt(homescore);
+    else if (displaylivescore == 3)
+      drawDigitLivescore(homescore);
 }
 
 int cx = 0, cy = 15;
