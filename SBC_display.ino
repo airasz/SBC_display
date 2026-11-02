@@ -9,6 +9,8 @@
 // #include <Tone32.h>
 #include "note.h"
 // #include "pitches.h"
+#include "ina_e.h"
+#include "ina_w.h"
 #include "SBC_display.h"
 #include <TimeLib.h>
 #include "tft_setup.h"
@@ -329,7 +331,7 @@ void loop()
 int displaylivescore = 0;
 void proccesJsonData(String data)
 {
-  printtextcs(0, 129, data, TFT_WHITE, 16);
+  // printtextcs(0, 180, data, TFT_WHITE, 16);
   data.replace("$", "");
   DeserializationError error = deserializeJson(doc, data);
   if (error)
@@ -403,6 +405,30 @@ void proccesJsonData(String data)
     setTime(h, m, s, 2, 7, 2021);
     // setTime(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(),
     //             timeClient.getDay(), timeClient.getMonth(), timeClient.getYear());
+  }
+  if (doc.containsKey("drawmap"))
+  {
+    if (doc["drawmap"].as<bool>() == true)
+    {
+      maxWait += 20;
+      if (doc["indexmap"].as<int>() == 0)
+      {
+        tft.drawBitmap(0, 0, _ina_w, 240, 190, TFT_WHITE);
+        // tft.pushImage(0, 0, 160, 128, indonesian_western);
+      }
+      else if (doc["indexmap"].as<int>() == 1)
+      {
+        tft.drawBitmap(0, 0, _ina_e, 240, 190, TFT_WHITE);
+        // tft.pushImage(0, 0, 160, 128, indonesian_eastern);
+      }
+      int lat = doc["latitude"].as<int>();
+      int lon = doc["longitude"].as<int>();
+      Serial.printf("lat : %d, lon : %d\n", lat, lon);
+      tft.fillCircle(lat, lon, 5, TFT_RED);
+
+      printtextcs(2, 186, "Lokasi Gempa", TFT_GREENYELLOW, 14);
+      // printtextcs(2, (lon > 64) ? 2 : 112, "Lokasi Gempa", COLOR_MEDIUM[random(12)], 14);
+    }
   }
 
   // dmode = doc["dmode"];
