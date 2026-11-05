@@ -425,8 +425,11 @@ void proccesJsonData(String data)
       int lon = doc["longitude"].as<int>();
       Serial.printf("lat : %d, lon : %d\n", lat, lon);
       tft.fillCircle(lat, lon, 5, TFT_RED);
-
-      printtextcs(2, 186, "Lokasi Gempa", TFT_GREENYELLOW, 14);
+      String datetime = doc["tanggal"].as<String>();
+      datetime += " ";
+      datetime += doc["jam"].as<String>();
+      printtextcs(2, 186, datetime, TFT_GREENYELLOW, 14);
+      printtextcs(2, 200, doc["wilayah"].as<String>(), TFT_GREENYELLOW, 14);
       // printtextcs(2, (lon > 64) ? 2 : 112, "Lokasi Gempa", COLOR_MEDIUM[random(12)], 14);
     }
   }
