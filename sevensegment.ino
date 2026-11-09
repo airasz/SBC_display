@@ -139,7 +139,7 @@ void ssgmnt(String score)
         printtextcs(cx, cy, awayteam, acolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
-        printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+        // //printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         old_score = score;
     }
@@ -160,7 +160,7 @@ void ssgmnt(String score)
         printtextcs(cx, cy, awayteam, acolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
-        printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+        // //printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
         int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
         draw7Segment(x, y, 8, sz, TFT_BLACK); // Position at (20,20) with size 10
         shuffleArray(sevensegment, sssize);
@@ -414,7 +414,7 @@ void drawDigitLivescore(String score)
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
         printtextcs(cx, cy, awayteam, acolor, 16);
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
-        printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+        // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
 
         drawAnimatedDigit(x, y, sz, digit, hcolor);
         drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
@@ -440,8 +440,8 @@ void drawDigitLivescore(String score)
         printtextcs(cx, cy, awayteam, acolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
-        printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
-        // drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
+        // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+        //  drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
         drawAnimatedDigit(x, y, sz, ihscore, hcolor);
         drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
         drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, acolor);
@@ -464,7 +464,7 @@ void displayscore(String score)
     score.replace("-", "");
     score.replace(" ", "");
     cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
-    printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
+    // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
     int count = 0;
     count = (homescore.toInt() * 100) + awayscore.toInt();
     // count = score.toInt();

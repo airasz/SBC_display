@@ -840,6 +840,7 @@ void proccesLiveScore(String data)
     return;
   }
   bool displals = false;
+
   if (doc.containsKey("team_colored"))
   {
     teamcolored = doc["team_colored"].as<bool>();
@@ -881,13 +882,6 @@ void proccesLiveScore(String data)
   {
     scores = doc["Score"].as<String>();
   }
-  if (doc.containsKey("Matchtime"))
-  {
-    matchtime = doc["Matchtime"].as<String>();
-    int cx = 0, cy = 116;
-    tft.fillRect(0, cy, tft.width(), 12, TFT_BLACK);
-    printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], 16);
-  }
   if (doc.containsKey("newScore"))
   {
     newScore = doc["newScore"].as<bool>();
@@ -923,6 +917,15 @@ void proccesLiveScore(String data)
       tsgmnt(homescore);
     else if (displaylivescore == 3)
       drawDigitLivescore(homescore);
+
+  if (doc.containsKey("Matchtime"))
+  {
+    matchtime = doc["Matchtime"].as<String>();
+    // int cx = 0, cy = 160;
+    // tft.fillRect(0, cy, tft.width(), 12, TFT_BLACK);
+    drawMatchMinute(true);
+    // printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], 16);
+  }
 }
 
 int cx = 0, cy = 15;
@@ -1150,4 +1153,27 @@ void snackBar(String text)
   tft.setCursor(0, 230);
   tft.setTextColor(TFT_GREENYELLOW);
   tft.printf("%s\n", text.c_str());
+}
+void drawMatchMinute(bool erase)
+{
+
+  tft.setTextSize(2);
+  // tft.setCursor(145, 65);
+  // cy = 65;
+  // cx = 160 - (12 * matchtime.length());
+  int rcolor = COLOR_MEDIUM[random(12)];
+  uint8_t textwidth = (matchtime.length() > 4) ? 13 : 54;
+  cx = 120 - ((textwidth * matchtime.length()) / 2), cy = 160;
+  // tft.fillRect(cx, cy, 50 * matchtime.length(), 60, TFT_WHITE);
+  int w = (textwidth * matchtime.length());
+  int h = 60 + 10;
+  tft.fillRoundRect(0, cy - 6, 240, h, 8, TFT_BLACK);
+  // tft.fillRoundRect(cx - 4, cy - 6, w, h, 8, TFT_BLACK);
+  // tft.drawRoundRect(cx - 4, cy - 6, w, h, 8, TFT_WHITE);
+  if (erase)
+    printtextcs(cx, cy, matchtime, TFT_BLACK, 84);
+  // drawtext(matchtime, TFT_BLACK);
+  // drawtext(matchtime, COLOR_MEDIUM[random(10)]);
+  printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], (matchtime.length() > 4) ? 28 : 84);
+  tft.setTextSize(1);
 }
