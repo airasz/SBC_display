@@ -72,7 +72,7 @@ bool found_new_title = false;
 // Textsize 2 is good readable without the need of an microscope.
 // This code only runs with text size 2!
 #define TEXT_SIZE 2
-#define TEXT_HEIGHT 16 // Height of text to be printed
+#define TEXT_HEIGHT 15 // Height of text to be printed
 // Display size of M5StickC = 160x80
 // With TEXT_HEIGHT=16, the screen can display:
 //    5 rows of text in portrait mode

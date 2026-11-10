@@ -234,6 +234,9 @@ void setup(void)
   fillacf();
   delay(200);
   noTone(BUZZER_PIN);
+  WiFi.disconnect();   // Disconnect from any network
+  WiFi.mode(WIFI_OFF); // Switch off the Wi-Fi mode
+  WiFi.forceSleepBegin();
 }
 
 void syncTime()

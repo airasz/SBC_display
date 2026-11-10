@@ -121,8 +121,13 @@ void draw7Segment(int x, int y, int number, int size, uint32_t col)
 }
 void ssgmnt(String score)
 {
-    hcolor = COLOR_MEDIUM[random(12)];
-    acolor = COLOR_MEDIUM[random(12)];
+    if (!teamcolored)
+    {
+        homecolor = COLOR_MEDIUM[random(12)];
+        awaycolor = COLOR_MEDIUM[random(12)];
+    }
+    int hscore = homescore.toInt();
+    int ascore = awayscore.toInt();
     int sz = 16; // segment size
     int x = 10, y = 16;
     int sssize = sizeof(sevensegment) / sizeof(sevensegment[0]);
@@ -131,12 +136,12 @@ void ssgmnt(String score)
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, hometeam, hcolor, 16);
+        printtextcs(cx, cy, hometeam, homecolor, 16);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 136;
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, awayteam, acolor, 16);
+        printtextcs(cx, cy, awayteam, awaycolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
         // //printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
@@ -150,14 +155,14 @@ void ssgmnt(String score)
         // drawtext(hometeam, TFT_BLACK);
         printtextcs(cx, cy, hometeam, TFT_BLACK, 16);
         // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, hometeam, hcolor, 16);
+        printtextcs(cx, cy, hometeam, homecolor, 16);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 136;
         // drawtext(awayteam, TFT_BLACK);
         printtextcs(cx, cy, awayteam, TFT_BLACK, 16);
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, awayteam, acolor, 16);
+        printtextcs(cx, cy, awayteam, awaycolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
         // //printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
@@ -171,11 +176,11 @@ void ssgmnt(String score)
         // drawDigit(60, 10, 10, ihscore, COLOR_MEDIUM[random(12)]);
     }
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x, y, ihscore, sz, hcolor); // Position at (20,20) with size 10
+    draw7Segment(x, y, ihscore, sz, homecolor); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
     draw7Segment(x + (sz * 5), y, 10, sz, COLOR_MEDIUM[random(12)]); // Position at (20,20) with size 10
     shuffleArray(sevensegment, sssize);
-    draw7Segment(x + (sz * 10), y, iascore, sz, acolor); // Position at (20,20) with size 10
+    draw7Segment(x + (sz * 10), y, iascore, sz, awaycolor); // Position at (20,20) with size 10
 }
 
 //=================5x3 digit font=======================
@@ -397,8 +402,13 @@ void drawAnimatedDigitd(int x, int y, int fsize, int digit, uint16_t color) // p
 void drawDigitLivescore(String score)
 {
 
-    hcolor = COLOR_MEDIUM[random(12)];
-    acolor = COLOR_MEDIUM[random(12)];
+    if (!teamcolored)
+    {
+        homecolor = COLOR_MEDIUM[random(12)];
+        awaycolor = COLOR_MEDIUM[random(12)];
+    }
+    int hscore = homescore.toInt();
+    int ascore = awayscore.toInt();
     int sz = 16; // segment size
     int x = 40, y = 20;
     int digit = (ihscore * 100) + iascore;
@@ -407,18 +417,18 @@ void drawDigitLivescore(String score)
         tft.fillScreen(TFT_BLACK);
         cx = 0, cy = 0;
         // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, hometeam, hcolor, 16);
+        printtextcs(cx, cy, hometeam, homecolor, 16);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 130;
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, awayteam, acolor, 16);
+        printtextcs(cx, cy, awayteam, awaycolor, 16);
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
         // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
 
-        drawAnimatedDigit(x, y, sz, digit, hcolor);
+        drawAnimatedDigit(x, y, sz, digit, homecolor);
         drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, acolor);
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, awaycolor);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3), 20, 10, 0, COLOR_MEDIUM[random(12)]);
         // drawAnimatedDigit(20 + (10 * 3) + (2 * 3) + (10 * 3) + (2 * 3), 20, 10, iascore, COLOR_MEDIUM[random(12)]);
         old_score = score;
@@ -430,21 +440,21 @@ void drawDigitLivescore(String score)
         // drawtext(hometeam, TFT_BLACK);
         printtextcs(cx, cy, hometeam, TFT_BLACK, 16);
         // drawtext(hometeam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, hometeam, hcolor, 16);
+        printtextcs(cx, cy, hometeam, homecolor, 16);
         // tft.setCursor(0, 82);
         // tft.print(awayteam);
         cx = 0, cy = 130;
         // drawtext(awayteam, TFT_BLACK);
         printtextcs(cx, cy, awayteam, TFT_BLACK, 16);
         // drawtext(awayteam, COLOR_MEDIUM[random(10)]);
-        printtextcs(cx, cy, awayteam, acolor, 16);
+        printtextcs(cx, cy, awayteam, awaycolor, 16);
 
         cx = 120 - ((50 * MATCHTIME.length()) / 2), cy = 160;
         // printtextcs(cx, cy, MATCHTIME, COLOR_MEDIUM[random(12)], 84);
         //  drawAnimatedDigit(20, 20, 10, digit, COLOR_MEDIUM[random(12)]);
-        drawAnimatedDigit(x, y, sz, ihscore, hcolor);
+        drawAnimatedDigit(x, y, sz, ihscore, homecolor);
         drawAnimatedDigit(x + (sz * 3) + (2 * 3), y, sz, 10, COLOR_MEDIUM[random(12)]); /// draw '-' digit
-        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, acolor);
+        drawAnimatedDigit(x + (sz * 3) + (2 * 3) + (sz * 3) + (2 * 3), y, sz, iascore, awaycolor);
     }
 }
 // 7*5
