@@ -60,6 +60,12 @@ bool forcedrawclock = false;
 // int httpGetChar();
 #define BUZZER_PIN PIN_D2
 #define BUZZER_CHANNEL 0
+#define PIN_BACKLIGHT PIN_D8
+
+// int toScreenSleep = 0;
+auto isSleep = false;
+
+uint16_t backlight = 128, prevbacklight = 0;
 
 const uint32_t COLOR_MEDIUM[] = {TFT_WHITE, TFT_BLUE, TFT_GREEN, TFT_YELLOW, TFT_GREENYELLOW, TFT_PINK, TFT_ORANGE, TFT_RED, TFT_CYAN, TFT_MAGENTA, TFT_PINK, TFT_SKYBLUE};
 
@@ -97,6 +103,7 @@ uint32_t awaycolor = TFT_WHITE;
 
 auto newScore = false;
 long prevmill = 0;
+// long prevmill2 = 0;
 String oldsdata;
 int tryrequest = 0;
 bool foundRadio = false;
@@ -237,6 +244,8 @@ void setup(void)
   WiFi.disconnect();   // Disconnect from any network
   WiFi.mode(WIFI_OFF); // Switch off the Wi-Fi mode
   WiFi.forceSleepBegin();
+
+  setBrightness(128);
 }
 
 void syncTime()
@@ -285,11 +294,11 @@ void loop()
   }
   if (data.length() > 0)
   {
-    // if (isSleep)
-    // {
-    //   setBrightness(backlight);
-    //   isSleep = false;
-    // }
+    if (isSleep)
+    {
+      setBrightness(backlight);
+      isSleep = false;
+    }
     if (data.startsWith("#"))
       proccesCMD(data);
     else if (data.startsWith("$"))
@@ -329,6 +338,19 @@ void loop()
       toScreenSleep = 0;
     prevmill = millis();
   }
+  if (millis() > prevmill2 + 1000)
+  {
+    toScreenSleep++;
+    if (toScreenSleep > maxWait)
+    {
+      toScreenSleep = 0;
+      tft.fillScreen(TFT_BLACK);
+      setBrightness(0);
+      isSleep = true;
+      // testdrawtext("waiting for incoming data", COLOR_MEDIUM[random(12)]);
+      // printWordWrap("waiting for incoming data", COLOR_MEDIUM[random(12)]);
+    }
+  }
   beepnblink(); // beepnblink.ino
 } // end loop
 int displaylivescore = 0;
@@ -336,6 +358,11 @@ void proccesJsonData(String data)
 {
   // printtextcs(0, 180, data, TFT_WHITE, 16);
   data.replace("$", "");
+  toScreenSleep = 0;
+  // if (data.length() > 10)
+  //   maxWait = data.length() / 10
+  // else
+  maxWait = (data.length() > 18) ? data.length() / 6 : 40;
   DeserializationError error = deserializeJson(doc, data);
   if (error)
   {
@@ -445,6 +472,8 @@ void proccesJsonData(String data)
 void proccesCMD(String data)
 {
   data.replace("#", "");
+  toScreenSleep = 0;
+  maxWait = (data.length() > 18) ? data.length() / 6 : 40;
   if (data.length() > 3)
   {
 
@@ -837,6 +866,8 @@ void proccesLiveScore(String data)
 {
   Serial.println("its json ls data");
   data.replace("*", "");
+  toScreenSleep = 0;
+  maxWait = (data.length() > 18) ? data.length() / 6 : 40;
   DeserializationError error = deserializeJson(doc, data);
   if (error)
   {
@@ -1179,4 +1210,9 @@ void drawMatchMinute(bool erase)
   // drawtext(matchtime, COLOR_MEDIUM[random(10)]);
   printtextcs(cx, cy, matchtime, COLOR_MEDIUM[random(12)], (matchtime.length() > 4) ? 28 : 84);
   tft.setTextSize(1);
+}
+void setBrightness(int b)
+{
+  // ledcWrite(1, b);
+  analogWrite(PIN_BACKLIGHT, b);
 }
